@@ -1,0 +1,7 @@
+.profile h4{ color: #00796b; }
+.profile-fields .label{ display: table-cell; color: #c41111; font-size: 1.05em;}
+.profile-fields *, input[type=text], .form-group label, .datepicker *{ font-size: 1.05em !important; }
+input[type=text]:focus{ border-bottom: 0; }
+.form-control:focus { box-shadow: none !important; -webkit-box-shadow:none !important; }
+#kleo-login-modal form{ font-size: 14px !important; }
+.kleo-fb-wrapper *{color: #fff;}
