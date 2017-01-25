@@ -75,8 +75,8 @@ License URI: license.txt
  #timeliner input[type=text], #timeliner textarea, #timeliner select{ 
     /*background: none !important; */
     background-color: rgba(0,0,0,.05) !important;
-
  }
+ #timeliner .readmore {overflow: hidden;}
 .bp-users-reviews-list{ padding-left: 8px; }
 
 /* 767px to 861px - fix broken groups header */
@@ -217,7 +217,7 @@ License URI: license.txt
   .groups .breadcrumb{ padding: 0; }
   .groups #buddypress div#item-header ul {margin-bottom: 6px;}
 
-  /* compress header on Groups for full screen */
+  /* compress header on Groups for full screen *** */
 
 }
 

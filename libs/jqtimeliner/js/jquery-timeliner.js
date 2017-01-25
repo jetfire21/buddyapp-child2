@@ -388,8 +388,9 @@
             // var gr_link =  fetchAttr(_obj, "data-link", _options);
             if(user_group != "") user_group = '<a href="'+gr_link+'"><img src="'+user_group+'" /></a><span>'+gr_name+'</span>';
             // console.log("user-group "+user_group);
-            // console.log(gr_link);
-            // console.log(gr);
+            // console.log("gr_link "+gr_link);
+            // console.log("gr_name: "+gr_name);
+            // console.log("=======end user_group====:\r\n"+user_group);
             // return false;
             return $.trim(user_group);
             // return alex.replace(/http/i,'----------');
@@ -475,6 +476,8 @@
         delBtn = addAttr.call(this, delBtn, 'id', _obj.$delBtnId);
 
         var html = getHtml.call(this, 'itemTpl', _obj);
+        // console.log("html=====\r\n");
+        // console.log(html);
         html = html.replace('{{edit-button}}', edtBtn);
         html = html.replace('{{delete-button}}', delBtn);
         _obj.$html = html;

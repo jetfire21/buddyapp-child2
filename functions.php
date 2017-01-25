@@ -866,7 +866,8 @@ function alex_custom_scripts()
 				$profile_id = $bp->displayed_user->id;
 
 				if($member_id < 1 or ($member_id != $profile_id) ){
-					echo '$("#timeliner .readmore").hide();';
+					// echo '$("#timeliner .btn-primary, #timeliner .btn-danger").hide();';
+					echo '$("#timeliner .btn-primary, #timeliner .btn-danger").remove();';
 					echo '$("#timeliner .alex_btn_add_new").hide();';
 				}
 		    ?>
