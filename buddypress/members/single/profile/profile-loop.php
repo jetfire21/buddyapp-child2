@@ -129,7 +129,7 @@ $user_id_gr = bp_displayed_user_id();
 				<?php //if(bp_get_the_profile_group_name() == "SOCIAL"): ?>
 				<?php //if(bp_get_the_profile_group_name() == "2. Timeline"): ?>
 				<?php if($i < 1): ?>
-					<!-- <h4>TIMELINE</h4> -->
+					<h4>Timeline</h4>
 					<div id="timeliner">
 					  <ul class="columns alex_timeline_wrap">
  <!-- 					      <li>

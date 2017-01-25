@@ -78,6 +78,7 @@ License URI: license.txt
  }
  #timeliner .readmore {overflow: hidden;}
 .bp-users-reviews-list{ padding-left: 8px; }
+a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
 /* 767px to 861px - fix broken groups header */
 
@@ -166,7 +167,8 @@ License URI: license.txt
 }
 
 @media only screen and (min-width: 767px){
-
+  
+  a#link_edit_timeline{ margin-bottom: 254px; }
   .single-item.groups .main-content{ padding-top: 0 !important; }
 
  .single-item.groups #buddypress div#object-nav.item-list-tabs {
