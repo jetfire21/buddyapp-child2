@@ -572,50 +572,6 @@ function alex_include_css_js(){
 
 add_action("wp_footer", "alex_custom_scripts",100);
 
-// only for debug
-// add_action("wp_footer","wp_get_name_page_template");
-
-function wp_get_name_page_template(){
-
-    global $template,$bp;
- //    global $groups_template;
-	// alex_debug(0,1,"groups_template",$groups_template);
-
-    // echo basename($template);
-    // полный путь с названием шаблона страницы
-    // print_r($bp);
-
-	// get user_id for logged user
-	$user = wp_get_current_user();
-	$user_id_islogin = $user->ID;
-	// get user_id for notlogged user
-	global $bp;
-	$user_id_isnotlogin = $bp->displayed_user->id;
-
-	if(!$user_id_islogin){ $user_id_islogin = $user_id_isnotlogin; }
-
-    // $member_name = bp_core_get_username($user_id_islogin);
-    // echo "profile= "; var_dump(bp_has_profile());
-
-    // full path = http://dugoodr.com/members/admin7/profile/
-    // short path, insted activity set profile http://dugoodr.dev/members/admin7/
-	$url_s = $_SERVER['REQUEST_URI'];
-	$profile_view_notdefault = preg_match("#^/members/".$member_name."/$#i", $url_s);
-
-	echo "has page profile= "; var_dump(bp_has_profile());
-
-    echo "1- ".$template;
-	echo "<br>2- ".$page_template = get_page_template_slug( get_queried_object_id() )." | ";
-	// echo $template = get_post_meta( $post->ID, '_wp_page_template', true );
-	// echo $template = get_post_meta( get_queried_object_id(), '_wp_page_template', true );
-	// echo "id= ".get_queried_object_id();
-	echo "<br>3- ".$_SERVER['PHP_SELF'];
-	echo "<br>4- ".__FILE__;
-	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
-	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
-	alex_debug(1,1,0,$_SERVER);
-}
-
 function alex_custom_scripts()
 {
 
@@ -1030,6 +986,261 @@ function alex_sq_login_form_func( $atts, $content = null ) {
 	}
 }
 
+// add_action("bp_before_activity_loop","alex_custom_before_activity_loop");
+function alex_custom_before_activity_loop(){
+	alex_debug(1,0,0,0);
+}
+
+
+/* ****** adding a custom activity - compliment(review) - override method ajax_review() for BP Member Reviews ******* */
+
+// add_action('wp_ajax_bp_user_review',   array($this, 'ajax_review'),300);
+// add_action('wp_ajax_bp_user_review',   array("BP_Member_Reviews", 'ajax_review'),300);
+
+add_action('wp_ajax_bp_user_review','ajax_review_override',1);
+function ajax_review_override(){
+
+if ( class_exists('BP_Member_Reviews') ){
+	
+    $user_id = intval($_POST['user_id']);
+    if( !wp_verify_nonce( $_POST['_wpnonce'], 'bp-user-review-new-'.$user_id ) ) die();
+
+    // alex code
+	global $wpdb;
+	$bp_member_r = new BP_Member_Reviews();
+
+    $stars      = $bp_member_r->settings['stars'];
+    $criterions = $bp_member_r->settings['criterions'];
+
+    $post = array(
+        'post_type'   => $bp_member_r->post_type,
+        'post_status' => 'pending'
+    );
+
+    if($bp_member_r->settings['autoApprove'] == 'yes'){
+        $post['post_status'] = 'publish';
+    }
+
+    $response = array(
+        'result' => true,
+        'errors' => array()
+    );
+
+    if( ! apply_filters( 'bp_members_reviews_review_allowed', true, get_current_user_id(), $user_id ) ){
+        $response['result'] = false;
+        $response['errors'][] = __('You can not put review for this user', 'bp-user-reviews');
+    }
+
+    if(is_user_logged_in() && (get_current_user_id() == $user_id)){
+        $response['result'] = false;
+        $response['errors'][] = __('You can not put yourself reviews', 'bp-user-reviews');
+    }
+
+    $review_meta = array(
+        'user_id' => $user_id,
+        'stars'   => $stars,
+        'type'    => $bp_member_r->settings['criterion'],
+        'guest'   => false
+    );
+
+    if( ! is_user_logged_in() ){
+        $review_meta['guest'] = true;
+
+        if(!isset($_POST['name']) || empty($_POST['name'])){
+            $response['result'] = false;
+            $response['errors'][] = __('Name field is required', 'bp-user-reviews');
+        } else {
+            $review_meta['name'] = esc_attr($_POST['name']);
+        }
+
+        if(!isset($_POST['email']) || empty($_POST['email'])){
+            $response['result'] = false;
+            $response['errors'][] = __('Email field is required', 'bp-user-reviews');
+        } elseif (!is_email($_POST['email'])){
+            $response['result'] = false;
+            $response['errors'][] = __('Email is wrong', 'bp-user-reviews');
+        } else {
+            $review_meta['email'] = esc_attr($_POST['email']);
+        }
+    }
+
+    if($bp_member_r->settings['multiple'] == 'no'){
+        if(!is_user_logged_in()){
+            if($bp_member_r->checkIfReviewExists($review_meta['email'], $user_id) > 0){
+                $response['result'] = false;
+                $response['errors'][] = __('Already reviewed by you', 'bp-user-reviews');
+            }
+        } else {
+            if($bp_member_r->checkIfReviewExists(get_current_user_id(), $user_id) > 0){
+                $response['result'] = false;
+                $response['errors'][] = __('Already reviewed by you', 'bp-user-reviews');
+            }
+        }
+    }
+
+    if(!is_array($_POST['criteria'])){
+        $val = esc_attr($_POST['criteria']);
+
+        if($val < 1 || $val > $stars){
+            $response['result'] = false;
+            $response['errors']['empty'] = __('You must select all stars', 'bp-user-reviews');
+        }
+
+        $review_meta['average'] = ($val / $stars) * 100;
+    } else {
+        foreach($_POST['criteria'] as $index=>$val){
+            if($val < 1 || $val > $stars){
+                $response['result'] = false;
+                $response['errors']['empty'] = __('You must select all stars', 'bp-user-reviews');
+                continue;
+            }
+
+            $name = $criterions[$index];
+            $review_meta['criterions'][$name] = (esc_attr($val) / $stars) * 100;
+        }
+
+        $review_meta['average'] = round( array_sum($review_meta['criterions']) / count($review_meta['criterions']) );
+    }
+
+
+    if($bp_member_r->settings['review'] == 'yes') {
+        if (empty($_POST['review'])) {
+            $response['result'] = false;
+            $response['errors'][] = __('Review can`t be empty', 'bp-user-reviews');
+        } elseif (mb_strlen($_POST['review']) < $bp_member_r->settings['min_length']) {
+            $response['result'] = false;
+            $response['errors'][] = sprintf(__('Review must be at least %s characters', 'bp-user-reviews'), $bp_member_r->settings['min_length']);
+        } else {
+            $review_meta['review'] = esc_attr($_POST['review']);
+        }
+    }
+
+    if (class_exists('Akismet')){
+        $review['user_ip']      = Akismet::get_ip_address();
+        $review['blog']         = get_option( 'home' );
+        $review['blog_lang']    = get_locale();
+        $review['blog_charset'] = get_option('blog_charset');
+        if(!is_user_logged_in()){
+            $review['comment_author']       = $review_meta['name'];
+            $review['comment_author_email'] = $review_meta['email'];
+        } else {
+            $user = get_userdata($user_id);
+            $review['comment_author']       = $user->display_name;
+            $review['comment_author_email'] = $user->user_email;
+        }
+        $review['comment_content'] = esc_attr($_POST['review']);
+
+        $valid = Akismet::http_post( Akismet::build_query( $review ), 'comment-check' )[1];
+
+        if($valid == false){
+            $post['post_status'] = 'spam';
+        }
+    }
+
+    if($response['result'] === true){
+        $review_id = wp_insert_post($post);
+
+        foreach($review_meta as $key=>$value){
+            if(is_string($value)) $value = trim($value);
+            update_post_meta($review_id, $key, $value);
+        }
+    }
+
+	/* ****** adding a custom activity - compliment(review) ******* */
+
+	// $test['test'] = "yes";
+	// $test['class'] = $m->url;
+	// $response['result'] = true;
+	// $response['post'] = $_POST;
+	// $response['post']['table'] = $wpdb->prefix."bp_activity";
+
+	$table_activity = $wpdb->prefix."bp_activity";
+	$to_user_id = intval($_POST['user_id']);
+	$user = wp_get_current_user();
+	$from_user_id = $user->ID;
+
+	// $primary_link = bp_loggedin_user_domain();
+	$primary_link = bp_core_get_userlink($to_user_id);
+	$user_link = bp_core_get_userlink($from_user_id);
+	$to_user_link_nohtml = bp_core_get_userlink($to_user_id, false, true);
+	$date_recorded = date( 'Y-m-d H:i:s');
+	$action = $primary_link.' has received a <a href="'.$to_user_link_nohtml.'reviews/">compliment</a> from '.$user_link;
+
+	$q = $wpdb->prepare( "INSERT INTO {$table_activity} (user_id, component, type, action, content, primary_link, date_recorded, item_id, secondary_item_id, hide_sitewide, is_spam ) VALUES ( %d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d )", $to_user_id, 'compliments', 'compliment_sent', $action, '', $to_user_link_nohtml, $date_recorded, 0, 0, 0,0);
+	// INSERT INTO wp8k_bp_activity ( user_id, component, type, action, content, primary_link, date_recorded, item_id, secondary_item_id, hide_sitewide, is_spam ) VALUES ( 0, 'compliments', 'compliment_sent', '<a href=\"http://dugoodr2.dev/members/admin7/\" title=\"Admin\">Admin</a> has received a <a href=\"http://dugoodr2.dev/members/toddroberts/reviews/\">compliment</a> from <a href=\"http://dugoodr2.dev/members/toddroberts/\" title=\"Todd2\">Todd2</a>', '', '<a href=\"http://dugoodr2.dev/members/toddroberts/\" title=\"Todd2\">Todd2</a>', '2017-01-26 17:32:14', 0, 0, 0, 0 )
+
+	$wpdb->query( $q );
+	// if ( false === $wpdb->query( $q ) ) {
+	// 	$response['result'] = false;
+	// 	$response['post']['error'] = "error send sql";
+	// 	$response['errors']['empty'] = "error send sql";
+	// }
+
+	// $response['post']['q'] = $q;
+	// wp_send_json($response);
+	// die();
+	
+	/* ****** adding a custom activity - compliment(review) ******* */
+
+    wp_send_json($response);
+    die();
+	}
+}
+/* ****** получение всех данных из класса находясь вне класса ********** */
+
+// add_action("wp_footer","alex_test2");
+// function alex_test2(){
+// 	$m = new BP_Member_Reviews();
+// 	echo "REVIEWS = ".$m->version;
+// 	alex_debug(1,1,"BP_Member_Reviews",$m);
+// }
+
+/* ****** получение всех данных из класса находясь вне класса ********** */
+
+// only for debug
+// add_action("wp_footer","wp_get_name_page_template");
+
+function wp_get_name_page_template(){
+
+    global $template,$bp;
+ //    global $groups_template;
+	// alex_debug(0,1,"groups_template",$groups_template);
+
+    // echo basename($template);
+    // полный путь с названием шаблона страницы
+    // print_r($bp);
+
+	// get user_id for logged user
+	$user = wp_get_current_user();
+	$user_id_islogin = $user->ID;
+	// get user_id for notlogged user
+	global $bp;
+	$user_id_isnotlogin = $bp->displayed_user->id;
+
+	if(!$user_id_islogin){ $user_id_islogin = $user_id_isnotlogin; }
+
+    // $member_name = bp_core_get_username($user_id_islogin);
+    // echo "profile= "; var_dump(bp_has_profile());
+
+    // full path = http://dugoodr.com/members/admin7/profile/
+    // short path, insted activity set profile http://dugoodr.dev/members/admin7/
+	$url_s = $_SERVER['REQUEST_URI'];
+	$profile_view_notdefault = preg_match("#^/members/".$member_name."/$#i", $url_s);
+
+	echo "has page profile= "; var_dump(bp_has_profile());
+
+    echo "1- ".$template;
+	echo "<br>2- ".$page_template = get_page_template_slug( get_queried_object_id() )." | ";
+	// echo $template = get_post_meta( $post->ID, '_wp_page_template', true );
+	// echo $template = get_post_meta( get_queried_object_id(), '_wp_page_template', true );
+	// echo "id= ".get_queried_object_id();
+	echo "<br>3- ".$_SERVER['PHP_SELF'];
+	echo "<br>4- ".__FILE__;
+	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
+	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
+	alex_debug(1,1,0,$_SERVER);
+}
+
 
 // add_filter( 'pre_user_login', function( $user )
 // {
@@ -1050,7 +1261,7 @@ function alex_sq_login_form_func( $atts, $content = null ) {
 
 // учесть при создании новой группы добавить 5 полей для него (прицепиться к хуку создание группы)
 
-$s = "INSERT INTO `wp8k_posts` (`ID`, `post_author`, `post_date`, `post_date_gmt`, `post_content`, `post_title`, `post_excerpt`, `post_status`, `comment_status`, `ping_status`, `post_password`, `post_name`, `to_ping`, `pinged`, `post_modified`, `post_modified_gmt`, `post_content_filtered`, `post_parent`, `guid`, `menu_order`, `post_type`, `post_mime_type`, `comment_count`) VALUES (NULL, '1', '2016-12-21 22:26:53', '2016-12-21 22:26:53', 'Test Group Test facebook', 'Facebook', 'text', 'publish', 'closed', 'closed', '', 'facebook', '', '', '2016-12-21 22:26:53', '2016-12-21 22:26:53', '', '1', 'http://dugoodr.dev/?bpge_gfields=hello-world/facebook', '0', 'bpge_gfields', '', '0')";
+// $s = "INSERT INTO `wp8k_posts` (`ID`, `post_author`, `post_date`, `post_date_gmt`, `post_content`, `post_title`, `post_excerpt`, `post_status`, `comment_status`, `ping_status`, `post_password`, `post_name`, `to_ping`, `pinged`, `post_modified`, `post_modified_gmt`, `post_content_filtered`, `post_parent`, `guid`, `menu_order`, `post_type`, `post_mime_type`, `comment_count`) VALUES (NULL, '1', '2016-12-21 22:26:53', '2016-12-21 22:26:53', 'Test Group Test facebook', 'Facebook', 'text', 'publish', 'closed', 'closed', '', 'facebook', '', '', '2016-12-21 22:26:53', '2016-12-21 22:26:53', '', '1', 'http://dugoodr.dev/?bpge_gfields=hello-world/facebook', '0', 'bpge_gfields', '', '0')";
 
 
 // function glob_func(){

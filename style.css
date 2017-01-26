@@ -260,7 +260,14 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
 /* custom register */
 
+/* **custom bp-users-reviews** */
 
+.bp-users-reviews-list img{ border-radius: 50%; }
+.bp-users-reviews-list .text{ font-style: normal !important; }
+.bp-users-reviews-list .author{ font-size: 11px; font-style: italic; }
+.bp-users-reviews-list .author a{ font-family: 'Montserrat'; font-size: 13px; color:#000; font-style: normal;}
+
+/* **custom bp-users-reviews** */
 
 
 /*
