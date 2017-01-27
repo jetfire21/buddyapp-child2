@@ -38,7 +38,7 @@ License URI: license.txt
     
 .register{
 	background: url(search-templ/images/5.jpg) !important;
-    background-size: cover;
+  background-size: cover;
 }
 .register #content, .register .main-content{background: none !important; }
 

@@ -1186,16 +1186,6 @@ if ( class_exists('BP_Member_Reviews') ){
     die();
 	}
 }
-/* ****** получение всех данных из класса находясь вне класса ********** */
-
-// add_action("wp_footer","alex_test2");
-// function alex_test2(){
-// 	$m = new BP_Member_Reviews();
-// 	echo "REVIEWS = ".$m->version;
-// 	alex_debug(1,1,"BP_Member_Reviews",$m);
-// }
-
-/* ****** получение всех данных из класса находясь вне класса ********** */
 
 // only for debug
 // add_action("wp_footer","wp_get_name_page_template");

@@ -16,7 +16,8 @@ if ( ! isset( $before_input ) ) {
                 <button class="home_form_close" type="button">×</button>
             <?php do_action( 'kleo_before_login_form' );?>
         </div>
-         
+ 
+ <!--        
         <div class="login-form-wrapper">
             <div class="kleo-pop-title-wrap">
                 <h3 class="kleo-pop-title"><?php esc_html_e( "Log in with your credentials", "buddyapp" ); ?></h3>
@@ -60,7 +61,7 @@ if ( ! isset( $before_input ) ) {
             
             </form>
         </div>
-
+-->
         <?php if( get_option( 'users_can_register' ) ) : ?>
 
             <div class="login-create-account-wrapper">

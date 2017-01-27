@@ -30,9 +30,11 @@ img{max-width:100%;}
 /*end reset*/
 /*--login form start here--*/ 
 body {
+  /* for no zoom background, currently image 655px, need min height size 1080px for no repeat */
+   background:url(../images/5.jpg) repeat !important; 
+   background-size: initial; !important;
    /*background:url(../images/5.jpg)no-repeat !important; */
-   background:url(../images/5.jpg)no-repeat !important; 
-   background-size: cover !important;
+   /*background-size: cover !important;*/
    background-color: #000 !important;
    font-family: 'Open Sans', sans-serif;
    font-size: 100%;
