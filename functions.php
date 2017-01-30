@@ -47,7 +47,6 @@ function member_social_extend(){
 		if ($fb_info) {
 		?>
 		<span class="fb-info">
-		<!-- <a href="https://www.facebook.com/rafaelSanti21" rel="nofollow">www.facebook.com/rafaelSanti21</a>-->
 		<?php
 		// $img = '<img src="'.bloginfo('wpurl').'/wp-content/themes/buddyapp-child/images/f.png" />';
 		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/fb.png" />';
@@ -196,7 +195,7 @@ function alex_edit_group_fields(){
 
 		echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
 		echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="text" value="' . esc_attr( $field->post_content ) . '" />';
-		echo '<p class="description">Enter url</p>';
+		// echo '<p class="description">Enter url</p>';
 	}
 
 }
@@ -1271,3 +1270,16 @@ function wp_get_name_page_template(){
 // add_filter( 'bp_group_admin_form_action','alex_test_function');
 
 /* ************ additonal actions ************ */
+
+
+/* ************ DW actions ************ */
+
+add_filter('bp_get_send_public_message_button', '__return_false');
+
+function remove_wp_adminbar_profile_link() {
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_menu('my-account-activity-favorites');
+}
+add_action( 'wp_before_admin_bar_render', 'remove_wp_adminbar_profile_link' );
+add_filter( 'bp_activity_can_favorite', '__return_false' );
+add_filter( 'bp_get_total_favorite_count_for_user', '__return_false' );
