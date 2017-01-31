@@ -38,7 +38,10 @@ License URI: license.txt
     
 .register{
 	background: url(search-templ/images/5.jpg) !important;
-  background-size: cover;
+  /*background-size: cover;*/
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+
 }
 .register #content, .register .main-content{background: none !important; }
 
@@ -162,7 +165,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
   }
 
 @media only screen and (min-width: 1200px){
-   .single-item.groups #buddypress div.item-list-tabs ul li.last#group_members-order-select { margin:0 auto !important; }
+   /*.single-item.groups #buddypress div.item-list-tabs ul li.last#group_members-order-select { margin:0 auto !important; }*/
    /*.single-item.groups div#subnav.item-list-tabs ul, #group-create-tabs.item-list-tabs ul { margin-bottom: 0 !important; }*/
 }
 
@@ -203,18 +206,21 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
    /* compress header on Groups for full screen */
   
-  .single-item.groups #buddypress h2, .single-item.groups #buddypress span,  
-  .single-item.groups #buddypress .wrap_soclinks { display: none; }
+  .single-item.groups  #item-header h2, .single-item.groups #item-header span,  
+  .single-item.groups #item-header .wrap_soclinks { display: none; }
   .single-item.groups #buddypress .wrap-custom-grp{width:400px; margin:0 auto;}
   .single-item.groups #buddypress .custom-grp-margin{ margin-left: -25px; }
   .single-item.groups #buddypress div#custom-item-header-avatar img{ margin-top: -12px;}
   /*.single-item.groups #buddypress div#custom-item-header-avatar img{ margin-top: -25px;}*/
   .single-item.groups #buddypress div#custom-item-header-avatar { width:120px; float:left;}
   .single-item.groups #buddypress .wrap-custom-grp .gr_texts{text-align: left; margin-left: 150px !important;}
-  .single-item.groups #buddypress .wrap-custom-grp h2, .single-item.groups #buddypress .wrap-custom-grp span,
+  .single-item.groups #item-header .wrap-custom-grp h2, .single-item.groups #item-header .wrap-custom-grp span,
   .single-item.groups #buddypress .wrap-custom-grp .wrap_soclinks{ display: block; }
   .single-item.groups #buddypress .wrap_soclinks span { display: inline; }
   .single-item.groups #buddypress #item-meta { margin-top: 5px !important; }
+  .single-item.groups div#item-header div#item-meta p { width:50%; margin:0 auto;}
+  .single-item.groups #buddypress div.item-list-tabs#subnav ul li.last {margin-top: 23px;}
+   .single-item.groups.group-members #buddypress div#subnav.item-list-tabs { float: right; }
 
 
   .single-item.groups #buddypress div#item-header-avatar {
