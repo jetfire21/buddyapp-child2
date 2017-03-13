@@ -4,7 +4,12 @@
 do_action( 'bp_before_profile_loop_content' ); ?>
 
 <?php 
+// echo "loguser777===".bp_loggedin_user_id();
+// echo "is_pr_gr "; 
+// var_dump( bp_profile_groups() );
+
 $group_ids =  groups_get_user_groups( bp_loggedin_user_id() ); 	
+// print_r($group_ids);
 foreach($group_ids["groups"] as $group_id) { 
 	$group = groups_get_group(array( 'group_id' => $group_id ));
 	$grs .= $group->id.':"'.$group->name.'",';
@@ -15,7 +20,7 @@ $grs = substr($grs,0,-1);
 $grs = "{".$grs."}";
 
 
-// move groups ids and name in javascript timeliner
+// move groups ids and name in javascript timeliner (to pass only groups in which the user)
 echo "<script>var grs = $grs;</script>";
 $user_id_gr = bp_displayed_user_id();
 
@@ -30,6 +35,8 @@ remove_filter( 'bp_get_the_profile_field_value',           'xprofile_filter_link
 global $bp;
 $user_id = $bp->displayed_user->id;
 $verify_user = xprofile_get_field_data('Active security check', $user_id);
+$text_field_empty = "<p>user has not yet added fields to profile</p>";
+
 
 if($verify_user[0] == 'YES' && is_user_logged_in() ){
 
@@ -64,27 +71,28 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 			$quest_id = $bp->displayed_user->id;
 			// groups for auth and noauth user
 			$user_groups =  groups_get_user_groups( $quest_id ); 
-			$html = '<div class="bp-widget">';
-			$html .= "<span class='field-name'>Causes</span>";	
-			$html .= '<div class="bp-widget">';
-			foreach($user_groups["groups"] as $group_id) { 
-				$group = groups_get_group(array( 'group_id' => $group_id ));
-				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-				$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-				$gr_avatar = bp_core_fetch_avatar($avatar_options);
-				$html .='<div id="alex_groups_user">
-							<a href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a>
-							<a href="'.$group_permalink.'">'.$group->name.'</a>
-					  	</div>';
-			}
-			$html .="</div>
-			</div>";
+			if( !empty($user_groups['groups']) ) {
+
+				$html = '<div class="bp-widget groups">';
+				$html .= "<span class='field-name'>Causes</span>";	
+				foreach($user_groups["groups"] as $group_id) { 
+					$group = groups_get_group(array( 'group_id' => $group_id ));
+					$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+					$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+					$gr_avatar = bp_core_fetch_avatar($avatar_options);
+					$html .='<div id="alex_groups_user">
+								<a href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a>
+								<a href="'.$group_permalink.'">'.$group->name.'</a>
+						  	</div>';
+				}
+				$html .="</div>";
+				return $html;
+			}else return false;
 			// alex_debug(1,1,"grs",$grs_notimeline);
-			echo $html;
 		}
 	?>
 
-	<?php $i=0; $bi=0;$det=0; while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
+	<?php  $i=0; $bi=0;$det=0; while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 
 		<?php if ( bp_profile_group_has_fields() ) : ?>
 
@@ -95,7 +103,7 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 			/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 			do_action( 'bp_before_profile_field_content' ); ?>
 
-			<div class="bp-widget <?php bp_the_profile_group_slug(); if($prof_name=="basic info") echo " info "; if($prof_name=="details") echo " details ";  ?>">
+			<div class="bp-widget <?php echo strtolower(bp_get_the_profile_group_name()); if($prof_name=="basic info") echo " info "; if($prof_name=="details") echo " details ";  ?>">
 
 			<?php
 			?>
@@ -107,15 +115,16 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 			$gr_basic_info = preg_match("#info#i", $gr_name);
 			if( (bool)$gr_social == false && $prof_name != "security") : ?>
 
-				<!-- <h4><?php bp_the_profile_group_name(); ?></h4> -->
-				<?php if($prof_name == "interests"):?>
-				<span class="field-name"><?php echo $prof_name;?></span>
-				<?php endif;?>
-				
+				<!-- <h4><?php bp_the_profile_group_name(); ?></h4> -->				
 
 					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
 						<?php //echo $prof_name; ?>
 						<?php //if ( bp_field_has_data() && $gr_social != "social" ): ?>
+
+						<?php if($prof_name == "experience"):?>
+							 <span class="field-name"><?php bp_the_profile_field_name();?></span>
+						<?php endif;?>
+
 						<?php if ( bp_field_has_data() && (bool)$gr_social == false ): ?>
 							
 							<?php if($prof_name == "mission"):?>	
@@ -212,78 +221,11 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 
 			<?php endif; // if not SOCIAL ?>
 
+			<?php  // echo "<br>iteration ".$i."<br>"; ?>
 			</div>
 			<!-- end .bp-widget -->
 
-			<?php if($i==4) groups_user(); ?>
-
-
 				<!--<h4><?php echo bp_get_the_profile_group_name();?></h4>-->
-
-				<?php if($i == 4): ?>
-					<div class="bp-widget">
-					<span class='field-name'>Timeline</span>
-					<div id="timeliner">
-					  <ul class="columns alex_timeline_wrap">
-					      <?php
-							global $wpdb;
-					 		$user = wp_get_current_user();
-							global $bp;
-							$quest_id = $bp->displayed_user->id;
-
-							/* select timeline data */
-
-							$fields = $wpdb->get_results( $wpdb->prepare(
-								"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
-								FROM {$wpdb->posts}
-								WHERE post_parent = %d
-								    AND post_type = %s
-								ORDER BY ID ASC",
-								intval( $quest_id ),
-								"alex_timeline"
-							) );
-
-							foreach ($fields as $field):?>
-							<?php //
-								$group = groups_get_group($field->menu_order);
-								$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-								$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-								$gr_avatar = bp_core_fetch_avatar($avatar_options);
-
-							 ?>
-						      <li>
-						          <div class="timeliner_element <?php echo !empty($field->post_name) ? $field->post_name : "teal"; ?>">
-									<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
-						              <div class="timeliner_title">
-						                  <span class="timeliner_label"><?php echo $field->post_title;?></span>
-						                  <span class="timeliner_date"><?php echo $field->post_excerpt;?></span>
-						              </div>
-						              <div class="content">
-						              	  <?php echo $field->post_content;?>
-						              </div>
-						              <div class="readmore">
-						              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
-						              	  <?php if($group_permalink):?> <div id="alex_gr_link"><?php echo $group_permalink;?></div><?php endif;?>
-						              	  <?php if($group->name):?> 
-						              	  	 <div id="alex_gr_name_select"><?php echo $group->name;?></div>
-						              	  <?php endif;?>
-						              	  <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
-						              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
-						                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
-						                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
-						                  <a href="#" class="btn btn-info">
-						                      Read More <i class="fa fa-arrow-circle-right"></i>
-						                  </a>
-						              </div>
-						          </div>
-						      </li>
-					      <?php endforeach;?>
-					   </ul> 
-					</div>
-					</div>
-
-				<?php endif;  ?> 
-				<!-- end timeline -->
 
 			<?php
 
@@ -294,6 +236,80 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 
 	<?php $i++; endwhile; ?>
 
+	<?php
+					
+		$has_interests = xprofile_get_field_data('Interests', $user_id);
+		$has_experience = xprofile_get_field_data('Experience', $user_id);
+
+		if($has_interests == "")  echo '<div class="bp-widget"><span class="field-name">Interests</span>'.$text_field_empty.'</div>';
+		if($has_experience == "")  echo '<div class="bp-widget"><span class="field-name">Experience</span>'.$text_field_empty.'</div>';
+			
+	    if( !empty( groups_user()) ) echo groups_user();
+
+		global $wpdb;
+ 		$user = wp_get_current_user();
+		global $bp;
+		$quest_id = $bp->displayed_user->id;
+
+		/* select timeline data (title,content,date etc) */
+
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+			FROM {$wpdb->posts}
+			WHERE post_parent = %d
+			    AND post_type = %s
+			ORDER BY ID ASC",
+			intval( $quest_id ),
+			"alex_timeline"
+		) );
+		?>
+		<div class="bp-widget">
+		<span class='field-name'>Timeline</span>
+		<?php if( empty($fields)) echo $text_field_empty; ?>
+		<div id="timeliner">
+		  <ul class="columns alex_timeline_wrap">
+		      <?php	if( !empty($fields) ): foreach ($fields as $field):?>
+				<?php //
+					$group = groups_get_group($field->menu_order);
+					$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+					$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+					$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+				 ?>
+			      <li>
+			          <div class="timeliner_element <?php echo !empty($field->post_name) ? $field->post_name : "teal"; ?>">
+						<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
+			              <div class="timeliner_title">
+			                  <span class="timeliner_label"><?php echo $field->post_title;?></span>
+			                  <span class="timeliner_date"><?php echo $field->post_excerpt;?></span>
+			              </div>
+			              <div class="content">
+			              	  <?php echo $field->post_content;?>
+			              </div>
+			              <div class="readmore">
+			              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
+			              	  <?php if($group_permalink):?> <div id="alex_gr_link"><?php echo $group_permalink;?></div><?php endif;?>
+			              	  <?php if($group->name):?> 
+			              	  	 <div id="alex_gr_name_select"><?php echo $group->name;?></div>
+			              	  <?php endif;?>
+			              	  <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
+			              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
+			                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+			                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+			                  <a href="#" class="btn btn-info">
+			                      Read More <i class="fa fa-arrow-circle-right"></i>
+			                  </a>
+			              </div>
+			          </div>
+			      </li>
+		      <?php endforeach; endif;?>
+		   </ul> 
+
+		</div>
+		</div>
+
+	<?php //endif;  ?> 
+	<!-- end timeline -->
 	<?php
 
 	/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */

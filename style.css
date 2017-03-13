@@ -351,8 +351,10 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /* **custom member details** */
 #timeliner .alex_btn_add_new button{ background: #cddc39; border:0; }
  #timeliner .alex_btn_add_new button:hover{ background: #b2c022; }
+ #timeliner span{ margin-bottom: 0 !important; display: inline; }
  .profile .bp-widget span { display: block; margin-bottom: 20px; }
  .profile .bp-widget .field-avail span { margin-bottom: 3px; }
+  .profile .bp-widget.security{margin:0 !important;}
  #buddypress .profile .mission{ background: #e6e6e6; font-size: 17px !important; text-align: center; }
  #buddypress .profile .mission p{ line-height: 1.3; padding-left:20px; padding-right: 20px; margin:0; }
  #buddypress .profile .mission p:first-child { padding-top: 10px; }

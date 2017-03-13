@@ -500,6 +500,7 @@
     /* ***** alex code ******* */
 
     var grs_html = "";
+     // console.log(grs);
 
    if(grs){
         for (var key in grs) {
