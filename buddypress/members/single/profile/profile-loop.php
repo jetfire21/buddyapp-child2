@@ -119,10 +119,14 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 						<?php if ( bp_field_has_data() && (bool)$gr_social == false ): ?>
 							
 							<?php if($prof_name == "mission"):?>	
-								<table class="profile-fields mission">
-								<td class="data"><?php bp_the_profile_field_value(); ?></td>
+<!--  								<table class="profile-fields mission">
+								<td class="data"><?php // bp_the_profile_field_value(); ?></td>
 								</tr>
 								</table>
+ -->
+							<div class="profile-fields mission">
+								<?php bp_the_profile_field_value(); ?>
+								</div>
 							<?php elseif($prof_name == "basic info"):?>
 								<?php if($bi < 1):?>
 									<div class="wrap_field-avail">

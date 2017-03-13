@@ -349,6 +349,15 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /* **custom bp-users-reviews** */
 
 /* **custom member details** */
+#timeliner .alex_btn_add_new button{ background: #cddc39; border:0; }
+ #timeliner .alex_btn_add_new button:hover{ background: #b2c022; }
+ .profile .bp-widget span { display: block; margin-bottom: 20px; }
+ .profile .bp-widget .field-avail span { margin-bottom: 3px; }
+ #buddypress .profile .mission{ background: #e6e6e6; font-size: 17px !important; text-align: center; }
+ #buddypress .profile .mission p{ line-height: 1.3; padding-left:20px; padding-right: 20px; margin:0; }
+ #buddypress .profile .mission p:first-child { padding-top: 10px; }
+ #buddypress .profile .mission p:last-child { padding-bottom: 10px; }
+
 #buddypress .profile .bp-widget .field-name {font-size: 18px; color: #00796b; text-transform: uppercase;}
 #buddypress .profile .bp-widget a { color:#656565;}
 /*#buddypress .profile .bp-widget a:hover, #buddypress .profile .bp-widget a:visited { color:#ff2a5b;}*/
