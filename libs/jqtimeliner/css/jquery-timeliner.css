@@ -5,7 +5,7 @@
 /*-------------------------------------------------------------------- */
 
 div.timeliner {
-	font-family: Arial;
+	font-family: 'Open Sans', sans-serif;
 	margin: 0 auto;
 	overflow: hidden;
 	position: relative;
@@ -154,7 +154,8 @@ div.timeliner.center div.column_center div.timeliner_element:after {
 }
 /**/
 div.timeliner_element div.timeliner_title {
-	font-size: 10px;
+	font-size: 14px;
+	font-weight: 600;
 	margin: 10px;
 	overflow: hidden;
 	position: relative;
@@ -175,7 +176,7 @@ div.timeliner_element div.timeliner_title span.timeliner_date {
 }
 
 div.timeliner_element div.content {
-	font-size: 13px;
+	font-size: 12px;
 	padding: 0 10px 10px;
 }
 
@@ -192,8 +193,8 @@ div.timeliner div.description_container {
 }
 
 div.timeliner_element.teal {
-	background-color: #569099;
-	border-color: #4D8189;
+	background-color: #98B5B7;
+	border-color: #8AA5AA;
 	color: #FFFFFF;
 }
 div.timeliner_element.teal:after {
@@ -208,8 +209,8 @@ div.timeliner_element.teal div.timeliner_title {
 	color: #EEEEEE;
 }
 div.timeliner_element.green {
-	background-color: #3D9400;
-	border-color: #327B00;
+	background-color: #7AA25D;
+	border-color: #5A893A;
 	color: #FFFFFF;
 }
 div.timeliner_element.green:after {
@@ -224,8 +225,8 @@ div.timeliner_element.green div.timeliner_title {
 	color: #EEEEEE;
 }
 div.timeliner_element.bricky {
-	background-color: #C83A2A;
-	border-color: #B33426;
+	background-color: #E68176;
+	border-color: #D86356;
 	color: #FFFFFF;
 }
 div.timeliner_element.bricky:after {
@@ -240,8 +241,8 @@ div.timeliner_element.bricky div.timeliner_title {
 	color: #EEEEEE;
 }
 div.timeliner_element.purple {
-	background-color: #57517B;
-	border-color: #413D5C;
+	background-color: #9f9daa;
+	border-color: #7E79A5;
 	color: #FFFFFF;
 }
 div.timeliner_element.purple:after {

@@ -31,8 +31,8 @@ img{max-width:100%;}
 /*--login form start here--*/ 
 body {
   /* for no zoom background, currently image 655px, need min height size 1080px for no repeat */
-   background:url(../images/5.jpg) repeat !important; 
-   background-size: initial; !important;
+   background:url(../images/5.jpg) no-repeat !important; 
+   background-size: contain; !important;
    /*background:url(../images/5.jpg)no-repeat !important; */
    /*background-size: cover !important;*/
    background-color: #000 !important;
@@ -72,15 +72,11 @@ body {
 .s-bar input[type="submit"]{
   font-size: 1em;
   font-weight: 600;
-  color: #fff;
+  color: #222;
   padding: 1.3em 0.5em;
   width: 22%;
   text-align: center;
-  text-shadow: rgba(80, 80, 80, 0.08) 1px 1px, 
-               rgba(80, 80, 80, 0.07) 2px 2px, 
-               rgba(80, 80, 80, 0.09) 3px 3px, 
-               rgba(80, 80, 80, 0.04) 4px 4px, 
-               rgba(80, 80, 80, 0.06) 5px 5px;
+
   border-radius: 0px 5px 5px 0px;
   -webkit-border-radius:0px 5px 5px 0px;
   -moz-border-radius:0px 5px 5px 0px;
@@ -97,7 +93,7 @@ body {
   background: -webkit-linear-gradient(top, #7ac209 0%,#7ac209 37%,#7ac209 66%,#7ac209 100%);
   background: -o-linear-gradient(top, #7ac209 0%,#7ac209 37%,#7ac209 66%,#7ac209 100%);
   background: -ms-linear-gradient(top, #7ac209 0%,#7ac209 37%,#7ac209 66%,#7ac209 100%);
-  background: linear-gradient(to bottom, #8EDB15 0%,#8EDB15 37%,#8EDB15 66%,#8EDB15 100%);
+  background: linear-gradient(to bottom, #b6ce1a 0%,#ccd856 37%,#d3e05e 66%,#9eb025 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ac209', endColorstr='#7ac209',GradientType=0 );
 }
 .s-bar input[type="submit"]:hover{
@@ -287,13 +283,13 @@ body {
   margin: 2.25em 0em 0em 0em;
 }
 .s-bar {
-  width: 100%;
+  width: 65%;
 }
 .search > i {
-  left: 43%;
+    /*left: 43%;*/
   /*top: -36%;*/
   /*top: -50%;*/
-    top: -35px !important;
+    /*top: -35px !important;*/
 
 }
 .search p {

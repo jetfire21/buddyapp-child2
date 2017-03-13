@@ -36,10 +36,6 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 
 		<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
 			<?php
-			// alex_debug(0,1,"field_type",$field_type);
-			// echo bp_get_the_profile_group_name();
-			// bp_get_the_profile_group_slug();
-			// echo bp_get_the_profile_group_slug();
 			?>
 			<?php if( preg_match("#timeline#i", bp_get_the_profile_group_slug()) ) echo '<a id="link_edit_timeline" href="'.$user_link.'">To click for editing</a>'; else { ?>
 

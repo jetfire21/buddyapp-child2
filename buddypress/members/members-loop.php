@@ -21,16 +21,6 @@
 
 do_action( 'bp_before_members_loop' ); 
 
-// var_dump(bp_get_current_member_type());
-// $a = bp_has_members('search_terms=admin');
-// var_dump($a);
-// "search_terms=admin"
-// $bp_core = bp_core_get_component_search_query_arg( 'members' );
-// $bp_ajax_s = bp_ajax_querystring( 'members' );
-// $bp_has_m = bp_has_members( bp_ajax_querystring( 'members' ) );
-// alex_debug(0,0,'bp_core',$bp_has_m);
-// alex_debug(0,0,'bp_ajax_s',$bp_has_m);
-// alex_debug(0,0,'bp_has_m',$bp_has_m);
 ?>
 
 
@@ -72,8 +62,12 @@ do_action( 'bp_before_members_loop' );
 
 		<li <?php bp_member_class(); ?>>
 			<div class="item-wrap">
-				<div <?php echo kleo_bp_get_member_cover_attr(); ?>>
-
+				<?php 
+				$cover_url = get_cover_image_from_db(); 
+				$cover_class = kleo_bp_get_member_cover_attr();
+				if( !empty($cover_url) ) $cover_class = str_replace( "item-cover","item-cover has-cover", $cover_class); 
+				?>
+				<div <?php echo $cover_class; ?> <?php echo 'style="background:url('.$cover_url.'); background-position: center; background-repeat: no-repeat; background-size:cover;"';?> >
 					<div class="item-avatar">
 						<a href="<?php bp_member_permalink(); ?>"><?php bp_member_avatar(array('type' => 'full', 'width' => 80, 'height' => 80)); ?></a>
 						<?php do_action('bp_member_online_status', bp_get_member_user_id()); ?>

@@ -1,8 +1,8 @@
 <?php
 
-add_filter( 'kleo_theme_settings', 'kleo_fb_messages_settings' );
+add_filter( 'kleo_theme_settings', 'kleo_fb_messages_settings1' );
 
-function kleo_fb_messages_settings( $kleo )
+function kleo_fb_messages_settings1( $kleo )
 {
     //
     // Settings Sections
@@ -69,16 +69,16 @@ function kleo_fb_messages_settings( $kleo )
 
 
 if (sq_option( 'facebook_login', false ) ) {
-    add_action('kleo_after_body', 'kleo_fb_head');
-    add_action('login_head', 'kleo_fb_head');
-    add_action('login_head', 'kleo_fb_loginform_script');
-    add_action('wp_footer', 'kleo_fb_footer');
-    add_action('login_footer', 'kleo_fb_footer');
+    add_action('kleo_after_body', 'kleo_fb_head1');
+    add_action('login_head', 'kleo_fb_head1');
+    add_action('login_head', 'kleo_fb_loginform_script1');
+    add_action('wp_footer', 'kleo_fb_footer1');
+    add_action('login_footer', 'kleo_fb_footer1');
 }
 
 
 
-function kleo_fb_head() {
+function kleo_fb_head1() {
 
     if ( is_user_logged_in()) {
         return false;
@@ -90,7 +90,7 @@ function kleo_fb_head() {
 }
 
 
-function kleo_fb_footer() {
+function kleo_fb_footer1() {
 
     if ( is_user_logged_in()) {
         return false;
@@ -167,33 +167,35 @@ function kleo_fb_footer() {
                     access_token : token
                 },
                 function(FB_userdata){
+                    // console.log("====alex data=====");
+                    // console.log("====user data=====");
+                    // console.log(FB_userdata);
+                    // console.log(FB_response);
+
                     jQuery.ajax({
                         type: 'POST',
                         url: fbAjaxUrl,
                         data: {"action": "fb_intialize", "FB_userdata": FB_userdata, "FB_response": FB_response},
                         success: function(user){
 
-                            console.log("========user ");
-                            console.log(user);
-
                             if( user.error ) {
                                 alert( user.error );
                             }
-                            // else if( user.loggedin ) {
-                            //     jQuery('.kleo-login-result').html(user.message);
-                            //     if( user.type === 'login' ) {
-                            //         if(window.location.href.indexOf("wp-login.php") > -1) {
-                            //             window.location = user.url;
-                            //         } else if (user.redirectType == 'reload') {
-                            //             window.location.reload();
-                            //         } else {
-                            //             window.location = user.url;
-                            //         }
-                            //     }
-                            //     else if( user.type === 'register' ) {
-                            //         window.location = user.url;
-                            //     }
-                            // }
+                            else if( user.loggedin ) {
+                                jQuery('.kleo-login-result').html(user.message);
+                                if( user.type === 'login' ) {
+                                    if(window.location.href.indexOf("wp-login.php") > -1) {
+                                        window.location = user.url;
+                                    } else if (user.redirectType == 'reload') {
+                                        window.location.reload();
+                                    } else {
+                                        window.location = user.url;
+                                    }
+                                }
+                                else if( user.type === 'register' ) {
+                                    window.location = user.url;
+                                }
+                            }
                         }
                     });
                 }
@@ -220,7 +222,7 @@ function kleo_fb_footer() {
     <?php
 }
 
-function kleo_fb_loginform_script() {
+function kleo_fb_loginform_script1() {
     //Enqueue jQuery
     wp_enqueue_script('jquery');
 
@@ -248,7 +250,7 @@ function kleo_fb_loginform_script() {
 		</style>';
 }
 
-function kleo_fb_intialize(){
+function kleo_fb_intialize1(){
 
     /* If not our action, bail out */
     if (! isset($_POST['action']) || ( isset($_POST['action']) && $_POST['action'] != 'fb_intialize' ) ) {
@@ -294,6 +296,8 @@ function kleo_fb_intialize(){
                 die( json_encode( array( 'error' => esc_html__('Registration using Facebook is not currently allowed. Please use our Register page', 'buddyapp') )));
             }
 
+
+
             extract( $FB_userdata );
 
             $display_name = $name;
@@ -329,13 +333,35 @@ function kleo_fb_intialize(){
             $userdata = compact( 'user_login', 'user_email', 'user_pass', 'display_name', 'first_name', 'last_name' );
             $userdata = apply_filters( 'kleo_fb_register_data', $userdata );
 
-            // alex code
-            var_dump($userdata);
 
             $user_ID = wp_insert_user( $userdata );
             if ( is_wp_error( $user_ID )) {
                 die( json_encode( array( 'error' => $user_ID->get_error_message() ) ) );
             }
+
+            // alex
+            $FB_userdata = $_REQUEST['FB_userdata'];
+            // echo "<h1>777_test</h1>";
+            // print_r($FB_userdata);
+            // echo "============";
+            $new_fb_data = array();
+            $new_fb_data["cover"] = $FB_userdata['cover']['source'];
+            $new_fb_data["name"] = $FB_userdata['name'];
+            $ser_fb_data = serialize($new_fb_data);
+
+            global $wpdb;
+            // add fields for fb user (cover,name and etc)
+            $wpdb->insert(
+                $wpdb->prefix."usermeta",
+                array( 'user_id' => $user_ID, 'meta_key'=>'_afbdata', 'meta_value'=>$ser_fb_data),
+                array( '%d','%s','%s' )
+            );
+            $wpdb->insert(
+                $wpdb->prefix."bp_xprofile_data",
+                array( 'field_id' => 10, 'user_id'=>$user_ID, 'value'=>$new_fb_data["name"]),
+                array( '%d','%d','%s' )
+            );
+             // alex
 
             //send email with password
             wp_new_user_notification( $user_ID, wp_unslash( $user_pass ) );
@@ -418,9 +444,8 @@ function kleo_fb_intialize(){
     )));
 }
 if (! is_admin()) {
-    echo "<h1>test alex!</h1>";
-    exit;
-    add_action( 'init', 'kleo_fb_intialize' );
+    // echo "<h1>facebook test!</h1>";
+    add_action( 'init', 'kleo_fb_intialize1' );
 }
 
 
@@ -444,13 +469,13 @@ endif;
 //display Facebook avatar
 if( sq_option('facebook_avatar', true ) ) {
     //show Facebook avatar in WP
-    add_filter('get_avatar', 'kleo_fb_show_avatar', 5, 5);
+    add_filter('get_avatar', 'kleo_fb_show_avatar1', 5, 5);
     //show Facebook avatar in Buddypress
-    add_filter('bp_core_fetch_avatar', 'kleo_fb_bp_show_avatar', 3, 5);
+    add_filter('bp_core_fetch_avatar', 'kleo_fb_bp_show_avatar1', 3, 5);
     //show Facebook avatar in Buddypress - url version
-    add_filter('bp_core_fetch_avatar_url','kleo_fb_bp_show_avatar_url', 3, 2);
+    add_filter('bp_core_fetch_avatar_url','kleo_fb_bp_show_avatar1_url', 3, 2);
 }
-function kleo_fb_show_avatar( $avatar = '', $id_or_email, $size = 96, $default = '', $alt = false ) {
+function kleo_fb_show_avatar1( $avatar = '', $id_or_email, $size = 96, $default = '', $alt = false ) {
 
     if (! isset($id_or_email)) {
         return $avatar;
@@ -482,7 +507,7 @@ function kleo_fb_show_avatar( $avatar = '', $id_or_email, $size = 96, $default =
     return $avatar;
 }
 
-function kleo_fb_bp_show_avatar($avatar = '', $params, $id) {
+function kleo_fb_bp_show_avatar1($avatar = '', $params, $id) {
     if(!is_numeric($id) || strpos($avatar, 'gravatar') === false) return $avatar;
 
     //if we have an avatar uploaded and is not Gravatar return it
@@ -497,7 +522,7 @@ function kleo_fb_bp_show_avatar($avatar = '', $params, $id) {
     return $avatar;
 }
 
-function kleo_fb_bp_show_avatar_url($gravatar, $params) {
+function kleo_fb_bp_show_avatar1_url($gravatar, $params) {
 
     //if we have an avatar uploaded and is not Gravatar return it
     if(strpos($gravatar, home_url()) !== FALSE && strpos($gravatar, 'gravatar') === FALSE) return $gravatar;

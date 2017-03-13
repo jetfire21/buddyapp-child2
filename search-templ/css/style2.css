@@ -688,13 +688,13 @@ h2.resp-accordion {
 .s-bar .second-menu .kleo_ajax_results a.ajax_view_all {
     color: #000;
     background: #cddc39;
-    font-family: 'Montserrat';
+    /*font-family: 'Montserrat';*/
 }
 .s-bar .second-menu .kleo_ajax_results h4 span {
     background: #fff;
 }
 .s-bar .second-menu .kleo_ajax_results .ajax_search_content .search_title {
-    font-family: 'Montserrat';
+    /*font-family: 'Montserrat';*/
     color: #00796b;
 }
 .s-bar .second-menu .kleo_ajax_results h4 {
@@ -859,10 +859,3 @@ h2.resp-accordion {
     float:left;
 }
 
-/*.login-top input[type="submit"]{
-	margin: 1em auto 0 0;
-	width:93%;
-}*/
-/*.login-top input{
-	width: 100% !important ;
-}
