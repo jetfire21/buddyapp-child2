@@ -31,6 +31,16 @@ remove_filter( 'bp_get_the_profile_field_value',           'bp_xprofile_escape_f
 remove_filter( 'bp_get_the_profile_field_value',           'xprofile_filter_format_field_value',         1, 2 );
 remove_filter( 'bp_get_the_profile_field_value',           'xprofile_filter_format_field_value_by_type', 8, 3 );
 remove_filter( 'bp_get_the_profile_field_value',           'xprofile_filter_link_profile_data',          9, 3 );
+// remove_filter( 'xprofile_get_field_data',                  'xprofile_filter_format_field_value_by_field_id', 5, 2 );
+// remove_filter( 'xprofile_get_field_data',                  'stripslashes' );
+// remove_filter( 'xprofile_get_field_data',                  'force_balance_tags' );
+// remove_filter( 'xprofile_get_field_data',                  'xprofile_filter_kses', 1 );
+
+// xprofile_get_field_data('Experience', $user_id);
+$experience = xprofile_get_field(56, $user_id);
+// print_r($experience);
+// if( !empty($experience) ) echo $experience->data->value;
+
 
 global $bp;
 $user_id = $bp->displayed_user->id;
@@ -121,10 +131,6 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 						<?php //echo $prof_name; ?>
 						<?php //if ( bp_field_has_data() && $gr_social != "social" ): ?>
 
-						<?php if($prof_name == "experience"):?>
-							 <span class="field-name"><?php bp_the_profile_field_name();?></span>
-						<?php endif;?>
-
 						<?php if ( bp_field_has_data() && (bool)$gr_social == false ): ?>
 							
 							<?php if($prof_name == "mission"):?>	
@@ -200,9 +206,20 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 								<?php else:?>
 									<h3><?php bp_the_profile_field_value(); ?></h3>
 								<?php endif;?>
-								<?php $det++; ?>								
+								<?php $det++; ?>	
+							<?php elseif($prof_name=="experience"):?>	
+								 <span class="field-name"><?php echo bp_get_the_profile_field_name();?></span>
+								 <div class="data experience">
+									 <?php
+									  if( strtolower(bp_get_the_profile_field_name()) == "experience"){ 
+									  	// with text formatting
+									 	if( !empty($experience) ) echo $experience->data->value;
+									 }
+									  else { bp_the_profile_field_value(); }
+									   ?>								 	
+								 </div>			
 							<?php else:?>
-								<p class="data"><?php bp_the_profile_field_value(); ?></p>
+								<div class="data"><?php bp_the_profile_field_value(); ?></div>
 							<?php endif;?>
 
 						<?php endif; ?>
