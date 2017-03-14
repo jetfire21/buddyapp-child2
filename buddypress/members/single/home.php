@@ -111,8 +111,9 @@
 		do_action( 'bp_after_member_body' ); ?>
 
 	</div><!-- #item-body -->
-	
-	<?php if( bp_is_user_profile() ):?>
+
+
+	<?php if( bp_is_user() ):?>
 	<div class="sidebar sidebar-colors right-column-for-widgets">
 	<div class="inner-content widgets-container">
 		<?php if ( function_exists('dynamic_sidebar') ) dynamic_sidebar('right-sidebar-for-member');?>
