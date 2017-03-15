@@ -51,11 +51,11 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 			    <input type="text" class="form-control" name="date" data-provide='datepicker' data-date-autoclose="true" data-date-container='#a21_wrap_datepicker' value="02-16-2012">
 			</div>
  -->
- 
-<div id="a21_wrap_datepicker">
- <input id='a21-datepicker' type="text" class="form-control" data-provide='datepicker' data-date-autoclose="true" data-date-container='#a21_wrap_datepicker'>
- </div>
- 
+<!--  
+		<div id="a21_wrap_datepicker">
+		 <input id='a21-datepicker' type="text" class="form-control" data-provide='datepicker' data-date-autoclose="true" data-date-container='#a21_wrap_datepicker'>
+		 </div>
+ --> 
  <!-- <input data-provide="datepicker" type="text" placeholder="Add Date" name="date" class="form-control a21-datepicker" required="required" data-date-format="dd M yyyy"> -->
 				<script>
 					jQuery(document).ready(function () {
@@ -122,11 +122,11 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 	/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 	do_action( 'bp_after_profile_field_content' ); ?>
 
-	<?php //if( !preg_match("#timeline#i", bp_get_the_profile_group_slug()) ): ?>
+	<?php if( preg_match("#timeline9999#i", bp_get_the_profile_group_slug()) ): ?>
 	<div class="submit">
 		<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( 'Save Changes', 'buddypress' ); ?> " />
 	</div>
-	<?php //endif;?>
+	<?php endif;?>
 
 	<input type="hidden" name="field_ids" id="field_ids" value="<?php bp_the_profile_field_ids(); ?>" />
 

@@ -622,11 +622,20 @@ function alex_include_css_js(){
 
 		/* *** disable standart wordpress style ***** */
 
-		echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
-		echo '<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">';
-		echo '<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" media="all"/>';
+		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
+		// echo '<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">';
+		// echo '<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" media="all"/>';
 		echo '<link href="'.get_stylesheet_directory_uri().'/libs/jqtimeliner/css/jquery-timeliner.css" rel="stylesheet" type="text/css" media="all"/>';
 		echo '<link href="'.get_stylesheet_directory_uri().'/libs/alex/fix-style.css" rel="stylesheet" type="text/css" media="all"/>';
+	}
+}
+
+add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline');
+function a21_inc_styles_for_timeline(){
+	if( bp_is_user_profile() ) {
+		wp_enqueue_style( 'bootstrap-2', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',array('bootstrap'));
+		wp_enqueue_style( 'font-awesome-a21', 'http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',array('bootstrap-2'));
+		wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap-2'));
 	}
 }
 
@@ -1128,7 +1137,7 @@ function register_widgets_for_groups_pages(){
 		'name' => "Groups sidebar",
 		'id' => 'right-sidebar-for-group',
 		'description' => 'Right sidebar for widgets',
-		'before_title' => '<h4>',
+		'before_title' => '<h4 class="widget-title">',
 		'after_title' => '</h4>',
 		'before_widget' =>  '<div id="%1$s" class="widget %2$s">',
 		'after_widget' =>  '</div>',
@@ -1141,7 +1150,7 @@ function register_widgets_for_member_pages(){
 		'name' => "Member sidebar",
 		'id' => 'right-sidebar-for-member',
 		'description' => 'Right sidebar for widgets',
-		'before_title' => '<h4>',
+		'before_title' => '<h4 class="widget-title">',
 		'after_title' => '</h4>',
 		'before_widget' =>  '<div id="%1$s" class="widget %2$s">',
 		'after_widget' =>  '</div>',
@@ -1449,12 +1458,35 @@ function a_show_groups_search_result_on_members(){
 
 require_once 'libs/twitter/main_functions.php';
 
-add_action('wp_enqueue_scripts','a21_include_css_js_for_page_edit_profile');
-function a21_include_css_js_for_page_edit_profile(){
-	if( bp_is_profile_edit() ){
-		// wp_enqueue_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
-		wp_enqueue_style( 'datepicker', "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css",array('bootstrap'));
-		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
-	   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
+add_action("wp_footer","a21_js_for_only_group_right_sidebar");
+function a21_js_for_only_group_right_sidebar(){
+	?>
+	<script>
+	// only-for-group-sidebar
+	function calc_sidebar(){
+		if(jQuery(window).width()>751){
+			// console.log("window:"+jQuery(window).width());
+			var header_h = jQuery(".groups #item-header-wrap").height();
+			var sidebar_h = jQuery(".groups .only-for-group-sidebar");
+			// console.log(header_h);
+			jQuery(".groups .only-for-group-sidebar").css({"top":(header_h)});
+			jQuery(".groups #item-body").css({"min-height":(sidebar_h.height()+30)});
+			// console.log(sidebar_h.height());
+		}else{ 	jQuery(".groups #item-body").css({"min-height":""});}
 	}
+	calc_sidebar();
+	jQuery(window).resize(function(){ calc_sidebar();});
+	</script>
+	<?php
 }
+
+/* ***** temp for doc 9.4 ***** */
+// add_action('wp_enqueue_scripts','a21_include_css_js_for_page_edit_profile');
+// function a21_include_css_js_for_page_edit_profile(){
+// 	if( bp_is_profile_edit() ){
+// 		// wp_enqueue_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+// 		wp_enqueue_style( 'datepicker', "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css",array('bootstrap'));
+// 		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
+// 	   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
+// 	}
+// }

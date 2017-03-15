@@ -113,15 +113,6 @@
 	</div><!-- #item-body -->
 
 
-	<?php if( bp_is_user() ):?>
-	<div class="sidebar sidebar-colors right-column-for-widgets">
-	<div class="inner-content widgets-container">
-		<?php if ( function_exists('dynamic_sidebar') ) dynamic_sidebar('right-sidebar-for-member');?>
-	</div>
-	</div>
-	<?php endif;?>
-
-
 	<?php
 
 	/**
