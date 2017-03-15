@@ -44,6 +44,14 @@ if ( sq_option( 'menu_dropdown', 'hover', true ) == 'hover' )  {
 
                 <?php endif; ?>
 
+                <ul id="menu-header-icons" class="basic-menu header-icons kleo-nav-menu a21-menu-icons-less768px">
+                    <li id="menu-item-10269" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10269">
+                        <a title="DuGoodrs" href="http://dugoodr2.dev/i-am/"><i class="icon-buddyapp-members" ></i> <span>DuGoodrs</span></a>
+                    </li>
+                    <li id="menu-item-9956" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9956 current_page_item">
+                    <a title="Causes" href="http://dugoodr2.dev/causes/"><i class="icon-buddyapp-groups" ></i> <span>Causes</span></a></li>
+                </ul>
+
             </div>
 
             <div class="header-left">
@@ -55,9 +63,7 @@ if ( sq_option( 'menu_dropdown', 'hover', true ) == 'hover' )  {
                     </span>
                 </a>
                 
-                
-                
-                
+                        
             </div>
             <div class="header-right">
                 <a href="#" class="second-menu-trigger second-menu-icon-wrapper">

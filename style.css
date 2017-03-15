@@ -88,6 +88,10 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /* 767px to 861px - fix broken groups header */
 
 /* @media only screen and (min-width: 768px) */
+@media only screen and (max-width: 420px){
+   .logo > a{text-align: left;}
+     .header-icons.a21-menu-icons-less768px>li { width: 40px; }
+}
 @media only screen and (max-width: 991px){
   .second-menu .second-menu-main .scroll-container-wrapper .scroll-container {
      padding-top: 0; 
@@ -102,6 +106,63 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 @media only screen and (max-width: 767px){
   /*.profile .right-column-for-widgets {clear: both; margin-left: 0; }*/
   .bp-user .a21-right-column-for-widgets {clear: both; margin-left: 0; }
+  .second-menu .search-form-wrapper {position: static;}
+
+    /* group and member icons for top menu */
+  .logo {position: relative;}
+  .logo .a21-menu-icons-less768px{position: absolute; top:0; right: 0; background: none;     margin:0;
+      padding:0;
+  }
+  .header-icons.a21-menu-icons-less768px>li {
+    float:left;
+    position: relative;    height: 60px;
+      line-height: 60px;
+      min-height: auto;
+     -webkit-transition: background-color .4s ease-out;
+      -moz-transition: background-color .4s ease-out;
+      -o-transition: background-color .4s ease-out;
+      -ms-transition: background-color .4s ease-out;
+      transition: background-color .4s ease-out;
+  }
+  .header-icons.a21-menu-icons-less768px > li > a {   
+      line-height: 60px;
+      text-align: center;
+      font-family: 'Open Sans', sans-serif;
+      position: static;
+      font-size: 13.125px;
+      padding: 0 5px;
+      }
+  .header-icons.a21-menu-icons-less768px > li:hover *{    color: #a8b42f;}
+  .header-icons.a21-menu-icons-less768px > li:hover > a span {
+    opacity: 1;
+  }
+  .header-icons.a21-menu-icons-less768px > li > a span { color: #000;}
+  .header-icons.a21-menu-icons-less768px > li i{font-size:22px; margin-left:0; color: #000; position: static; line-height: 60px; height: 60px; width: 23px;}
+  .header-icons.a21-menu-icons-less768px>li>a span {
+      position: absolute;
+      display: block;
+      left: 0;
+      right: 0;
+      bottom: 6px;
+      /*font-size: .563em;*/
+      font-size: 7.3px;
+      font-style: italic;
+      letter-spacing: .03em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 7px;
+      height: 10px;
+      line-height: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      -webkit-transition: opacity .4s ease-out;
+      -moz-transition: opacity .4s ease-out;
+      -o-transition: opacity .4s ease-out;
+      -ms-transition: opacity .4s ease-out;
+      transition: opacity .4s ease-out;
+  }
+  /* group and member icons for top menu */
+
 }
 
 
@@ -491,3 +552,4 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 .bp-user.profile-edit #a21_wrap_datepicker{position: relative;}
 .bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
 .bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
+
