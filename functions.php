@@ -1448,3 +1448,13 @@ function a_show_groups_search_result_on_members(){
 // }
 
 require_once 'libs/twitter/main_functions.php';
+
+add_action('wp_enqueue_scripts','a21_include_css_js_for_page_edit_profile');
+function a21_include_css_js_for_page_edit_profile(){
+	if( bp_is_profile_edit() ){
+		// wp_enqueue_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+		wp_enqueue_style( 'datepicker', "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css",array('bootstrap'));
+		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
+	   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
+	}
+}

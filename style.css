@@ -180,7 +180,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
 @media only screen and (min-width: 767px){
   
-    a#link_edit_timeline{ margin-bottom: 254px; }
+    /*a#link_edit_timeline{ margin-bottom: 254px; }*/
     .single-item.groups .main-content{ padding-top: 0 !important; }
 
    .single-item.groups #buddypress div#object-nav.item-list-tabs {
@@ -480,3 +480,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 #user-invite-anyone i:before{ content: "\e70e"; }*/
 /*#wpadminbar, #header,*/
 /*#item-header-wrap{display:none !important;}*/
+
+.bp-user.profile-edit #a21_wrap_datepicker{position: relative;}
+.bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
+.bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
