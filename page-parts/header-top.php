@@ -43,13 +43,13 @@ if ( sq_option( 'menu_dropdown', 'hover', true ) == 'hover' )  {
                     </a>
 
                 <?php endif; ?>
-
+                <?php global $bp;?>
                 <ul id="menu-header-icons" class="basic-menu header-icons kleo-nav-menu a21-menu-icons-less768px">
                     <li id="menu-item-10269" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10269">
-                        <a title="DuGoodrs" href="http://dugoodr2.dev/i-am/"><i class="icon-buddyapp-members" ></i> <span>DuGoodrs</span></a>
+                        <a title="DuGoodrs" href="http://<?php echo $_SERVER['HTTP_HOST'];?>/<?php echo $bp->members->root_slug;;?>/"><i class="icon-buddyapp-members" ></i> <span>DuGoodrs</span></a>
                     </li>
                     <li id="menu-item-9956" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9956 current_page_item">
-                    <a title="Causes" href="http://dugoodr2.dev/causes/"><i class="icon-buddyapp-groups" ></i> <span>Causes</span></a></li>
+                    <a title="Causes" href="http://<?php echo $_SERVER['HTTP_HOST'];?>/<?php echo $bp->groups->root_slug;?>/"><i class="icon-buddyapp-groups" ></i> <span>Causes</span></a></li>
                 </ul>
 
             </div>

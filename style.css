@@ -103,6 +103,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
   .bp-user .a21-right-column-for-widgets{ margin-left: 290px; margin-top: 0 !important;}
 }
 
+.header-icons.a21-menu-icons-less768px{ display: none; }
 @media only screen and (max-width: 767px){
   /*.profile .right-column-for-widgets {clear: both; margin-left: 0; }*/
   .bp-user .a21-right-column-for-widgets {clear: both; margin-left: 0; }
@@ -110,7 +111,8 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
     /* group and member icons for top menu */
   .logo {position: relative;}
-  .logo .a21-menu-icons-less768px{position: absolute; top:0; right: 0; background: none;     margin:0;
+  .logo .a21-menu-icons-less768px{
+    display:block; position: absolute; top:0; right: 0; background: none;     margin:0;
       padding:0;
   }
   .header-icons.a21-menu-icons-less768px>li {
