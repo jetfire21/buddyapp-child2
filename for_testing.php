@@ -1088,3 +1088,32 @@ echo $getfield;
 //     'echo'=>false
 // ) );
 
+/***************************************/
+
+/* ***** temp for doc 9.4 ***** */
+add_action('wp_enqueue_scripts','a21_include_css_js_for_page_edit_profile');
+function a21_include_css_js_for_page_edit_profile(){
+
+	// echo '777=='.bp_get_the_profile_group_slug();
+	// echo bp_get_current_profile_group_id();
+	// $args = array('profile_group_id'   => $current_profile_group_id);
+	// обьект с именем,порядком,id полей xprofile
+	$data_groups = BP_XProfile_Group::get( $args );
+	foreach ($data_groups as $k => $v) {
+		if( preg_match("#timeline#i",strtolower($v->name)) ) $profile_group_id = $v->id;
+	}
+
+	// is page == edit field timeline
+	// if( bp_is_profile_edit() && bp_get_current_profile_group_id() == $profile_group_id){
+	if( bp_is_profile_edit() ){
+	// if( bp_is_user_profile() ){
+		// wp_enqueue_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+		// wp_enqueue_style( 'datepicker', "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css",array('bootstrap'));
+		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
+	   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
+	}
+}
+
+	echo "xxx===".bp_get_current_profile_group_id();var_dump(bp_is_user_profile());
+	// echo $_SERVER['REQUEST_URI'];
+	// if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ) echo "main";

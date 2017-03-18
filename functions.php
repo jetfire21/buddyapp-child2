@@ -632,10 +632,18 @@ function alex_include_css_js(){
 
 add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline');
 function a21_inc_styles_for_timeline(){
-	if( bp_is_user_profile() ) {
+	
+	if( bp_is_user_profile()) {
+
+	 if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ){
+
 		wp_enqueue_style( 'bootstrap-2', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',array('bootstrap'));
-		wp_enqueue_style( 'font-awesome-a21', 'http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',array('bootstrap-2'));
+		// wp_enqueue_style( 'font-awesome-a21', 'http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',array('bootstrap-2'));
 		wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap-2'));
+		}else{
+			wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap'));
+		   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
+		}
 	}
 }
 
@@ -1480,13 +1488,3 @@ function a21_js_for_only_group_right_sidebar(){
 	<?php
 }
 
-/* ***** temp for doc 9.4 ***** */
-// add_action('wp_enqueue_scripts','a21_include_css_js_for_page_edit_profile');
-// function a21_include_css_js_for_page_edit_profile(){
-// 	if( bp_is_profile_edit() ){
-// 		// wp_enqueue_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
-// 		wp_enqueue_style( 'datepicker', "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css",array('bootstrap'));
-// 		// echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>';
-// 	   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
-// 	}
-// }

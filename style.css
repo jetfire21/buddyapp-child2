@@ -435,6 +435,19 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 #timeliner .alex_btn_add_new button{ background: #cddc39; border:0; }
  #timeliner .alex_btn_add_new button:hover{ background: #b2c022; }
  #timeliner span{ margin-bottom: 0 !important; display: inline; }
+/* for fix css after inc css timeline
+.bp-user fieldset legend{ font-size: 14px; width: auto; margin-bottom: 0;}
+.bp-user label{ font-size: 11.25px;}
+.bp-user #buddypress input {margin-top:0;}
+*/
+#buddypress #a21_timeleline_quick_edit {font-size: 1em;}
+#buddypress #a21_timeleline_quick_edit input[type="text"]{   margin: 0; background: #fff !important; border: 0; padding: 0;}
+.bp-user #a21_timeleline_quick_edit td{ padding:0 15px; }
+.bp-user #a21_timeleline_quick_edit #a21_wrap_datepicker td{ padding:10px; }
+.bp-user.profile-edit #a21_wrap_datepicker{position: relative;}
+.bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
+.bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
+
  .profile .bp-widget span { display: block; margin-bottom: 10px; }
  .profile .bp-widget .field-avail span { margin-bottom: 3px; }
 .profile .bp-widget.security {margin:0 !important;}
@@ -551,7 +564,5 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /*#wpadminbar, #header,*/
 /*#item-header-wrap{display:none !important;}*/
 
-.bp-user.profile-edit #a21_wrap_datepicker{position: relative;}
-.bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
-.bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
+
 
