@@ -368,7 +368,11 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /*.single-item.groups */
 #buddypress .sidebar span.activity{ display: inline-block !important; }
 
-
+@media only screen and (max-width: 766px){
+  .bp-user #a21_timeleline_quick_edit .datepicker{ left: -45px !important;}
+  .bp-user #a21_timeleline_quick_edit .datepicker:before, .bp-user #a21_timeleline_quick_edit .datepicker:after{ 
+    left: 100px !important; right:auto !important; top:-3px !important;}
+}
 @media only screen and (max-width: 766px){
   .single-item.groups #buddypress .wrap-custom-grp{display: none;}
   #buddypress .profile div.bp-widget.info { float: none; width:100%;}
@@ -441,10 +445,13 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 .bp-user #buddypress input {margin-top:0;}
 */
 #buddypress #a21_timeleline_quick_edit {font-size: 1em;}
-#buddypress #a21_timeleline_quick_edit input[type="text"]{   margin: 0; background: #fff !important; border: 0; padding: 0;}
+#buddypress #a21_timeleline_quick_edit input[type="text"],
+#buddypress #a21_timeleline_quick_edit textarea{
+   margin: 0; background: transparent !important; border: 0; padding: 0;}
 .bp-user #a21_timeleline_quick_edit td{ padding:0 15px; }
 .bp-user #a21_timeleline_quick_edit #a21_wrap_datepicker td{ padding:10px; }
 .bp-user.profile-edit #a21_wrap_datepicker{position: relative;}
+.bp-user.profile-edit #a21_wrap_datepicker input{width: 65px;}
 .bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
 .bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
 

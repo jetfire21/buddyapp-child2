@@ -1098,6 +1098,7 @@ function a21_include_css_js_for_page_edit_profile(){
 	// echo bp_get_current_profile_group_id();
 	// $args = array('profile_group_id'   => $current_profile_group_id);
 	// обьект с именем,порядком,id полей xprofile
+	// get all name,id,order fields xprofile group 
 	$data_groups = BP_XProfile_Group::get( $args );
 	foreach ($data_groups as $k => $v) {
 		if( preg_match("#timeline#i",strtolower($v->name)) ) $profile_group_id = $v->id;
@@ -1117,3 +1118,24 @@ function a21_include_css_js_for_page_edit_profile(){
 	echo "xxx===".bp_get_current_profile_group_id();var_dump(bp_is_user_profile());
 	// echo $_SERVER['REQUEST_URI'];
 	// if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ) echo "main";
+
+
+				<!-- <div class="a21_wrap_datepicker input-group date" style="position: relative;"> -->
+<!-- 			<div class="a21_wrap_datepicker" style="position: relative;">
+			    <input type="text" class="form-control" name="date" data-provide='datepicker' data-date-autoclose="true" data-date-container='#a21_wrap_datepicker' value="02-16-2012">
+			</div>
+ -->
+<!--  
+		<div id="a21_wrap_datepicker">
+		 <input id='a21-datepicker' type="text" class="form-control" data-provide='datepicker' data-date-autoclose="true" data-date-container='#a21_wrap_datepicker'>
+		 </div>
+ --> 
+<!--  <input data-provide="datepicker" type="text" placeholder="Add Date" name="date" class="form-control a21-datepicker" required="required" data-date-format="dd M yyyy">
+ -->				<script>
+					jQuery(document).ready(function () {
+						// jQuery('.a21-datepicker input').datepicker({});
+						// var datep = jQuery('.a21-datepicker');
+						// console.log(datep.offset().top);
+						// datep.datepicker({'autoclose':true});
+					});
+				</script>
