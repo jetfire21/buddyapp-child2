@@ -49,7 +49,7 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					FROM {$wpdb->posts}
 					WHERE post_parent = %d
 					    AND post_type = %s
-					ORDER BY ID ASC",
+					ORDER BY post_excerpt DESC",
 					intval( $quest_id ),
 					"alex_timeline"
 				) );
@@ -61,18 +61,21 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				echo '<a id="link_edit_timeline" href="'.$user_link.'">To click for editing</a>'; 
 				echo "<h3>This section is under development</h3>";
 				echo '<table id="a21_timeleline_quick_edit">
-					<tr><th>Title</th><th>Date</th><th>Description</th></tr>';
-				$i=1;
+					<tr><th class="timel_title">Title</th><th>Date</th><th>Description</th></tr>';
+				$i=1; $dp=1;
 				foreach ($fields as $field):
+					// if($i%6==0) $dp++;
+					// if($dp>1) $datepicker_id = "a21_wrap_datepicker".$dp ;
+					// else $datepicker_id = "a21_wrap_datepicker";
 				?>
 				<tr>
-				<td>
+				<td class="timel_title">
 				<?php // echo $field->post_title;?>
 				 <input type="hidden" placeholder="" name="data[<?php echo $i;?>][timel_id]" class="form-control" value="<?php echo $field->ID;?>">
 				 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo $field->post_title;?>">
 				</td>
 				<td id="a21_wrap_datepicker">
-					 <input data-date-container="#a21_wrap_datepicker"  data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
+					 <input data-date-orientation="right bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
 				</td>
 				<td>
 				<?php //echo $field->post_content;?>
@@ -82,6 +85,11 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				<?php
 				$i++;
 				endforeach;
+				// echo '<tr>
+				// <td class="timel_title"><input type="text" placeholder="" class="form-control" value=""></td>
+				// <td id="a21_wrap_datepicker2"> <input data-date-container="#a21_wrap_datepicker2"  data-provide="datepicker" type="text" placeholder="" class="form-control" data-date-format="dd M yyyy" value=""></td>
+				// <td><textarea placeholder="" class="form-control"></textarea></td>
+				// </tr>';
 				echo '</table>';
 
 			?>
