@@ -24,12 +24,14 @@ function a21_profile_edit_save_changes_timeline(){
 					$post_title .= $wpdb->prepare("WHEN %d THEN %s ",(int)$v['timel_id'],sanitize_text_field($v['timel_title']));
 					$post_content .= $wpdb->prepare("WHEN %d THEN %s ",(int)$v['timel_id'],sanitize_text_field($v['timel_content']));
 					$post_date .= $wpdb->prepare("WHEN %d THEN %s ",(int)$v['timel_id'],sanitize_text_field($v['timel_date']));
+					$post_id .= (int)$v['timel_id'].",";
 				}
+				$post_id = substr($post_id, 0,-1);
 				// echo $post_title;
 				$update_query = "UPDATE $wpdb->posts SET
-						    post_title = CASE id {$post_title} ELSE '' END,
-						    post_content = CASE id {$post_content} ELSE '' END,
-						    post_excerpt = CASE id {$post_date} ELSE '' END";
+						    post_title = CASE id {$post_title} END,
+						    post_content = CASE id {$post_content} END,
+						    post_excerpt = CASE id {$post_date} END WHERE id IN({$post_id})";
 				// echo $update_query."<hr>";
 			   $wpdb->query($update_query);
 			}
@@ -43,7 +45,8 @@ function a21_profile_edit_save_changes_timeline(){
 				}
 				$val = substr($val, 0,-1);
 				$insert_query = "INSERT INTO $wpdb->posts (post_title,post_content,post_excerpt,post_parent,post_type) VALUES {$val}";
-				 $wpdb->query($insert_query);
+				// echo $insert_query;
+				$wpdb->query($insert_query);
 		   }
 			// echo '<hr><br>';
 			// echo "<b>last query:</b> ".$wpdb->last_query."<br>";
