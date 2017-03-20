@@ -54,9 +54,9 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					"alex_timeline"
 				) );
 				// print_r($fields);
-				foreach ($fields as $field) {
-					echo $field->post_title;
-				}
+				// foreach ($fields as $field) {
+				// 	echo $field->post_title;
+				// }
 
 				echo '<a id="link_edit_timeline" href="'.$user_link.'">To click for editing</a>'; 
 				echo "<h3>This section is under development</h3>";
@@ -68,18 +68,18 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					// if($dp>1) $datepicker_id = "a21_wrap_datepicker".$dp ;
 					// else $datepicker_id = "a21_wrap_datepicker";
 				?>
-				<tr>
+				<tr class="<?php echo $field->post_name;?>">
 				<td class="timel_title">
 				<?php // echo $field->post_title;?>
 				 <input type="hidden" placeholder="" name="data[<?php echo $i;?>][timel_id]" class="form-control" value="<?php echo $field->ID;?>">
-				 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo $field->post_title;?>">
+				 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo stripcslashes($field->post_title);?>">
 				</td>
 				<td id="a21_wrap_datepicker">
 					 <input data-date-orientation="right bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
 				</td>
 				<td>
 				<?php //echo $field->post_content;?>
-					 <textarea placeholder="" name="data[<?php echo $i;?>][timel_content]" class="form-control"><?php echo $field->post_content;?></textarea>
+					 <textarea placeholder="" name="data[<?php echo $i;?>][timel_content]" class="form-control"><?php echo stripcslashes($field->post_content);?></textarea>
 				</td>
 				</tr>
 				<?php
@@ -91,6 +91,7 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				// <td><textarea placeholder="" class="form-control"></textarea></td>
 				// </tr>';
 				echo '</table>';
+				echo '<div id="a21_add_new_row_qedit_timel">Add more fields</div>';
 
 			?>
 			

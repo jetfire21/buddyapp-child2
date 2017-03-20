@@ -444,7 +444,19 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 .bp-user label{ font-size: 11.25px;}
 .bp-user #buddypress input {margin-top:0;}
 */
-#buddypress #a21_timeleline_quick_edit {font-size: 1em;}
+.bp-user #a21_timeleline_quick_edit {font-size: 1em; margin-bottom: 15px;}
+.bp-user #a21_timeleline_quick_edit .teal td{background-color: #98B5B7 !important;}
+.bp-user #a21_timeleline_quick_edit .bricky td{background-color: #E68176 !important; color:#fff !important;}
+.bp-user #a21_timeleline_quick_edit .purple td{background-color: #9f9daa !important; color:#fff !important;}
+.bp-user #a21_timeleline_quick_edit .green td{background-color: #3D9400 !important; color:#fff !important;}
+.bp-user #a21_timeleline_quick_edit .teal *,.bp-user #a21_timeleline_quick_edit .purple *,
+.bp-user #a21_timeleline_quick_edit .green *,.bp-user #a21_timeleline_quick_edit .bricky *
+{color:#eae8e8 !important;}
+.bp-user #a21_timeleline_quick_edit .teal input:focus,.bp-user #a21_timeleline_quick_edit .purple input:focus,
+.bp-user #a21_timeleline_quick_edit .green input:focus,.bp-user #a21_timeleline_quick_edit .bricky input:focus,
+.bp-user #a21_timeleline_quick_edit .teal textarea:focus,.bp-user #a21_timeleline_quick_edit .purple textarea:focus,
+.bp-user #a21_timeleline_quick_edit .green textarea:focus,.bp-user #a21_timeleline_quick_edit .bricky textarea:focus
+{color:#fff !important;}
 #buddypress #a21_timeleline_quick_edit textarea{height: auto;min-height: 10px;}
 #buddypress #a21_timeleline_quick_edit input[type="text"],
 #buddypress #a21_timeleline_quick_edit textarea{
@@ -458,6 +470,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 .bp-user.profile-edit .datepicker:before{top:-3px;}
 .bp-user.profile-edit .datepicker:after{top:-1px;}
 .bp-user.profile-edit #buddypress .datepicker table tr{ background: none !important; }
+.bp-user #a21_add_new_row_qedit_timel { text-align: right;cursor: pointer; display: inline-block;  float: right; }
 
  .profile .bp-widget span { display: block; margin-bottom: 10px; }
  .profile .bp-widget .field-avail span { margin-bottom: 3px; }

@@ -293,11 +293,11 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 			          <div class="timeliner_element <?php echo !empty($field->post_name) ? $field->post_name : "teal"; ?>">
 						<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
 			              <div class="timeliner_title">
-			                  <span class="timeliner_label"><?php echo $field->post_title;?></span>
+			                  <span class="timeliner_label"><?php echo stripslashes($field->post_title);?></span>
 			                  <span class="timeliner_date"><?php echo $field->post_excerpt;?></span>
 			              </div>
 			              <div class="content">
-			              	  <?php echo $field->post_content;?>
+			              	   <?php echo stripslashes($field->post_content);?>
 			              </div>
 			              <div class="readmore">
 			              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
