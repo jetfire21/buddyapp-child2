@@ -1494,3 +1494,9 @@ function a21_js_for_only_group_right_sidebar(){
 
 require_once 'libs/theme_func/quick_edit_timeline.php';
 
+
+add_action('after_setup_theme', function(){
+	register_nav_menus( array(
+		'job_menu' => 'Top Job Header Menu'
+	) );
+});

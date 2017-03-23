@@ -585,6 +585,17 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 .text_between_memb_and_gr{margin-bottom: 5px;}
 #header-cover-image{ background-size: cover !important; }
 
+
+/* ******* PAGE VOLUNTEER********* */
+
+ul#a21_job_menu{ background: #fff; float:right;}
+ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
+#a21_job_map{height: 360px;}
+.a21_inner_page_title{float: left;}
+
+/* ******* PAGE VOLUNTEER********* */
+
+
 @media only screen and (max-width: 420px){
    .logo > a{text-align: left;}
      .header-icons.a21-menu-icons-less768px>li { width: 40px; }
