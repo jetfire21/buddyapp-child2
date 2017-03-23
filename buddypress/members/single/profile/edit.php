@@ -59,7 +59,7 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				// }
 
 				echo '<a id="link_edit_timeline" href="'.$user_link.'">To click for editing</a>'; 
-				echo "<h3>This section is under development</h3>";
+				// echo "<h3>This section is under development</h3>";
 				echo '<table id="a21_timeleline_quick_edit">
 					<tr><th class="timel_title">Title</th><th>Date</th><th>Description</th></tr>';
 				$i=1; $dp=1;
@@ -75,7 +75,7 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo stripcslashes($field->post_title);?>">
 				</td>
 				<td id="a21_wrap_datepicker">
-					 <input data-date-orientation="right bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
+					 <input data-date-orientation="left bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
 				</td>
 				<td>
 				<?php //echo $field->post_content;?>

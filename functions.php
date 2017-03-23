@@ -641,10 +641,14 @@ function a21_inc_styles_for_timeline(){
 		// wp_enqueue_style( 'font-awesome-a21', 'http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',array('bootstrap-2'));
 		wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap-2'));
 		}else{
+			
 			wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap'));
 		   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
 		}
 	}
+   
+   wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
+
 }
 
 

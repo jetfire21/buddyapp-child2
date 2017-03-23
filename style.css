@@ -83,15 +83,11 @@ License URI: license.txt
  }
  #timeliner .readmore {overflow: hidden;}
 .bp-users-reviews-list{ padding-left: 8px; }
-a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
+a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
 /* 767px to 861px - fix broken groups header */
 
 /* @media only screen and (min-width: 768px) */
-@media only screen and (max-width: 420px){
-   .logo > a{text-align: left;}
-     .header-icons.a21-menu-icons-less768px>li { width: 40px; }
-}
 @media only screen and (max-width: 991px){
   .second-menu .second-menu-main .scroll-container-wrapper .scroll-container {
      padding-top: 0; 
@@ -105,6 +101,14 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 
 .header-icons.a21-menu-icons-less768px{ display: none; }
 @media only screen and (max-width: 767px){
+
+  .bp-user.profile-edit .datepicker{left: 10px !important;}
+  .bp-user.profile-edit .datepicker:before,
+  .bp-user.profile-edit .datepicker:after{ 
+      right: 24% !important;
+      left: auto;
+  }
+
   /*.profile .right-column-for-widgets {clear: both; margin-left: 0; }*/
   .bp-user .a21-right-column-for-widgets {clear: both; margin-left: 0; }
   .second-menu .search-form-wrapper {position: static;}
@@ -372,8 +376,6 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
   .bp-user #a21_timeleline_quick_edit .datepicker{ left: -45px !important;}
   .bp-user #a21_timeleline_quick_edit .datepicker:before, .bp-user #a21_timeleline_quick_edit .datepicker:after{ 
     left: 100px !important; right:auto !important; top:-3px !important;}
-}
-@media only screen and (max-width: 766px){
   .single-item.groups #buddypress .wrap-custom-grp{display: none;}
   #buddypress .profile div.bp-widget.info { float: none; width:100%;}
 }
@@ -582,6 +584,17 @@ a#link_edit_timeline{ display: block; margin:20px 0 70px 0; font-weight: bold; }
 /* **** modal popup for to show description security verified field ****** */
 .text_between_memb_and_gr{margin-bottom: 5px;}
 #header-cover-image{ background-size: cover !important; }
+
+@media only screen and (max-width: 420px){
+   .logo > a{text-align: left;}
+     .header-icons.a21-menu-icons-less768px>li { width: 40px; }
+     .bp-user #a21_timeleline_quick_edit td {padding: 7px;}
+    .bp-user #a21_timeleline_quick_edit textarea{line-height: 1.3;}
+    .bp-user.profile-edit .datepicker:before,
+  .bp-user.profile-edit .datepicker:after{ right: auto !important; left: 33%;}
+
+}
+
 
 /*#user-reviews i:before, .icon-panorama-fisheye:before{  content: "\e902"; }
 #user-invite-anyone i:before{ content: "\e70e"; }*/
