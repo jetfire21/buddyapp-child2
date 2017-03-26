@@ -630,7 +630,7 @@ function alex_include_css_js(){
 	}
 }
 
-add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline');
+add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline',999);
 function a21_inc_styles_for_timeline(){
 	
 	if( bp_is_user_profile()) {
@@ -646,11 +646,31 @@ function a21_inc_styles_for_timeline(){
 		   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
 		}
 	}
+
+	if( is_page("jobs")) {
+		wp_deregister_style("wp-job-manager-frontend");
+   		// wp_enqueue_style( 'a21-jobify', get_template_directory_uri()."/css/a21-wp-job-n.css");
+   		wp_enqueue_style( 'a21-wp-job-inline', get_stylesheet_directory_uri()."/css/a21-wp-job-inline.css",array("kleo-style"));
+   		wp_enqueue_style( 'a21-jobify', get_stylesheet_directory_uri()."/css/a21-jobify.css",array("a21-wp-job-inline"));
+   		// wp_enqueue_style( 'a21-jobify-2', get_stylesheet_directory_uri()."/css/a21-jobify-2.css",array("a21-wp-job-inline"));
+	}
    
    wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
 
 }
 
+
+add_filter('body_class','a21_my_class_names');
+function a21_my_class_names( $classes ) {
+	// добавим класс 'class-name' в массив классов $classes
+	if( is_page("jobs") )
+		$classes[] = ' wp-job-manager-categories-enabled wp-resume-manager-categories-enabled wp-job-manager wp-job-manager-resumes wp-job-manager-wc-paid-listings wp-job-manager-bookmarks wp-job-manager-tags ninjaforms-contact-resume-form wp-job-manager-contact-listing ';
+
+	return $classes;
+}
+
+// /wp-content/themes/buddyapp-child/job_manager/wp-job-manager-tags/wp-job-manager-tags.php
+if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tags/wp-job-manager-tags.php' );
 
 add_action("wp_footer", "alex_custom_scripts",100);
 

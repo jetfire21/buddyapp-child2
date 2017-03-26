@@ -1,0 +1,8 @@
+.search_categories{width: 26%;}
+
+@media screen and (min-width: 992px){
+.jobify-search-jobs-category div.search_categories, .jobify-search-jobs-category div.search_keywords, .jobify-search-jobs-category div.search_location, .jobify-search-jobs-category div.search_region, .wp-job-manager-categories-enabled .search_jobs div.search_categories, .wp-job-manager-categories-enabled .search_jobs div.search_keywords, .wp-job-manager-categories-enabled .search_jobs div.search_location, .wp-job-manager-categories-enabled .search_jobs div.search_region, .wp-job-manager-categories-enabled .search_resumes div.search_categories, .wp-job-manager-categories-enabled .search_resumes div.search_keywords, .wp-job-manager-categories-enabled .search_resumes div.search_location, .wp-job-manager-categories-enabled .search_resumes div.search_region, .wp-resume-manager-categories-enabled .search_resumes div.search_categories, .wp-resume-manager-categories-enabled .search_resumes div.search_keywords, .wp-resume-manager-categories-enabled .search_resumes div.search_location, .wp-resume-manager-categories-enabled .search_resumes div.search_region {
+    width: 26% !important;
+    margin-bottom: 0;
+}
+}
