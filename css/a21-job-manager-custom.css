@@ -1,0 +1,7 @@
+body, input, textarea, select, body .chosen-container-single .chosen-single span, body .chosen-container-single .chosen-single div:before,label,
+.job_listings .job_listing-position *{
+    color: #647585;
+}
+.job_listings label{font-size: 12px;}
+.job_filters .search_jobs .filter_by_tag, .job_filters .search_resumes .filter_by_tag{ margin:0; }
+.job_listings input[type=checkbox], .job_listings input[type=radio] { margin-right: 5px;}

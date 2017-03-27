@@ -648,9 +648,12 @@ function a21_inc_styles_for_timeline(){
 	}
 
 	if( is_page("jobs") || is_page("post-a-job")) {
+
 		wp_deregister_style("wp-job-manager-frontend");
-   		wp_enqueue_style( 'a21-wp-job-inline', get_stylesheet_directory_uri()."/css/a21-wp-job-inline.css",array("kleo-style"));
-   		wp_enqueue_style( 'a21-jobify', get_stylesheet_directory_uri()."/css/a21-jobify.css",array("a21-wp-job-inline"));
+   		// wp_enqueue_style( 'a21-wp-job-inline', get_stylesheet_directory_uri()."/css/a21-wp-job-inline.css",array("kleo-style"));
+   		wp_enqueue_style( 'a21-job-manager-fonts', "https://fonts.googleapis.com/css?family=Montserrat:400,700|Varela+Round&#038;subset=latin");
+   		wp_enqueue_style( 'a21-jobify', get_stylesheet_directory_uri()."/css/a21-jobify.css",array("kleo-style"));
+   		wp_enqueue_style( 'a21-job-manager-custom', get_stylesheet_directory_uri()."/css/a21-job-manager-custom.css",array("a21-jobify"));
 	}
    
    wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
@@ -1147,34 +1150,6 @@ if ( class_exists('BP_Member_Reviews') ){
 	}
 }
 
-// only for debug
-// add_action("wp_footer","wp_get_name_page_template");
-
-function wp_get_name_page_template(){
-
-    global $template,$bp;
-	// get user_id for logged user
-	$user = wp_get_current_user();
-	$user_id_islogin = $user->ID;
-	// get user_id for notlogged user
-	global $bp;
-	$user_id_isnotlogin = $bp->displayed_user->id;
-
-	if(!$user_id_islogin){ $user_id_islogin = $user_id_isnotlogin; }
-	$url_s = $_SERVER['REQUEST_URI'];
-	$profile_view_notdefault = preg_match("#^/i-am/".$member_name."/$#i", $url_s);
-
-	echo "has page profile= "; var_dump(bp_has_profile());
-
-    echo "1- ".$template;
-	echo "<br>2- ".$page_template = get_page_template_slug( get_queried_object_id() )." | ";
-	echo "<br>3- ".$_SERVER['PHP_SELF'];
-	echo "<br>4- ".__FILE__;
-	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
-	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
-	alex_debug(1,1,0,$_SERVER);
-}
-
 function register_widgets_for_groups_pages(){
 	register_sidebar( array(
 		'name' => "Groups sidebar",
@@ -1531,3 +1506,32 @@ add_action('after_setup_theme', function(){
 		'job_menu' => 'Top Job Header Menu'
 	) );
 });
+
+
+// only for debug
+// add_action("wp_footer","wp_get_name_page_template");
+
+function wp_get_name_page_template(){
+
+    global $template,$bp;
+	// get user_id for logged user
+	$user = wp_get_current_user();
+	$user_id_islogin = $user->ID;
+	// get user_id for notlogged user
+	global $bp;
+	$user_id_isnotlogin = $bp->displayed_user->id;
+
+	if(!$user_id_islogin){ $user_id_islogin = $user_id_isnotlogin; }
+	$url_s = $_SERVER['REQUEST_URI'];
+	$profile_view_notdefault = preg_match("#^/i-am/".$member_name."/$#i", $url_s);
+
+	echo "has page profile= "; var_dump(bp_has_profile());
+
+    echo "1- ".$template;
+	echo "<br>2- ".$page_template = get_page_template_slug( get_queried_object_id() )." | ";
+	echo "<br>3- ".$_SERVER['PHP_SELF'];
+	echo "<br>4- ".__FILE__;
+	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
+	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
+	alex_debug(1,1,0,$_SERVER);
+}
