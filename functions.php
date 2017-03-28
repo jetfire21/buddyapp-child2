@@ -591,7 +591,11 @@ function alex_include_css_js(){
 		echo '<link href="'.get_stylesheet_directory_uri().'/search-templ/css/style.css" rel="stylesheet" type="text/css" media="all"/>';
 	}
 
-	if( !bp_has_profile() ) return;
+	if(function_exists('bp_has_profile')):
+		if( !bp_has_profile() ) return;
+	else
+		return;
+	endif;
 
 	// get user_id for logged user
 	$user = wp_get_current_user();
@@ -633,6 +637,7 @@ function alex_include_css_js(){
 add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline',999);
 function a21_inc_styles_for_timeline(){
 	
+	if(function_exists('bp_is_active')):
 	if( bp_is_user_profile()) {
 
 	 if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ){
@@ -646,6 +651,7 @@ function a21_inc_styles_for_timeline(){
 		   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
 		}
 	}
+	endif;
 
 	if( is_page("jobs") || is_page("post-a-job")) {
 
@@ -654,6 +660,7 @@ function a21_inc_styles_for_timeline(){
    		wp_enqueue_style( 'a21-job-manager-fonts', "https://fonts.googleapis.com/css?family=Montserrat:400,700|Varela+Round&#038;subset=latin");
    		wp_enqueue_style( 'a21-jobify', get_stylesheet_directory_uri()."/css/a21-jobify.css",array("kleo-style"));
    		wp_enqueue_style( 'a21-job-manager-custom', get_stylesheet_directory_uri()."/css/a21-job-manager-custom.css",array("a21-jobify"));
+
 	}
    
    wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
@@ -672,6 +679,10 @@ function a21_my_class_names( $classes ) {
 
 // /wp-content/themes/buddyapp-child/job_manager/wp-job-manager-tags/wp-job-manager-tags.php
 if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tags/wp-job-manager-tags.php' );
+
+// /themes/buddyapp-child/job_manager/wp-job-manager-map/class-wp-job-manager.php
+// if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
+if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
 
 // override function path.../plugins/wp-job-manager/wp-job-manager-functions.php - it is necessary for work the filter by keyword
 function get_job_listings_keyword_search( $args ) {
