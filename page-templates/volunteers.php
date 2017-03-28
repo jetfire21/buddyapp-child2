@@ -56,65 +56,32 @@ function a21_kleo_show_page_title(){
 ?>
 
 <?php get_template_part( 'page-parts/page-title' ); ?>
-<!-- <div id="a21_map"></div> -->
 
-<!--   <div id="a21_job_map"></div>
-    <script>
 
-      function initMap() {
 
-        var map = new google.maps.Map(document.getElementById('a21_job_map'), {
-          zoom: 3,
-          center: {lat: -28.024, lng: 140.887}
-        });
 
-        // Create an array of alphabetical characters used to label the markers.
-        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+<?php
+    global $wpdb;
+    $website = $wpdb->get_results( $wpdb->prepare(
+      "SELECT post_content
+      FROM {$wpdb->postmeta}
+      WHERE post_parent = %d
+          AND post_type = %s
+          AND post_title = %s
+      ORDER BY ID ASC",
+      intval( $gid ),
+      // "alex_gfilds",
+      "alex_grsoclink",
+      'Website'
+    ) );
 
-        // Add some markers to the map.
-        // Note: The code uses the JavaScript Array.prototype.map() method to
-        // create an array of markers based on a given "locations" array.
-        // The map() method here has nothing to do with the Google Maps API.
-        var markers = locations.map(function(location, i) {
-          return new google.maps.Marker({
-            position: location,
-            label: labels[i % labels.length]
-          });
-        });
+?>
+ <?php if( is_page('jobs') ) do_action( 'jobify_output_map' ); ?>
 
-        // Add a marker clusterer to manage the markers.
-      //   var markerCluster = new MarkerClusterer(map, markers,
-      //       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-      }
-      // var locations = [
-      //   {lat: -31.563910, lng: 147.154312},
-      //   {lat: -33.718234, lng: 150.363181}
-      //   // {lat: -33.727111, lng: 150.371124},
-      //   // {lat: -33.848588, lng: 151.209834},
-      //   // {lat: -33.851702, lng: 151.216968},
-      //   // {lat: -34.671264, lng: 150.863657},
-      //   // {lat: -35.304724, lng: 148.662905},
-      //   // {lat: -36.817685, lng: 175.699196},
-      //   // {lat: -36.828611, lng: 175.790222},
-      //   // {lat: -37.750000, lng: 145.116667},
-      //   // {lat: -37.759859, lng: 145.128708},
-      //   // {lat: -37.765015, lng: 145.133858},
-      //   // {lat: -37.770104, lng: 145.143299},
-      //   // {lat: -37.773700, lng: 145.145187},
-      // ]
-    </script>
- --><!--     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJOQtVZMrDEIVLt8uNBIJbMNou5LkzT-c&callback=initMap">
-    </script>
- -->
 <div class="container content-area">
 <!-- <div class="main-content <?php echo Kleo::get_config('container_class'); ?>"> -->
 
-<h1>Under development</h1>
-
-        <?php if( is_page('jobs') ) do_action( 'jobify_output_map' ); ?>
+<!-- <h1>Under development</h1> -->
 
 	<?php
 	if ( have_posts() ) :

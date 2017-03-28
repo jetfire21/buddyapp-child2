@@ -17,6 +17,8 @@
         this.resize = bind(this.resize, this);
         this.mapHeight = bind(this.mapHeight, this);
         this.canvas = bind(this.canvas, this);
+        // a21 
+        console.log(this);
         return MapView.__super__.constructor.apply(this, arguments);
       }
 
@@ -367,6 +369,12 @@
       list: 'ul.job_listings',
       submit: $('.job_filters').find('.update_results')
     });
+
+    // a21
+    console.log($('.job_filters'));
+    console.log($('.job_filters').find('.update_results'));
+
+
     return resumes = new MapView({
       canvas: 'resume-map-canvas',
       target: $('div.resumes'),

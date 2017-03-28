@@ -1519,9 +1519,40 @@ add_action('after_setup_theme', function(){
 });
 
 
+
+add_action( 'wp_enqueue_scripts', 'a21_kleo_frontend_files',999 );
+function a21_kleo_frontend_files(){
+    // wp_deregister_script("kleo-app");
+    // wp_deregister_script("kleo-plugins");
+
+
+}
+add_action( 'wp_enqueue_scripts', 'a21_kleo_frontend_files2',1 );
+function a21_kleo_frontend_files2(){
+    wp_enqueue_script( 'google-maps', "https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry%2Cplaces&language=en&key=AIzaSyAJOQtVZMrDEIVLt8uNBIJbMNou5LkzT-c" );
+	// wp_enqueue_script("jquery-ui-core",array("jquery"));
+	// wp_enqueue_script("jquery-ui-widget",array("jquery"));
+	// wp_enqueue_script("jquery-ui-mouse",array("jquery"));
+	// wp_enqueue_script("jquery-ui-slider",array("jquery"));
+}
+
+
+// add_action("wp_footer","wp_get_name_page_template2");
+function wp_get_name_page_template2(){
+	global $wpdb;
+	$post_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->posts} WHERE post_type='job_listing'");
+	// print_r($post_ids);
+
+	foreach ($post_ids as $k=>$v) {
+		$geolocation = $wpdb->get_col($wpdb->prepare("(SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_lat' AND post_id=%d LIMIT 1) UNION (SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_long' AND post_id=%d LIMIT 1)",(int)$v,(int)$v));
+		$location .= "{lat: ".$geolocation[0].", lng: ".$geolocation[1]."},";
+	}
+	echo $location = substr($location, 0,-1);
+}
+
+
 // only for debug
 // add_action("wp_footer","wp_get_name_page_template");
-
 function wp_get_name_page_template(){
 
     global $template,$bp;
@@ -1545,4 +1576,6 @@ function wp_get_name_page_template(){
 	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
 	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
 	alex_debug(1,1,0,$_SERVER);
+
 }
+
