@@ -56,7 +56,7 @@ function a21_kleo_show_page_title(){
 ?>
 
 <?php get_template_part( 'page-parts/page-title' ); ?>
-<!-- <div id="a21_map"></div> -->
+ <?php if( is_page('jobs') ) do_action( 'jobify_output_map' ); ?>
 
 <div class="container content-area">
 <!-- <div class="main-content <?php echo Kleo::get_config('container_class'); ?>"> -->
