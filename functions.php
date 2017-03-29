@@ -591,11 +591,12 @@ function alex_include_css_js(){
 		echo '<link href="'.get_stylesheet_directory_uri().'/search-templ/css/style.css" rel="stylesheet" type="text/css" media="all"/>';
 	}
 
-	if(function_exists('bp_has_profile')):
-		if( !bp_has_profile() ) return;
-	else
-		return;
-	endif;
+	// if(function_exists('bp_has_profile')):
+	// 	if( !bp_has_profile() ) return;
+	// else
+	// 	return;
+	// endif;
+	if( !bp_has_profile() ) return;
 
 	// get user_id for logged user
 	$user = wp_get_current_user();
@@ -632,12 +633,13 @@ function alex_include_css_js(){
 		echo '<link href="'.get_stylesheet_directory_uri().'/libs/jqtimeliner/css/jquery-timeliner.css" rel="stylesheet" type="text/css" media="all"/>';
 		echo '<link href="'.get_stylesheet_directory_uri().'/libs/alex/fix-style.css" rel="stylesheet" type="text/css" media="all"/>';
 	}
+
 }
 
 add_action('wp_enqueue_scripts','a21_inc_styles_for_timeline',999);
 function a21_inc_styles_for_timeline(){
 	
-	if(function_exists('bp_is_active')):
+	// if(function_exists('bp_is_active')):
 	if( bp_is_user_profile()) {
 
 	 if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ){
@@ -651,7 +653,7 @@ function a21_inc_styles_for_timeline(){
 		   wp_enqueue_script('datepicker',"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js",array('jquery'),'',true);
 		}
 	}
-	endif;
+	// endif;
 
 	if( is_page("jobs") || is_page("post-a-job")) {
 

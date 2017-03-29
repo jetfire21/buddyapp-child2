@@ -91,7 +91,7 @@ class Jobify_WP_Job_Manager_Map extends WP_Job_Manager {
         $args[ 'key' ] = "AIzaSyAJOQtVZMrDEIVLt8uNBIJbMNou5LkzT-c";
 
 
-        wp_enqueue_script( 'jquery-migrate','',array('jquery') );
+        // wp_enqueue_script( 'jquery-migrate','',array('jquery') );
         wp_enqueue_script( 'backbone' );
         wp_enqueue_script( 'wp-backbone' );
         // wp_enqueue_script( 'google-maps', esc_url_raw( add_query_arg( $args, $base ) ) );
@@ -111,7 +111,7 @@ class Jobify_WP_Job_Manager_Map extends WP_Job_Manager {
          // buddyapp/assets/js/plugins.js
         // wp_deregister_script("kleo-app");
         // wp_deregister_script("kleo-plugins");
-        wp_enqueue_script( 'jobify-app-map', get_stylesheet_directory_uri()."/job_manager/wp-job-manager-map/js/map/app.js",array('jquery-deserialize','wp-job-manager-ajax-filters'),'', true );
+        wp_enqueue_script( 'jobify-app-map', get_stylesheet_directory_uri()."/job_manager/wp-job-manager-map/js/map/app.min.js",array('jquery-deserialize','wp-job-manager-ajax-filters'),'', true );
         // echo get_stylesheet_directory_uri()."/job_manager/wp-job-manager-map/js/map/app.min.js";
         // exit;
 
