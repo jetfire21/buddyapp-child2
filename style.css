@@ -592,6 +592,9 @@ ul#a21_job_menu{ background: #fff; float:right;}
 ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 #a21_job_map{height: 360px;}
 .a21_inner_page_title{float: left;}
+.page-template-volunteers #kleo-login-modal .mfp-close:hover, .page-template-volunteers #kleo-login-modal .mfp-close{ 
+  top:0; right:0; background: none !important; border: 0;
+   }
 
 /* ******* PAGE VOLUNTEER********* */
 
