@@ -5,5 +5,8 @@
 		<div id="<?php echo $type ?>-map-canvas"></div>
 	</div>
 
+<script>
+	
+</script>
 	<?php do_action( 'jobify_map_after' ); ?>
 </div>

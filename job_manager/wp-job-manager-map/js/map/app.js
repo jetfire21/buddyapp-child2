@@ -66,23 +66,26 @@
         }
         this.mapOptions = this.settings.mapOptions;
         this.opts = {
-          zoom: parseInt(this.mapOptions.zoom),
+          // zoom: parseInt(this.mapOptions.zoom),
+          zoom: 2,
           maxZoom: parseInt(this.mapOptions.maxZoom),
-          minZoom: parseInt(this.mapOptions.maxZoomOut),
-          scrollwheel: this.mapOptions.scrollwheel,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP
-          },
-          streetViewControl: true,
-          streetViewControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP
-          }
+          // minZoom: parseInt(this.mapOptions.maxZoomOut)
+          minZoom: 2
+          // scrollwheel: this.mapOptions.scrollwheel,
+          // zoomControlOptions: {
+          //   position: google.maps.ControlPosition.RIGHT_TOP
+          // },
+          // streetViewControl: true,
+          // streetViewControlOptions: {
+          //   position: google.maps.ControlPosition.RIGHT_TOP
+          // }
         };
-        if (this.mapOptions.center) {
-          this.defaultCenter = new google.maps.LatLng(this.mapOptions.center[0], this.mapOptions.center[1]);
-        } else {
-          this.defaultCenter = new google.maps.LatLng(41.850033, -87.6500523);
-        }
+        // if (this.mapOptions.center) {
+        //   this.defaultCenter = new google.maps.LatLng(this.mapOptions.center[0], this.mapOptions.center[1]);
+        // } else {
+          this.defaultCenter = new google.maps.LatLng(21.850033, 47.6500523);
+          // this.defaultCenter = new google.maps.LatLng(41.850033, -87.6500523);
+        // }
         this.opts.center = this.defaultCenter;
         this.obj = new google.maps.Map(this.el, this.opts);
         this.createClusterer();
@@ -94,6 +97,15 @@
         });
         $(window).on('resize', this.resize);
         this.mapHeight();
+        // a21 
+        // console.log("-----MapView.prototype.canvas");
+        // console.log(this.obj);
+        // console.log(this.opts);
+        // console.log(this.el);
+        // console.log(this.mapHeight());
+        // console.log("this.defaultCenter "+this.defaultCenter);
+        // console.log("this.mapOptions.center "+this.mapOptions.center);
+
         return def.promise();
       };
 

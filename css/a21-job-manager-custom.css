@@ -6,3 +6,4 @@ body, input, textarea, select, body .chosen-container-single .chosen-single span
 .job_filters .search_jobs .filter_by_tag, .job_filters .search_resumes .filter_by_tag{ margin:0; }
 .job_listings input[type=checkbox], .job_listings input[type=radio] { margin-right: 5px;}
 .job_listing-map-wrapper, .job_listing-map, #job_listing-map-canvas{ width: 100%; }
+#job_listing-map-canvas, #resume-map-canvas, .job_listing-map, .resume-map { height: 250px; }
