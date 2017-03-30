@@ -433,14 +433,16 @@ add_shortcode( 'alex_search_form', 'alex_search_form' );
 function alex_search_form( $atts = array(), $content = null ) {
 
 	$form_style = $type = $placeholder = $context = $hidden = $el_class = '';
-	
+	global $bp;
+
 	extract(shortcode_atts(array(
 		'form_style' => 'default',
 		// 'form_style' => 'groups',
 		'type' => 'both',
 		// 'context' => '',
 		'context' => array('groups','members'),
-		'action' => home_url( '/' )."members",
+		// 'action' => home_url( '/' )."members",
+		'action' => home_url( '/' ).$bp->members->root_slug,
 		'el_id' => 'searchform',
 		'el_class' => 'search-form',
 		'input_id' => 'main-search',
@@ -487,12 +489,14 @@ function alex_search_form( $atts = array(), $content = null ) {
 add_shortcode( 'alex_nothome_search_form', 'alex_nothome_search_form' );
 function alex_nothome_search_form( $atts = array(), $content = null ) {
 
+	global $bp;
 	$form_style = $type = $placeholder = $context = $hidden = $el_class = '';
 	extract(shortcode_atts(array(
 		'form_style' => 'default',
 		'type' => 'both',
 		'context' => array('groups','members'),
-		'action' => home_url( '/' )."members",
+		// 'action' => home_url( '/' )."members",
+		'action' => home_url( '/' ).$bp->members->root_slug,
 		'el_id' => 'searchform',
 		'el_class' => 'search-form',
 		'input_id' => 'main-search',
