@@ -26,7 +26,7 @@ $container = apply_filters('kleo_main_container_class','container');
 		</div>
 	<?php endif;?>
 
-	<?php if( bp_is_group() ):?>
+	<?php if( bp_is_group() && !bp_is_group_create() && !is_404()):?>
 		<div class="sidebar sidebar-colors a21-right-column-for-widgets only-for-group-sidebar">
 		<div class="inner-content widgets-container">
 		<?php if ( function_exists('dynamic_sidebar') ) dynamic_sidebar('right-sidebar-for-group');?>
