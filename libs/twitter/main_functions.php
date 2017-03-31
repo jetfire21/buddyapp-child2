@@ -28,7 +28,8 @@ $twitter_debug = true;
 // $tweets = a21_tw_get_tweets($settings,$url,$getfield,$requestMethod,$twitter_debug,5);
 // $tweets = a21_tw_get_tweets($tw_user,$settings,$url,$requestMethod,$twitter_debug, 10);
 // $tweets = a21_tw_get_tweets($twitter_username,$twitter_debug,$number_tweets = 15);
-$tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$getfield,$requestMethod,$twitter_debug,15);
+
+$tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$requestMethod,$twitter_debug,15);
 
 global $wpdb,$bp;
 $table_activity = $wpdb->prefix."bp_activity";
@@ -427,26 +428,18 @@ function al_add_tweets_in_db(){
 	if( !empty($_REQUEST['al21_twitteer_url']) ) $twitter_url = sanitize_text_field($_REQUEST['al21_twitteer_url']);
 	if (!empty($twitter_url) ){
 		require_once 'tw-api.php';
-		$twitter_debug = true;
+		$twitter_debug = false;
 		// $twitter_username = 'ottawafoodbank';
 		$twitter_username = substr(strrchr($twitter_url,"/"), 1); // parse url and return last part,e.g. ottawafoodbank
 
 		// echo "<br>before a21_tw_get_tweets<br>";
-		$access_token			= '2155615657-l9XX2j5FmZm3NwuCYJIehr4G2A1jvMXGkDRddvY';
-		$access_token_secret		= 'hALQYqrrOr9pVUQTitoRdlxgelBZmQ9tRs6denN1S31T5';
-		$consumer_key			= 'g3gGRjm1jhxP3NHWFLkZf6c7f';
-		$consumer_secret		= 'bh0YwwvETuN7cC8VLURUPcbEkjYubRa8JS0awq7WsPObjmFbPR';
+		// $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 
-		$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-		$requestMethod = 'GET';
-		$settings = array(
-			'oauth_access_token' => $access_token,
-			'oauth_access_token_secret' => $access_token_secret,
-			'consumer_key' => $consumer_key,
-			'consumer_secret' => $consumer_secret
-		);
+		global $gb_twitter;
+		$tweets = a21_tw_get_tweets($twitter_username,$gb_twitter['settings'],$gb_twitter['url'],$gb_twitter['requestMethod'],$twitter_debug,15);
 
-		$tweets = a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug,$number_tweets);
+		// $tweets = a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug,$number_tweets);
+
 		// $tweets = a21_tw_get_tweets2($twitter_username);
 		// $tweets = a21_tw_get_tweets($twitter_username, $twitter_debug,3,$settings,$url,$requestMethod);
 		// echo "<br>after a21_tw_get_tweets<br>";

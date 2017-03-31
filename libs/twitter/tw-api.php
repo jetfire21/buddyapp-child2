@@ -51,6 +51,10 @@ $settings = array(
 	'consumer_key' => $consumer_key,
 	'consumer_secret' => $consumer_secret
 );
+global $gb_twitter;
+$gb_twitter['url'] = $url;
+$gb_twitter['requestMethod'] = $requestMethod;
+$gb_twitter['settings'] = $settings;
 
 // Flag for twitter error
 $tweet_flag = 1;
