@@ -22,11 +22,13 @@ $gr_name = sanitize_text_field($_POST['gr_name']);
 $gr_avatar = sanitize_text_field($_POST['gr_avatar']);
 $tw_user = sanitize_text_field($_POST['user']);
 require_once 'tw-api.php';
-$twitter_debug = false;
+$twitter_debug = true;
 // $twitter_username = 'ottawafoodbank';
 // $twitter_username = 'kaspersky_ru';
 // $tweets = a21_tw_get_tweets($settings,$url,$getfield,$requestMethod,$twitter_debug,5);
-$tweets = a21_tw_get_tweets($tw_user,$settings,$url,$requestMethod,$twitter_debug, 10);
+// $tweets = a21_tw_get_tweets($tw_user,$settings,$url,$requestMethod,$twitter_debug, 10);
+// $tweets = a21_tw_get_tweets($twitter_username,$twitter_debug,$number_tweets = 15);
+$tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$getfield,$requestMethod,$twitter_debug,15);
 
 global $wpdb,$bp;
 $table_activity = $wpdb->prefix."bp_activity";
@@ -417,16 +419,38 @@ endif;
 
 function al_add_tweets_in_db(){
 
+
+	// http://dugoodr2.dev/causes/create/step/group-automation/
+	// echo "new !!!!!!! http://dugoodr2.dev/causes/create/step/group-automation/";
 	// alex_debug(0,1,'req1',$_REQUEST);
 	// alex_debug(0,1,'post1',$_POST);
 	if( !empty($_REQUEST['al21_twitteer_url']) ) $twitter_url = sanitize_text_field($_REQUEST['al21_twitteer_url']);
 	if (!empty($twitter_url) ){
 		require_once 'tw-api.php';
-		$twitter_debug = false;
+		$twitter_debug = true;
 		// $twitter_username = 'ottawafoodbank';
 		$twitter_username = substr(strrchr($twitter_url,"/"), 1); // parse url and return last part,e.g. ottawafoodbank
-		// $tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$getfield,$requestMethod,$twitter_debug);
-		$tweets = a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug,15);
+
+		// echo "<br>before a21_tw_get_tweets<br>";
+		$access_token			= '2155615657-l9XX2j5FmZm3NwuCYJIehr4G2A1jvMXGkDRddvY';
+		$access_token_secret		= 'hALQYqrrOr9pVUQTitoRdlxgelBZmQ9tRs6denN1S31T5';
+		$consumer_key			= 'g3gGRjm1jhxP3NHWFLkZf6c7f';
+		$consumer_secret		= 'bh0YwwvETuN7cC8VLURUPcbEkjYubRa8JS0awq7WsPObjmFbPR';
+
+		$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+		$requestMethod = 'GET';
+		$settings = array(
+			'oauth_access_token' => $access_token,
+			'oauth_access_token_secret' => $access_token_secret,
+			'consumer_key' => $consumer_key,
+			'consumer_secret' => $consumer_secret
+		);
+
+		$tweets = a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug,$number_tweets);
+		// $tweets = a21_tw_get_tweets2($twitter_username);
+		// $tweets = a21_tw_get_tweets($twitter_username, $twitter_debug,3,$settings,$url,$requestMethod);
+		// echo "<br>after a21_tw_get_tweets<br>";
+		// exit;
 
 		global $wpdb,$bp;
 		$table_activity = $wpdb->prefix."bp_activity";
@@ -463,5 +487,5 @@ function al_add_tweets_in_db(){
 }
 
 // Fires after the group has been successfully created (variation 1) after click button Finish
-add_action( 'groups_group_create_complete','al_add_tweets_in_db');
+add_action( 'groups_group_create_complete','al_add_tweets_in_db',15);
 

@@ -324,23 +324,24 @@ function alex_add_soclinks_for_all_groups_db(){
 
 function add_soclinks_only_for_one_group_db(){
 
+
 	global $wpdb;
 	$gr_last_id = $wpdb->get_row("SELECT id FROM `{$wpdb->prefix}bp_groups` ORDER BY date_created DESC");
 	$postid_and_fields = alex_get_postid_and_fields($wpdb);
 	$postid = $postid_and_fields[0]+1;
 	$fields = $postid_and_fields[1];
 
-	alex_debug(0,1,"fie",$fields);
+	// alex_debug(0,1,"fie",$fields);
 
 	foreach ($fields as $field_name) {
 
 		if( !empty($_COOKIE['alex-'.$field_name]) ) {
-			echo $post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
+			$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
 		}
 		else $post_content = '';
 		if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
 		
-		echo $field_name." - ";
+		// echo $field_name." - ";
 
 		// if( !empty($post_content)){
 			$wpdb->insert(
