@@ -1544,6 +1544,24 @@ function a21_kleo_frontend_files2(){
 }
 
 
+if ( class_exists( 'BP_Group_Extension' ) ) :
+	class members_nav_tab_in_group extends BP_Group_Extension {
+			function __construct() {
+				$args = array(
+					'slug' => 'a21-jobs',
+					'name' => 'Jobs',
+					'nav_item_position' => 105,
+					);
+				parent::init( $args );
+			}
+		}
+	
+		bp_register_group_extension( 'members_nav_tab_in_group' );
+		
+endif;
+
+
+
 // add_action("wp_footer","wp_get_name_page_template2");
 function wp_get_name_page_template2(){
 	global $wpdb;
