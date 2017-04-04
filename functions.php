@@ -1560,6 +1560,7 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 		
 endif;
 
+require_once 'job_manager/wp-job-manager-groups/index.php';
 
 
 // add_action("wp_footer","wp_get_name_page_template2");
@@ -1603,4 +1604,6 @@ function wp_get_name_page_template(){
 	alex_debug(1,1,0,$_SERVER);
 
 }
+
+/****************/
 
