@@ -94,8 +94,89 @@ function a21_get_groups_up($post_id,$post){
     exit;
 }
 
+// add_filter("job_manager_get_listings_args","a21_ttt");
+function a21_ttt($args){
+    alex_debug(0,1,"a",$args);
+    exit("==========a21_ttt");
+}
+
+add_action( 'job_manager_job_filters_search_jobs_end', 'filter_by_salary_field' );
+function filter_by_salary_field() {
+    ?>
+<!--     <div class="search_categories">
+        <label for="search_categories"><?php _e( 'Search Salary Amounts', 'wp-job-manager' ); ?></label>
+        <input type="text" class="job-manager-filter" name="filter_by_salary" placeholder="Search Salary Amounts" value="lala">
+    </div>
+ -->    <?php if(!empty($_GET['id'])):?> 
+        <input type="text" class="job-manager-filter" name="gr_id" placeholder="Se" value="<?php echo (int)$_GET['id'];?>">
+    <?php
+    endif;
+}
+
+add_filter( 'job_manager_get_listings', 'filter_by_salary_field_query_args', 10, 2 );
+function filter_by_salary_field_query_args( $query_args, $args ) {
+
+
+  if ( isset( $_POST['form_data'] ) ) {
+
+      parse_str( $_POST['form_data'], $form_data );
+      // alex_debug(0,1,"FORM DATA ",$form_data);
+
+      // If this is set, we are filtering by salary
+      if ( ! empty( $form_data['gr_id'] ) ) {
+           $gr_id = sanitize_text_field( $form_data['gr_id'] );
+          if($gr_id > 0){
+            $args = array(
+                'meta_key' => '_job_group_a21',
+                'meta_value' => $gr_id,
+                'meta_type' => "NUMERIC",
+                'meta_compare' => "=",
+                'post_type' => 'job_listing',
+                'posts_per_page' => 5
+              );
+              return $args;
+          }
+      }
+  }
+
+
+  // This will show the 'reset' link
+  add_filter( 'job_manager_get_listings_custom_filter', '__return_true' );
+
+  // alex_debug(0,1,"query args ",$query_args);
+  // alex_debug(0,1,"args ",$args);
+  // var_dump($gr_id);
+  // alex_debug(0,1," ",$_REQUEST);
+  // exit;
+    
+  return $query_args;
+}
+
+
 // add_action("wp_footer","a21_test1",999);
 function a21_test1(){
+
+
+//a21
+global $wpdb;
+/****** выбриает все посты которые принадлежат к указанной группе (связь с таблицей_postmeta) ************/
+$args_meta = array(
+      'meta_key' => '_job_group_a21',
+      'meta_value' => 14,
+      'meta_type' => "NUMERIC",
+      'meta_compare' => "=",
+      'post_type' => 'job_listing',
+      'posts_per_page' => 5
+    );
+$job = new WP_Query($args_meta);
+
+alex_debug(0,1,"a ",$job);
+// echo "<pre>";
+// print_r($wpdb->queries);
+// echo "</pre>";
+
+// exit("===a21 end===");
+
 
     // echo get_job_field("job_gr2");
     echo "=======for debug a21";
