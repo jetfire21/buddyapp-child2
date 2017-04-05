@@ -34,14 +34,20 @@ add_action( 'job_manager_field_actionhook_job_group_a21', 'a21_get_groups_fronte
 
 
 // hook place - /plugins/wp-job-manager/templates/content-single-job_listing.php
-add_action("single_job_listing_start","a21_get_job_data_group");
+// add_action("single_job_listing_start","a21_get_job_data_group");
+add_action("single_job_listing_meta_end","a21_get_job_data_group");
 
 function a21_get_job_data_group(){
 
     // echo "JMFE a21_get_job_data_group ";
     $gr_id =  get_job_field("job_group_a21");
     $group = groups_get_group( array( 'group_id' => $gr_id ) );
-    echo $group->name;
+    $group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+    $avatar_options = array ( 'item_id' => $gr_id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'html' => false );
+    $gr_avatar = bp_core_fetch_avatar($avatar_options);
+    $html ='<li id="alex_groups_user"><a href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a></li>
+            <li><a href="'.$group_permalink.'">'.$group->name.'</a></li>';
+    echo $html;
 
 }
 
@@ -56,8 +62,7 @@ function a21_wpjm_hide_dismiss( $current_screen ) {
   // endif;
 }
 
-// add_action( 'current_screen', 'action_function_name_11' );
-add_action( 'admin_footer', 'a21_wpjm_hide_dismiss' );
+// add_action( 'admin_footer', 'a21_wpjm_hide_dismiss' );
 
 /***********/
 
@@ -74,7 +79,7 @@ function hide_plugins($plugins)
 
 
 // Update WP Job Manager Field on Save or Update (For saving value when used with Action Hook field type)
-add_action( 'job_manager_update_job_data', 'a21_get_groups_u', 100, 2 );
+// add_action( 'job_manager_update_job_data', 'a21_get_groups_u', 100, 2 );
 
 function a21_get_groups_u($job_id,$values){
     alex_debug(0,0,'job_id',$job_id);
@@ -100,22 +105,23 @@ function a21_ttt($args){
     exit("==========a21_ttt");
 }
 
-add_action( 'job_manager_job_filters_search_jobs_end', 'filter_by_salary_field' );
-function filter_by_salary_field() {
+add_action( 'job_manager_job_filters_search_jobs_end', 'a21_frontend_filter_by_group_field' );
+function a21_frontend_filter_by_group_field() {
     ?>
-<!--     <div class="search_categories">
-        <label for="search_categories"><?php _e( 'Search Salary Amounts', 'wp-job-manager' ); ?></label>
-        <input type="text" class="job-manager-filter" name="filter_by_salary" placeholder="Search Salary Amounts" value="lala">
+    <!-- 
+    <div class="search_categories">
+      <label for="search_categories"><?php _e( 'Search Salary Amounts', 'wp-job-manager' ); ?></label>
+      <input type="text" class="job-manager-filter" name="filter_by_salary" placeholder="Search Salary Amounts" value="lala">
     </div>
- -->    <?php if(!empty($_GET['id'])):?> 
-        <input type="text" class="job-manager-filter" name="gr_id" placeholder="Se" value="<?php echo (int)$_GET['id'];?>">
+    -->
+     <?php if(!empty($_GET['id']) && $_GET['id'] > 0 ):?> 
+        <input type="hidden" class="job-manager-filter" name="gr_id" placeholder="Se" value="<?php echo (int)$_GET['id'];?>">
     <?php
     endif;
 }
 
-add_filter( 'job_manager_get_listings', 'filter_by_salary_field_query_args', 10, 2 );
-function filter_by_salary_field_query_args( $query_args, $args ) {
-
+add_filter( 'job_manager_get_listings', 'a21_filter_by_group_field_query_args', 10, 2 );
+function a21_filter_by_group_field_query_args( $query_args, $args ) {
 
   if ( isset( $_POST['form_data'] ) ) {
 
@@ -138,7 +144,6 @@ function filter_by_salary_field_query_args( $query_args, $args ) {
           }
       }
   }
-
 
   // This will show the 'reset' link
   add_filter( 'job_manager_get_listings_custom_filter', '__return_true' );
@@ -196,6 +201,8 @@ alex_debug(0,1,"a ",$job);
 //   echo "===debug a21=== url script: a21_admin ";
 //   exit;
 // }
+
+
 
 
 /*************  попытка реализации без сторонних плагинов *******************/
