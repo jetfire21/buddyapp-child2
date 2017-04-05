@@ -1,6 +1,6 @@
 <?php
 
-function a21_get_groups_frontend_selectbox( $field, $key ) {
+function a21_get_groups_post_job_field_select( $field, $key ) {
 
    // echo "The field is {$field} and the key is {$key}";
    // print_r($field);
@@ -30,25 +30,28 @@ function a21_get_groups_frontend_selectbox( $field, $key ) {
 <?php
 }
  
-add_action( 'job_manager_field_actionhook_job_group_a21', 'a21_get_groups_frontend_selectbox', 10, 2 );
+add_action( 'job_manager_field_actionhook_job_group_a21', 'a21_get_groups_post_job_field_select', 10, 2 );
 
 
 // hook place - /plugins/wp-job-manager/templates/content-single-job_listing.php
 // add_action("single_job_listing_start","a21_get_job_data_group");
-add_action("single_job_listing_meta_end","a21_get_job_data_group");
+add_action("single_job_listing_meta_end","a21_details_get_job_data_group_");
 
-function a21_get_job_data_group(){
+function a21_details_get_job_data_group_(){
 
     // echo "JMFE a21_get_job_data_group ";
-    $gr_id =  get_job_field("job_group_a21");
+    $gr_id =  (int)get_job_field("job_group_a21");
     $group = groups_get_group( array( 'group_id' => $gr_id ) );
     $group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
     $avatar_options = array ( 'item_id' => $gr_id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'html' => false );
     $gr_avatar = bp_core_fetch_avatar($avatar_options);
     $html ='<li id="alex_groups_user"><a href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a></li>
             <li><a href="'.$group_permalink.'">'.$group->name.'</a></li>';
-    echo $html;
+    global $wpdb;
+    $gr_address = $wpdb->get_var("SELECT `meta_value` FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE group_id={$gr_id} AND meta_key='city_state'");
+    if(!empty($gr_address)) $html .= '<li>Cause address: '.$gr_address.'</li>';
 
+    echo $html;
 }
 
 function a21_wpjm_hide_dismiss( $current_screen ) {
@@ -89,8 +92,8 @@ function a21_get_groups_u($job_id,$values){
 
 }
 
-add_action( 'job_manager_save_job_listing', 'a21_get_groups_up', 100, 2 );
 // add_action( 'job_manager_save_job_listing', array( $this, 'save_admin_fields' ), 100, 2 );
+// add_action( 'job_manager_save_job_listing', 'a21_get_groups_up', 100, 2 );
 
 function a21_get_groups_up($post_id,$post){
     var_dump($post_id);
@@ -158,126 +161,4 @@ function a21_filter_by_group_field_query_args( $query_args, $args ) {
 }
 
 
-// add_action("wp_footer","a21_test1",999);
-function a21_test1(){
 
-
-//a21
-global $wpdb;
-/****** выбриает все посты которые принадлежат к указанной группе (связь с таблицей_postmeta) ************/
-$args_meta = array(
-      'meta_key' => '_job_group_a21',
-      'meta_value' => 14,
-      'meta_type' => "NUMERIC",
-      'meta_compare' => "=",
-      'post_type' => 'job_listing',
-      'posts_per_page' => 5
-    );
-$job = new WP_Query($args_meta);
-
-alex_debug(0,1,"a ",$job);
-// echo "<pre>";
-// print_r($wpdb->queries);
-// echo "</pre>";
-
-// exit("===a21 end===");
-
-
-    // echo get_job_field("job_gr2");
-    echo "=======for debug a21";
-    global $bp;
-    // $group = groups_get_group( array( 'group_id' => 3 ) );
-    // echo $group->name;
-    // print_r($group);
-
-}
-
-/*********/
-
-// add_action("plugins_loaded","a21_admin_1");
-// function a21_admin_1(){
-
-//   var_dump($_REQUEST['plugin']);
-//   echo "===debug a21=== url script: a21_admin ";
-//   exit;
-// }
-
-
-
-
-/*************  попытка реализации без сторонних плагинов *******************/
-
-
-// add_filter( 'submit_job_form_fields', 'custom_submit_job_form_fields',999 );
-
-// This is your function which takes the fields, modifies them, and returns them
-// You can see the fields which can be changed here: https://github.com/mikejolley/WP-Job-Manager/blob/master/includes/forms/class-wp-job-manager-form-submit-job.php
-function custom_submit_job_form_fields( $fields ) {
-
-    // Here we target one of the job fields (job_title) and change it's label
-    // $fields['job']['job_title']['label'] = "Custom Label";
-
-
-           // [job_category] => Array
-           //      (
-           //          [label] => Job category
-           //          [type] => term-multiselect
-           //          [required] => 1
-           //          [placeholder] => 
-           //          [priority] => 4
-           //          [default] => 
-           //          [taxonomy] => job_listing_category
-           //      )
-     $fields['job']['job_group'] = array
-                (
-                    'label' => "Group",
-                    'type' => 'term-select',
-                    'required' => false,
-                    // 'placeholder' => '1',
-                    'priority' => 4,
-                    // 'taxonomy' => 'job_listing_category'
-                    // 'default' => 
-                );
-
-    // And return the modified fields
-    return $fields;
-    // print_r($fields);
-}
-
-
-// add_filter( 'submit_job_form_validate_fields', "a21_custom_job" );
-// function a21_custom_job($passed,$fields,$values){
-//  var_dump($passed);
-//  var_dump($fields);
-//  var_dump($values);
-//  echo "alex888";
-//  exit;
-// }
-
-// add_action( 'submit_job_form_fields_get_job_data', 'a21_get_job_tag_field_data',999 );
-function a21_get_job_tag_field_data($data,$job){
-  var_dump($data);
-  var_dump($job);
-  echo "alex888";
-  exit;
-}
-
-
-// add_action("wp_footer","a21_job_manager_groups");
-function a21_job_manager_groups(){
-  echo "<h3>debug alex777</h3>";
-
-  // add_filter( 'submit_job_form_fields', array( $this, 'job_tag_field' ) );
-  // add_filter( 'submit_job_form_fields', 'a21_job_manager_group_field' );
-  // function a21_job_manager_group_field($fields){
-  //  var_dump($fields);
-  //  echo "f777";
-  // }
-
-  // Add your own function to filter the fields
-
-}
-
-
-
-/* ***************** */
