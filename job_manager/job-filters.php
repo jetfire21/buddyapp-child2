@@ -33,10 +33,10 @@
 			</div>
 		<?php endif; ?>
 
-<!-- 				<div class="search_submit">
+		<div class="search_submit">
 			<input type="submit" name="submit" value="Search" />
 		</div>
- -->
+
 
 		<?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
 	</div>

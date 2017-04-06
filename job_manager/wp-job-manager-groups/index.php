@@ -118,13 +118,16 @@ function a21_frontend_filter_by_group_field() {
     </div>
     -->
      <?php if(!empty($_GET['id']) && $_GET['id'] > 0 ):?> 
-        <input type="hidden" class="job-manager-filter" name="gr_id" placeholder="Se" value="<?php echo (int)$_GET['id'];?>">
+        <!-- <input type="hidden" class="job-manager-filter" name="gr_id" value="<?php echo (int)$_GET['id'];?>"> -->
+        <input type="text" style="display: none;" class="job-manager-filter" name="gr_id" value="<?php echo (int)$_GET['id'];?>">
     <?php
     endif;
 }
 
 add_filter( 'job_manager_get_listings', 'a21_filter_by_group_field_query_args', 10, 2 );
 function a21_filter_by_group_field_query_args( $query_args, $args ) {
+
+    add_filter( 'job_manager_get_listings_custom_filter', '__return_true' );
 
   if ( isset( $_POST['form_data'] ) ) {
 
@@ -140,8 +143,8 @@ function a21_filter_by_group_field_query_args( $query_args, $args ) {
                 'meta_value' => $gr_id,
                 'meta_type' => "NUMERIC",
                 'meta_compare' => "=",
-                'post_type' => 'job_listing',
-                'posts_per_page' => 5
+                'post_type' => 'job_listing'
+                // 'posts_per_page' => 5
               );
               return $args;
           }
@@ -149,7 +152,12 @@ function a21_filter_by_group_field_query_args( $query_args, $args ) {
   }
 
   // This will show the 'reset' link
-  add_filter( 'job_manager_get_listings_custom_filter', '__return_true' );
+  // add_filter( 'job_manager_get_listings_custom_filter', '__return_true' );
+//   add_filter( 'job_manager_get_listings_custom_filter', 'a21_f' );
+//   function a21_f(){ return true;}
+// echo job_manager_get_filtered_links($args);
+
+// add_filter("job_manager_job_filters_showing_jobs_links", '__return_true');
 
   // alex_debug(0,1,"query args ",$query_args);
   // alex_debug(0,1,"args ",$args);
@@ -161,4 +169,92 @@ function a21_filter_by_group_field_query_args( $query_args, $args ) {
 }
 
 
+/********/
 
+// add_filter("job_manager_get_listings_result","a21_d",100,2);
+// function a21_d($result, $jobs){
+add_filter("job_manager_get_listings_result","a21_d");
+function a21_d($result){
+// function a21_d($result, $jobs){
+
+  // alex_debug(0,1," ",$jobs);
+  // echo "----".$jobs->query['meta_key'];
+  /*
+  if($jobs->query['meta_key'] == "_job_group_a21")  {
+      $result['html'] = '<div class="showing_jobs wp-job-manager-showing-all" style="display: block;">'.$result['showing_links'].'</div>'.$result['html'];
+  }
+  */
+
+  // var_dump($_GET['id']);
+   // echo "===debug a21=== url script: job_manager_get_listings_result===";
+   //  alex_debug(0,1,"",$result);
+/*
+   if( $jobs->query['meta_key'] == "_job_group_a21" && !$result['found_jobs']) {
+         // $result['html'] = $result['html'].$result['showing_links'];
+         // $result['html'] = '<li class="no_job_listings_found">No results,so not jobs related this group'.$result['showing_links'].'</li>';
+         // $result['html'] = '<div class="showing_jobs wp-job-manager-showing-all" style="display: block;"><span>No results,so not jobs related this group</span>'.$result['showing_links'].'</div>';
+            $result['html'] = '';
+         // message
+         $result['showing'] = "No jobs related this group";
+    }
+*/
+        if ( isset( $_POST['form_data']) && !$result['found_jobs']) {
+
+        //all filltered fields
+        parse_str( $_POST['form_data'], $form_data );
+        // alex_debug(0,1,"post",$form_data);
+
+        if ( ! empty( $form_data['gr_id'] ) ) {
+           $gr_id = sanitize_text_field( $form_data['gr_id'] );
+          if($gr_id > 0){
+               $group = groups_get_group( array( 'group_id' => $gr_id ) );
+                $result['html'] = '';
+                // message
+                $result['showing'] = "No jobs related this group <strong>".$group->name."</strong>";
+           }
+          }
+        }
+   // exit;
+   return $result;
+}
+
+add_filter( 'job_manager_get_listings_custom_filter_text',"a21_q",100,2 );
+function a21_q($message, $search_values){
+
+    // var_dump($jobs);
+
+      // echo "===debug a21=== url script: job_manager_get_listings_custom_filter_text===<br>";
+      // var_dump($message);
+      // var_dump($result);
+      // alex_debug(0,1,"search_value",$search_values);
+
+
+    // exit;
+    // alex_debug(0,1,"request",$_REQUEST);
+    // alex_debug(0,1,"post",$_POST);
+
+    if ( isset( $_POST['form_data'] ) ) {
+
+        //all filltered fields
+        parse_str( $_POST['form_data'], $form_data );
+        // alex_debug(0,1,"post",$form_data);
+
+        if ( ! empty( $form_data['gr_id'] ) ) {
+           $gr_id = sanitize_text_field( $form_data['gr_id'] );
+          if($gr_id > 0){
+               $group = groups_get_group( array( 'group_id' => $gr_id ) );
+               $message = "Finds jobs associated with the group <strong>".$group->name."</strong>";
+          }
+        }
+    }
+    // alex_debug(0,1,"form_data",$form_data);
+    // echo "form d".$_POST['form_data']."<br>";
+    // $_POST['form_data'] = preg_replace("/gr_id=[^&]+/i", "a21_no_use=",$_POST['form_data']);
+    // echo "rep form d".$_POST['form_data'];
+    // alex_debug(0,1,"request del gr_id",$_REQUEST);
+
+    // var_dump($message);
+    // exit;
+
+    return $message;
+}
