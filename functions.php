@@ -1563,17 +1563,35 @@ endif;
 if(class_exists("WP_Job_Manager_Field_Editor")) require_once 'job_manager/wp-job-manager-groups/index.php';
 
 
+
+/***** TEMP FOR DEBUG *******/
+
 // add_action("wp_footer","wp_get_name_page_template2");
 function wp_get_name_page_template2(){
-	global $wpdb;
-	$post_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->posts} WHERE post_type='job_listing'");
-	// print_r($post_ids);
 
-	foreach ($post_ids as $k=>$v) {
-		$geolocation = $wpdb->get_col($wpdb->prepare("(SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_lat' AND post_id=%d LIMIT 1) UNION (SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_long' AND post_id=%d LIMIT 1)",(int)$v,(int)$v));
-		$location .= "{lat: ".$geolocation[0].", lng: ".$geolocation[1]."},";
-	}
-	echo $location = substr($location, 0,-1);
+	// global $wpdb;
+	// $post_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->posts} WHERE post_type='job_listing'");
+	// // print_r($post_ids);
+
+	// foreach ($post_ids as $k=>$v) {
+	// 	$geolocation = $wpdb->get_col($wpdb->prepare("(SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_lat' AND post_id=%d LIMIT 1) UNION (SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_long' AND post_id=%d LIMIT 1)",(int)$v,(int)$v));
+	// 	$location .= "{lat: ".$geolocation[0].", lng: ".$geolocation[1]."},";
+	// }
+	// echo $location = substr($location, 0,-1);
+	echo "===debug a21=== url script: ";
+	// var_dump(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI']));
+	// var_dump(is_page("Volunteers"));
+	// var_dump(is_page("volunteers"));
+	// var_dump(is_singular("Volunteers"));
+	// var_dump(is_singular("volunteers"));
+	// var_dump(is_single("single-job_listing"));
+	// var_dump(is_single("single-job_listing.php"));
+	// var_dump(is_single("single-job"));
+	// var_dump(is_singular("single-job_listing"));
+	// var_dump(is_page_template("single-job_listing.php"));
+	// var_dump(is_page_template("single-job_listing"));
+	echo "<hr>";
+
 }
 
 
@@ -1605,5 +1623,4 @@ function wp_get_name_page_template(){
 
 }
 
-/****************/
 

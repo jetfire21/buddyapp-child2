@@ -13,8 +13,14 @@
 get_header(); ?>
 
 <?php
-//create full width template
-kleo_switch_layout('full');
+
+if(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI'])){
+	//create right sidebar template
+	kleo_switch_layout( 'right' );
+}else{
+	//create full width template
+	kleo_switch_layout('full');
+}
 ?>
 
 <?php get_template_part('page-parts/general-before-wrap'); ?>
@@ -81,7 +87,6 @@ function a21_kleo_show_page_title(){
 	?>
 
 </div>
-        
 <?php get_template_part('page-parts/general-after-wrap'); ?>
 
 <?php get_footer(); ?>

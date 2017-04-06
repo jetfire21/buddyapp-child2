@@ -34,7 +34,6 @@ $container = apply_filters('kleo_main_container_class','container');
 		</div>
 	<?php endif;?>
 
-
 		<?php
 		/**
 		 * After main content - action
