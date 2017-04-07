@@ -45,11 +45,11 @@ function a21_details_get_job_data_group_(){
     $group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
     $avatar_options = array ( 'item_id' => $gr_id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'html' => false );
     $gr_avatar = bp_core_fetch_avatar($avatar_options);
-    $html ='<li id="alex_groups_user"><a href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a></li>
-            <li><a href="'.$group_permalink.'">'.$group->name.'</a></li>';
-    global $wpdb;
-    $gr_address = $wpdb->get_var("SELECT `meta_value` FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE group_id={$gr_id} AND meta_key='city_state'");
-    if(!empty($gr_address)) $html .= '<li>Cause address: '.$gr_address.'</li>';
+    $html ='<li class="group-logo-left-text">Visit DuGoodr Cause:</li><li id="alex_groups_user"><a class="group-logo" href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a>
+            <a href="'.$group_permalink.'">'.$group->name.'</a></li>';
+    // global $wpdb;
+    // $gr_address = $wpdb->get_var("SELECT `meta_value` FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE group_id={$gr_id} AND meta_key='city_state'");
+    // if(!empty($gr_address)) $html .= '<li>'.esc_html($gr_address).'</li>';
 
     echo $html;
 }

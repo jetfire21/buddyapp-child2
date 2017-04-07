@@ -611,6 +611,14 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 }
 
 .single-job_listing .container{ width: 100%; }
+.single-job_listing img.company_logo{ width: 130px; max-height:130px; height: auto; position: static; margin-right: 30px !important; }
+.single-job_listing .job_description{ clear: both; }
+.single-job_listing .company {overflow: hidden;}
+.single-job_listing .company *:not(img) {color:#000 !important; margin:0;}
+.single-job_listing .company .website:before{display: none;}
+.single-job_listing .job-listing-meta {padding-top: 10px;}
+.single-job_listing #alex_groups_user .group-logo{ margin-top: -9px; margin-right: 5px; display: inline-block;}
+.single-job_listing .group-logo-left-text{margin:0 !important;}
 
 /*#user-reviews i:before, .icon-panorama-fisheye:before{  content: "\e902"; }
 #user-invite-anyone i:before{ content: "\e70e"; }*/

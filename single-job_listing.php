@@ -64,8 +64,14 @@ function a21_kleo_show_page_title(){
 <?php get_template_part( 'page-parts/page-title' ); ?>
  <?php if( is_page('jobs') ) do_action( 'jobify_output_map' ); ?>
 
-<div class="container content-area">
+<!-- <div class="container content-area"> -->
 <!-- <div class="main-content <?php echo Kleo::get_config('container_class'); ?>"> -->
+<?php
+if(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI'])):?>
+	<div class="main-content <?php echo Kleo::get_config('container_class'); ?>">
+<?php else:?>
+	<div class="container content-area">
+<?php endif;?>
 
 <h1>Under development</h1>
 

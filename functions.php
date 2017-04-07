@@ -1623,4 +1623,12 @@ function wp_get_name_page_template(){
 
 }
 
+function deb_last_query(){
 
+	global $wpdb;
+	echo '<hr>';
+	echo "<b>last query:</b> ".$wpdb->last_query."<br>";
+	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
+	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
+	echo '<hr>';
+}
