@@ -660,7 +660,8 @@ function a21_inc_styles_for_timeline(){
 	}
 	// endif;
 
-	if( is_page("jobs") || is_page("post-a-job")) {
+	if( is_page("jobs")) {
+	// if( is_page("jobs") || is_page("post-a-job")) {
 
 		wp_deregister_style("wp-job-manager-frontend");
    		// wp_enqueue_style( 'a21-wp-job-inline', get_stylesheet_directory_uri()."/css/a21-wp-job-inline.css",array("kleo-style"));
@@ -669,11 +670,32 @@ function a21_inc_styles_for_timeline(){
    		wp_enqueue_style( 'a21-job-manager-custom', get_stylesheet_directory_uri()."/css/a21-job-manager-custom.css",array("a21-jobify"));
 
 	}
-   
-   wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
 
+	if(is_page("post-a-job")):
+		if(JOB_MANAGER_PLUGIN_URL){
+		 // echo JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css';
+		 wp_enqueue_style( 'wp-job-manager-frontend2', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css' );
+		}
+	endif;
+  
+   wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
 }
 
+/*
+add_action("wp_enqueue_scripts","a21_get_wpjm_for_page_preview");
+function a21_get_wpjm_for_page_preview(){
+	// var_dump(is_page("post-a-job"));
+
+	if(is_page("post-a-job")):
+		if(JOB_MANAGER_PLUGIN_URL){
+		 // echo JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css';
+		 wp_enqueue_style( 'wp-job-manager-frontend2', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css' );
+		}
+	endif;
+	// exit;
+
+}
+*/
 
 add_filter('body_class','a21_my_class_names');
 function a21_my_class_names( $classes ) {
@@ -1563,7 +1585,6 @@ endif;
 if(class_exists("WP_Job_Manager_Field_Editor")) require_once 'job_manager/wp-job-manager-groups/index.php';
 
 
-
 /***** TEMP FOR DEBUG *******/
 
 // add_action("wp_footer","wp_get_name_page_template2");
@@ -1591,6 +1612,9 @@ function wp_get_name_page_template2(){
 	// var_dump(is_page_template("single-job_listing.php"));
 	// var_dump(is_page_template("single-job_listing"));
 	echo "<hr>";
+	var_dump(is_singular("post-a-job"));
+	var_dump(is_single("post-a-job"));
+	var_dump(is_page("post-a-job"));
 
 }
 

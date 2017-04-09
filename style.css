@@ -71,7 +71,7 @@ License URI: license.txt
 #alex_groups_user a{ color:#656565;}
 
 /* add backgruound for fields */
-#buddypress .standard-form textarea, #buddypress .standard-form input[type=text], #buddypress .standard-form input[type=color], #buddypress .standard-form input[type=date], #buddypress .standard-form input[type=datetime], #buddypress .standard-form input[type=datetime-local], #buddypress .standard-form input[type=email], #buddypress .standard-form input[type=month], #buddypress .standard-form input[type=number], #buddypress .standard-form input[type=range], #buddypress .standard-form input[type=search], #buddypress .standard-form input[type=tel], #buddypress .standard-form input[type=time], #buddypress .standard-form input[type=url], #buddypress .standard-form input[type=week], #buddypress .standard-form select, #buddypress .standard-form input[type=password], #buddypress .dir-search input[type=search], #buddypress .dir-search input[type=text], #buddypress .groups-members-search input[type=search], #buddypress .groups-members-search input[type=text],.page-template-volunteers #content input,.page-template-volunteers #content select,.page-template-volunteers #content textarea,.page-template-volunteers #content .chosen-container,.page-template-volunteers iframe p,
+#buddypress .standard-form textarea, #buddypress .standard-form input[type=text], #buddypress .standard-form input[type=color], #buddypress .standard-form input[type=date], #buddypress .standard-form input[type=datetime], #buddypress .standard-form input[type=datetime-local], #buddypress .standard-form input[type=email], #buddypress .standard-form input[type=month], #buddypress .standard-form input[type=number], #buddypress .standard-form input[type=range], #buddypress .standard-form input[type=search], #buddypress .standard-form input[type=tel], #buddypress .standard-form input[type=time], #buddypress .standard-form input[type=url], #buddypress .standard-form input[type=week], #buddypress .standard-form select, #buddypress .standard-form input[type=password], #buddypress .dir-search input[type=search], #buddypress .dir-search input[type=text], #buddypress .groups-members-search input[type=search], #buddypress .groups-members-search input[type=text],.page-template-volunteers #content input:not([type="submit"]),.page-template-volunteers #content select,.page-template-volunteers #content textarea,.page-template-volunteers #content .chosen-container,.page-template-volunteers iframe p,
 #buddypress form#whats-new-form textarea, 
 #buddypress input[type=text], #invite-anyone-by-email textarea,#invite-anyone-by-email input[type=text], .bp-users-reviews-list{
     background-color: rgba(0,0,0,.05) !important;
@@ -597,30 +597,42 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
    }
 
 .single-job_listing .container{ width: 100%; }
-.single-job_listing img.company_logo{ width: 130px; max-height:130px; height: auto; position: static; margin-right: 30px !important; }
-.single-job_listing .job_description{ clear: both; }
-.single-job_listing .company {overflow: hidden;}
-.single-job_listing .company *:not(img) {color:#000 !important; margin:0;}
-.single-job_listing .company .website:before{display: none;}
+.single-job_listing img.company_logo,
+.single_job_listing img.company_logo{
+ max-width:130px; width: 130px; max-height:130px; height: auto; position: static; margin-right: 30px !important; min-width: auto;}
+.single-job_listing .job_description,.single_job_listing .job_description{ clear: both; }
+.single-job_listing .company ,.single_job_listing .company {overflow: hidden;}
+.single-job_listing .company *:not(img),.single_job_listing .company *:not(img){color:#000 !important; margin:0;}
+.single-job_listing .company .website:before, .single_job_listing .company .website:before{display: none;}
 .single-job_listing .job-listing-meta {padding-top: 10px;}
-.single-job_listing #alex_groups_user .group-logo{ margin-top: -9px; margin-right: 5px; display: inline-block;}
-.single-job_listing .group-logo-left-text{margin:0 !important;}
+.single-job_listing #alex_groups_user .group-logo,.single_job_listing #alex_groups_user .group-logo{ margin-top: -9px; margin-right: 5px; display: inline-block;}
+.single-job_listing .group-logo-left-text, .single_job_listing .group-logo-left-text{margin:0 !important;}
+ .job_listing_preview_title{ background: none !important; padding-top:30px !important; }
+.entry.job_listing_preview_title h2, .job_listing_preview_title h2 { padding-bottom:30px; text-align: center;clear:both !important;  }
+
 
 /* post job */
 /*.page-template-volunteers #content *{}*/
 /*.page-template-volunteers #content .mce-container *{}*/
 .page-template-volunteers #content{    background-color: #f3f3f3;}
-.page-template-volunteers #content input,.page-template-volunteers #content select,.page-template-volunteers #content textarea,.page-template-volunteers #content .chosen-container,.page-template-volunteers #content{ border:0; border-radius: 0; margin:0; font-family: 'Open Sans', sans-serif !important; font-size: 14px; color:#888;}
+.page-template-volunteers #content input:not([type="submit"]),.page-template-volunteers #content select,.page-template-volunteers #content textarea,.page-template-volunteers #content .chosen-container{ border:0; border-radius: 0; margin:0; font-family: 'Open Sans', sans-serif !important; font-size: 14px; color:#888;}
+/*.page-template-volunteers #content input[type="text"],.page-template-volunteers #content select,.page-template-volunteers #content textarea,.page-template-volunteers #content .chosen-container{ width: 75%; }*/
+.page-template-volunteers  #submit-job-form fieldset { width: 75%; }
 .page-template-volunteers #content fieldset label{ color: #ed3434; font-size:0.75rem; text-transform: capitalize;}
 .page-template-volunteers .job-manager-form fieldset{margin:0 0 20px 0;}
 .page-template-volunteers #content input[type="text"] { border-bottom: 1px solid #f8a9a9 !important; }
 .page-template-volunteers #content small { font-size: 10px;}
 .page-template-volunteers #content input[type="text"]:focus { border-bottom: 1px solid #cbda30 !important;}
 .page-template-volunteers .select:after{ content: ''; }
+.page-template-volunteers #content input[type="submit"]{ border-radius: 30px; color:#000;}
+.page-template-volunteers a.button{margin-bottom: 0; min-height: auto;}
+.page-template-volunteers a.button:hover{    border-color: transparent; color: #000;}
 .page-template-volunteers #content .chosen-container input,
 .page-template-volunteers #content .chosen-container input:focus
 {background: none !important; border:0 !important;}
 .page-template-volunteers #content .chosen-container-multi .chosen-choices li.search-choice .search-choice-close{top:4px; height: 2px;}
+.job-manager-form .show-login{height: auto;line-height:1.2;}
+.job-manager-form .show-login .button{ padding: 5px 20px; font-size: 10px; }
 
 /* ******* PAGE VOLUNTEER********* */
 
