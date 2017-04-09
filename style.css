@@ -633,6 +633,7 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .page-template-volunteers #content .chosen-container-multi .chosen-choices li.search-choice .search-choice-close{top:4px; height: 2px;}
 .job-manager-form .show-login{height: auto;line-height:1.2;}
 .job-manager-form .show-login .button{ padding: 5px 20px; font-size: 10px; }
+#submit-job-form{padding-top:30px;}
 
 /* ******* PAGE VOLUNTEER********* */
 
