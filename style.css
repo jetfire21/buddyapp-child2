@@ -608,8 +608,8 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .single-job_listing #alex_groups_user .group-logo,.single_job_listing #alex_groups_user .group-logo{ margin-top: -9px; margin-right: 5px; display: inline-block;}
 .single-job_listing .group-logo-left-text, .single_job_listing .group-logo-left-text{margin:0 !important;}
  .job_listing_preview_title{ background: none !important; padding-top:30px !important; }
-.entry.job_listing_preview_title h2, .job_listing_preview_title h2 { padding-bottom:30px; text-align: center;clear:both !important;  }
-
+.entry.job_listing_preview_title h2, .job_listing_preview_title h2 { text-align: center;clear:both !important;  }
+.single-job_listing .button{ font-size: 10px !important; }
 
 /* post job */
 /*.page-template-volunteers #content *{}*/
