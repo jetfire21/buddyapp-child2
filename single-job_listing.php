@@ -73,13 +73,13 @@ if(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI'])):?>
 	<div class="container content-area">
 <?php endif;?>
 
-<h1>Under development</h1>
+<!-- <h1>Under development</h1> -->
 
 	<?php
 	if ( have_posts() ) :
 		// Start the Loop.
 		while ( have_posts() ) : the_post();
-
+			echo "<h1>";the_title(); echo "</h1>";
 			/*
 			 * Include the post format-specific template for the content. If you want to
 			 * use this in a child theme, then include a file called called content-___.php
