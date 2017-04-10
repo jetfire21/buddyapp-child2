@@ -45,13 +45,13 @@ function a21_details_get_job_data_group_(){
     $group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
     $avatar_options = array ( 'item_id' => $gr_id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'html' => false );
     $gr_avatar = bp_core_fetch_avatar($avatar_options);
-    $html ='<li class="group-logo-left-text">Visit DuGoodr Cause:</li><li id="alex_groups_user"><a class="group-logo" href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a>
-            <a href="'.$group_permalink.'">'.$group->name.'</a></li>';
-    // global $wpdb;
-    // $gr_address = $wpdb->get_var("SELECT `meta_value` FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE group_id={$gr_id} AND meta_key='city_state'");
-    // if(!empty($gr_address)) $html .= '<li>'.esc_html($gr_address).'</li>';
-
-    echo $html;
+    if(!empty($group->name)){
+       $html ='<li class="group-logo-left-text">Visit DuGoodr Cause:</li><li id="alex_groups_user"><a class="group-logo" href="'.$group_permalink.'"><img src="'.$gr_avatar.'"/></a> <a href="'.$group_permalink.'">'.$group->name.'</a></li>';
+      // global $wpdb;
+      // $gr_address = $wpdb->get_var("SELECT `meta_value` FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE group_id={$gr_id} AND meta_key='city_state'");
+      // if(!empty($gr_address)) $html .= '<li>'.esc_html($gr_address).'</li>';
+      echo $html;
+  }
 }
 
 function a21_wpjm_hide_dismiss( $current_screen ) {
@@ -168,8 +168,48 @@ function a21_filter_by_group_field_query_args( $query_args, $args ) {
   return $query_args;
 }
 
+add_action("job_manager_job_submitted","a21_add_event_job_post_in_group_stream");
+function a21_add_event_job_post_in_group_stream($job_id){
 
-/********/
+   // echo "===debug a21=== url script: a21_qqq ".$job_id;
+
+   global $wpdb;
+   $get_job = $wpdb->get_results( $wpdb->prepare(
+    "SELECT post_author,guid,post_title
+    FROM {$wpdb->posts}
+    WHERE ID = %d AND post_type = %s
+    ",
+    intval( $job_id ),
+    "job_listing"
+  ) );
+      
+   // deb_last_query();
+   // alex_debug(0,1,"",$get_job);
+
+   // if job post added
+  if( !empty($get_job[0]->post_author) ) {
+
+      // $action = "{person_name_link} just added the amazing {job_title_and_link} opportunity in {city} for the cause {insert_cause_logo_title_link}";
+
+      global $bp;
+
+      $city = $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='_job_location' AND post_id='".(int)$job_id."'");
+      $gr_id = $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND post_id='".(int)$job_id."'");
+      // $gr_name = $wpdb->get_results( "SELECT name,slug FROM {$wpdb->prefix}bp_groups WHERE id='{$gr_id}' ");
+      $gr_root_slug = $bp->groups->root_slug;
+      $group = groups_get_group( array( 'group_id' => $gr_id ) );
+      $gr_link = "<a href='http://".$_SERVER['HTTP_HOST']."/{$gr_root_slug}/{$group->slug}/'>{$group->name}</a>";
+
+      $action = "just added the amazing <a href='".$get_job[0]->guid."'>".$get_job[0]->post_title."</a> opportunity in {$city} for the cause ".$gr_link;
+      $args = array( "action"=>$action, "component" => "groups", "type" => "new_event", 'item_id' => (int)$gr_id, 'secondary_item_id' => (int)$job_id);
+      $activity_id = bp_activity_add( $args );
+      // deb_last_query();
+  }
+
+   // exit;
+}
+
+/********************************/
 
 // add_filter("job_manager_get_listings_result","a21_d",100,2);
 // function a21_d($result, $jobs){
@@ -258,3 +298,6 @@ function a21_q($message, $search_values){
 
     return $message;
 }
+
+// 
+

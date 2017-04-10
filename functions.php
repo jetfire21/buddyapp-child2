@@ -1645,6 +1645,22 @@ function wp_get_name_page_template(){
 	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
 	alex_debug(1,1,0,$_SERVER);
 
+	global $wpdb;
+	// $table = $wpdb->prefix."bp_groups";
+	// “{person_name_link} just added the amazing {job_title_and_link} opportunity in {city} for the cause {insert_cause_logo_title_link}”
+	// $gr_name = $wpdb->get_var( "SELECT name FROM {$wpdb->prefix}bp_groups WHERE id='8' ");
+	// // $action = "just added the amazing ".$get_job[0]->guid." ".$get_job[0]->post_title." <a href='http://dugoodr2.dev/causes/ottawa-food-bank/'>{$gr_name}</a> ";
+	// $action="just added the amazing {job_title_and_link} opportunity in {city} for the cause <a href='http://dugoodr2.dev/causes/ottawa-food-bank/'>{$gr_name}</a>";
+
+	// $args = array( "action"=>$action, "component" => "groups", "type" => "new_event2", "item_id"=> 8,"secondary_item_id"=> 10454,"content"=>"content" );
+	// echo " activ_id= ".$activity_id = bp_activity_add( $args );
+
+      $group = groups_get_group( array( 'group_id' => 8 ) );
+      alex_debug(0,1,"",$group);
+
+	deb_last_query();
+
+
 }
 
 function deb_last_query(){
