@@ -201,7 +201,10 @@ function a21_add_event_job_post_in_group_stream($job_id){
       $gr_link = "<a href='http://".$_SERVER['HTTP_HOST']."/{$gr_root_slug}/{$group->slug}/'>{$group->name}</a>";
 
       $action = "just added the amazing <a href='".$get_job[0]->guid."'>".$get_job[0]->post_title."</a> opportunity in {$city} for the cause ".$gr_link;
-      $args = array( "action"=>$action, "component" => "groups", "type" => "new_event", 'item_id' => (int)$gr_id, 'secondary_item_id' => (int)$job_id);
+      // $args = array( "action"=>$action, "component" => "groups", "type" => "new_event", 'item_id' => (int)$gr_id, 'secondary_item_id' => (int)$job_id);
+      
+      // type new_job to no break tweet count in group stream in ajax method
+      $args = array( "action"=>$action, "component" => "groups", "type" => "new_job", 'item_id' => (int)$gr_id, 'secondary_item_id' => (int)$job_id);
       $activity_id = bp_activity_add( $args );
       // deb_last_query();
   }
