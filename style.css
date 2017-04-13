@@ -465,6 +465,22 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
    font-size: 12px; line-height: 18px; width: 100%;}
 .bp-user #a21_timeleline_quick_edit td{ padding:12px; }
 .bp-user #a21_timeleline_quick_edit td.timel_title{ width: 30%; }
+.datepicker {
+    margin-bottom: 40px;
+    box-shadow: none;
+    border:0;
+  }
+.datepicker table td,  .datepicker table th {border:0 !important; text-align: center !important; font-size: 12px !important;}
+.datepicker table {
+  margin:0 !important;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.datepicker-dropdown.datepicker-orient-bottom:before {top: -3px;}
+.datepicker-dropdown.datepicker-orient-bottom:after {top: -1px;}
+
 .bp-user #a21_timeleline_quick_edit #a21_wrap_datepicker td{ padding:10px; }
 .bp-user.profile-edit #a21_wrap_datepicker, .bp-user.profile-edit #a21_wrap_datepicker2{position: relative; width: 13%;}
 .bp-user.profile-edit .datepicker{position: absolute; z-index: 99999;}
