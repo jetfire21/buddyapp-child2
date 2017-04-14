@@ -1584,6 +1584,54 @@ endif;
 
 if(class_exists("WP_Job_Manager_Field_Editor")) require_once 'job_manager/wp-job-manager-groups/index.php';
 
+// override only due add image property 
+if(class_exists('BP_Member_Reviews')){
+
+	global $BP_Member_Reviews;
+	// alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
+
+	remove_action('bp_profile_header_meta', array($BP_Member_Reviews, 'embed_rating'));
+
+	add_action("bp_profile_header_meta","a21_override_bp_mr_embed_rating");
+
+	function a21_override_bp_mr_embed_rating(){
+		global $BP_Member_Reviews, $bp;
+		// echo "a21 new_html========";
+	    $user_id = bp_displayed_user_id();
+        $BP_Member_Reviews->calc_rating($user_id);
+        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
+       
+        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
+		?>
+		<div class="bp-users-reviews-stars" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+		    <span itemprop="ratingValue"  content="<?php echo $rating['result']; ?>"></span>
+		    <span itemprop="bestRating"   content="100"></span>
+		    <span itemprop="ratingCount"  content="<?php echo $rating['count']; ?>"></span>
+		    <span itemprop="itemReviewed" content="Person"></span>
+		    <span itemprop="name" content="<?php echo $BP_Member_Reviews->get_username($user_id); ?>"></span>
+		    <span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>
+		    <?php // override only due add image property ?>
+		    <span itemprop="image" content="<?php echo $user_avatar; ?>"></span>
+		    <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    <div class="active" style="width:<?php echo $rating['result']; ?>%">
+		        <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    </div>
+		</div>
+		<?
+	}
+}
+
+add_filter('post_class',"a21_css_class");
+function a21_css_class($classes){
+	// alex_debug(1,1,"",$classes);
+	foreach($classes as $k=>$v){ if($v == "hentry") unset($classes[$k]); }
+	// alex_debug(1,1,"",$classes);
+	// exit;
+	return $classes;
+}
+
+
+
 
 /***** TEMP FOR DEBUG *******/
 
@@ -1663,45 +1711,10 @@ function wp_get_name_page_template(){
 
 }
 
-// override only due add image property 
-if(class_exists('BP_Member_Reviews')){
-
-	global $BP_Member_Reviews;
-	// alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
-
-	remove_action('bp_profile_header_meta', array($BP_Member_Reviews, 'embed_rating'));
-
-	add_action("bp_profile_header_meta","a21_override_bp_mr_embed_rating");
-
-	function a21_override_bp_mr_embed_rating(){
-		global $BP_Member_Reviews, $bp;
-		// echo "a21 new_html========";
-	    $user_id = bp_displayed_user_id();
-        $BP_Member_Reviews->calc_rating($user_id);
-        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
-       
-        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
-		?>
-		<div class="bp-users-reviews-stars" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-		    <span itemprop="ratingValue"  content="<?php echo $rating['result']; ?>"></span>
-		    <span itemprop="bestRating"   content="100"></span>
-		    <span itemprop="ratingCount"  content="<?php echo $rating['count']; ?>"></span>
-		    <span itemprop="itemReviewed" content="Person"></span>
-		    <span itemprop="name" content="<?php echo $BP_Member_Reviews->get_username($user_id); ?>"></span>
-		    <span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>
-		    <?php // override only due add image property ?>
-		    <span itemprop="image" content="<?php echo $user_avatar; ?>"></span>
-		    <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
-		    <div class="active" style="width:<?php echo $rating['result']; ?>%">
-		        <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
-		    </div>
-		</div>
-		<?
-	}
-}
 
 
-add_action("wp_footer","a21_memb_reviews");
+
+// add_action("wp_footer","a21_memb_reviews");
 function a21_memb_reviews(){
 
 	// if(class_exists('BP_Member_Reviews')){
@@ -1709,8 +1722,8 @@ function a21_memb_reviews(){
 	// 	alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
 	// 	remove_action('bp_profile_header_meta', array($BP_Member_Reviews, 'embed_rating'));
 	// }
-
 }
+
 
 function deb_last_query(){
 

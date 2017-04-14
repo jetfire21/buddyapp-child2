@@ -134,9 +134,11 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 								</tr>
 								</table>
  -->
-							<div class="profile-fields mission">
+							<div class="profile-fields mission hentry">
+							<div class="entry-content">
 								<?php bp_the_profile_field_value(); ?>
 								</div>
+							</div>
 							<?php elseif($prof_name == "basic info"):?>
 								<?php if($bi < 1):?>
 									<div class="wrap_field-avail">
