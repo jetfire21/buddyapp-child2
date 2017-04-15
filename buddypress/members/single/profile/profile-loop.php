@@ -223,7 +223,8 @@ endif;
 								<?php $bi++; ?>								
 							<?php elseif($prof_name=="details"):?>
 								<?php if($det == 0):?>
-									<h2><?php bp_the_profile_field_value(); ?></h2>
+									<h2><?php bp_the_profile_field_value(); echo $edit_link; ?></h2>
+									<div class="clearfix"></div>
 								<?php else:?>
 									<h3><?php bp_the_profile_field_value(); ?></h3>
 								<?php endif;?>

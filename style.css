@@ -336,6 +336,19 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
 }
 
+/* today  a21 not work */
+
+/*@media only screen and (min-width: 692px){
+    #buddypress .profile .bp-widget.details p{font-size: 15px;}
+}
+*/
+@media only screen and (max-width: 900px){
+    /*#buddypress .bp-widget.details p { font-size:18px !important; }*/
+    #buddypress .profile .bp-widget.details p{font-size: 15px;}
+}
+
+/* today  a21 not work */
+
 .single-item.groups .city_state {padding-top:10px; text-transform: uppercase; text-align: left;}
 .single-item.groups #buddypress .group-admins{ width:100% !important; }
 .single-item.groups #buddypress #item-meta p{ margin-bottom: 5px !important; }
@@ -514,7 +527,8 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 #buddypress .profile table.field-avail td.data{border: 3px solid #ccc; background: #fff; padding: 0; vertical-align: top;}
 #buddypress .profile table.field-avail td.data p{ line-height: 1; padding-top: 10px;}
 #buddypress .profile table.field-avail td.verify{ border: none !important; padding: 0; width:65px; padding-left: 5px; cursor: pointer;}
-a.a21_btn_pf_edit:hover, a.a21_btn_pf_edit{ color:#fff !important; }
+.bp-widget .a21_btn_pf_edit i:hover,
+.bp-widget .a21_btn_pf_edit i{ color:#fff !important; }
 /*#buddypress .profile table.field-avail td.verify span{ display: none;}*/
 /*#buddypress .profile table.field-avail td.verify:hover span{ */
 .wrap_field-avail .sec_mouseover{
@@ -533,12 +547,16 @@ a.a21_btn_pf_edit:hover, a.a21_btn_pf_edit{ color:#fff !important; }
 #buddypress .profile table.mission tr td, #buddypress .profile table.mission{ border:none; }
 #buddypress .profile .bp-widget.info, #buddypress .profile .bp-widget.details{ width:50%; }
 #buddypress .profile .bp-widget.info{ float:right; }
-#buddypress .profile .bp-widget.details *{padding: 0; margin:0; color: #000 !important; }
+#buddypress .profile .bp-widget.details *{padding: 0; margin:0; color: #000;}
 #buddypress .profile .bp-widget.details a,#buddypress .profile .bp-widget.details p{font-size: 18px; line-height: 1.4;}
 #buddypress .profile .bp-widget.details h2 a{ 
   font-size: 23px; 
   font-weight: 600;
 }
+.bp-widget.details h2 p, .bp-widget.details h2 a{float:left;}
+.a21_btn_pf_edit{ font-size: 14px !important; padding: 8px 12px !important; margin:-7px 0 0 5px !important;}
+.clearfix{ clear:both; }
+.bp-user #buddypress .profile .bp-widget.details p { width:auto !important; }
 #buddypress .profile table td p { line-height: 1.2; }
 #buddypress .profile table .data span {    
     background: #ccc;
