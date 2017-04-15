@@ -336,19 +336,6 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
 }
 
-/* today  a21 not work */
-
-/*@media only screen and (min-width: 692px){
-    #buddypress .profile .bp-widget.details p{font-size: 15px;}
-}
-*/
-@media only screen and (max-width: 900px){
-    /*#buddypress .bp-widget.details p { font-size:18px !important; }*/
-    #buddypress .profile .bp-widget.details p{font-size: 15px;}
-}
-
-/* today  a21 not work */
-
 .single-item.groups .city_state {padding-top:10px; text-transform: uppercase; text-align: left;}
 .single-item.groups #buddypress .group-admins{ width:100% !important; }
 .single-item.groups #buddypress #item-meta p{ margin-bottom: 5px !important; }
@@ -393,8 +380,14 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
   .single-item.groups .city_state {text-align: center !important;}
 
 }
+/* 15.04.2017 */
+@media only screen and (max-width: 890px){
+    /* work only if e.g.890-100=790*/
+     #buddypress .profile .bp-widget.details p{font-size: 15px !important;}
+}
+/* 15.04.2017 */
 @media only screen and (max-width: 992px){
-.bp-user #content .main{ float: none; width: 100% !important; }
+    .bp-user #content .main{ float: none; width: 100% !important; }
 }
 
 @media only screen and (min-width: 900px){

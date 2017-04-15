@@ -71,16 +71,20 @@ $cur_user = wp_get_current_user();
 if(!empty($cur_user->ID) && $cur_user->ID == $user_id):
 	// alex_debug(0,1,"",bp_xprofile_get_groups());
 	foreach (bp_xprofile_get_groups() as $xp_gr) {
-		if(preg_match("/experience/i", $xp_gr->name)) { $xp_gr_experience_id = $xp_gr->id; break;}
+		if(preg_match("/experience/i", $xp_gr->name)) { $xp_gr_experience_id = $xp_gr->id; /*break;*/ }
+		if(preg_match("/details/i", $xp_gr->name)) { $xp_gr_details_id = $xp_gr->id; /*break;*/ }
 		// echo $xp_gr->name;
 	}
 	// http://dugoodr2.dev/i-am/admin/profile/edit/group/6/
 	// http://dugoodr2.dev/i-am/oenomaus2013/causes/
+	// http://dugoodr2.dev/i-am/admin/profile/edit/group/4/
 	$member_name = bp_core_get_username($user_id);
 	$base_link = get_home_url()."/".$bp->members->root_slug."/".$member_name."/";
 	$edit_link = $base_link.$bp->groups->root_slug;
 	$edit_link_exp = $base_link."profile/edit//group/".$xp_gr_experience_id;
+	$edit_link_details = $base_link."profile/edit//group/".$xp_gr_details_id;
 	$edit_link = " <a class='btn btn-primary a21_btn_pf_edit' href='".$edit_link."'><i class='fa fa-pencil'></i> </a>";
+	$edit_link_details = " <a class='btn btn-primary a21_btn_pf_edit' href='".$edit_link_details."'><i class='fa fa-pencil'></i> </a>";
 	$edit_link_exp = " <a class='btn btn-primary a21_btn_pf_edit' href='".$edit_link_exp."'><i class='fa fa-pencil'></i> </a>";
 endif;
 
@@ -223,7 +227,7 @@ endif;
 								<?php $bi++; ?>								
 							<?php elseif($prof_name=="details"):?>
 								<?php if($det == 0):?>
-									<h2><?php bp_the_profile_field_value(); echo $edit_link; ?></h2>
+									<h2><?php bp_the_profile_field_value(); echo $edit_link_details; ?></h2>
 									<div class="clearfix"></div>
 								<?php else:?>
 									<h3><?php bp_the_profile_field_value(); ?></h3>
