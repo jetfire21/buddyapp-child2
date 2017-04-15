@@ -66,12 +66,35 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 // // // // echo wpautop( $some_long_text );
 // print_r($t1);
 
+/******* get xp gr id experience***********/
+$cur_user = wp_get_current_user();
+if(!empty($cur_user->ID) && $cur_user->ID == $user_id):
+	// alex_debug(0,1,"",bp_xprofile_get_groups());
+	foreach (bp_xprofile_get_groups() as $xp_gr) {
+		if(preg_match("/experience/i", $xp_gr->name)) { $xp_gr_experience_id = $xp_gr->id; break;}
+		// echo $xp_gr->name;
+	}
+	// http://dugoodr2.dev/i-am/admin/profile/edit/group/6/
+	// http://dugoodr2.dev/i-am/oenomaus2013/causes/
+	$member_name = bp_core_get_username($user_id);
+	$base_link = get_home_url()."/".$bp->members->root_slug."/".$member_name."/";
+	$edit_link = $base_link.$bp->groups->root_slug;
+	$edit_link_exp = $base_link."profile/edit//group/".$xp_gr_experience_id;
+	$edit_link = " <a class='btn btn-primary a21_btn_pf_edit' href='".$edit_link."'><i class='fa fa-pencil'></i> </a>";
+	$edit_link_exp = " <a class='btn btn-primary a21_btn_pf_edit' href='".$edit_link_exp."'><i class='fa fa-pencil'></i> </a>";
+endif;
+
+// echo "===".xprofile_get_field_id_from_name("4. Experience");
+// global $wpdb;
+// echo $wpdb->prefix;
+// $xprofile_gr_id = $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}bp_xprofile_groups");
+
 ?>
 
 <?php if ( bp_has_profile() ) : ?>
 
 	<?php
-		function groups_user(){
+		function groups_user($edit_link =''){
 			global $bp;
 			$quest_id = $bp->displayed_user->id;
 			// groups for auth and noauth user
@@ -79,7 +102,8 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 			if( !empty($user_groups['groups']) ) {
 
 				$html = '<div class="bp-widget groups">';
-				$html .= "<span class='field-name'>Causes</span>";	
+				$html .= "<span class='field-name'>Causes".$edit_link."</span>";
+				//
 				foreach($user_groups["groups"] as $group_id) { 
 					$group = groups_get_group(array( 'group_id' => $group_id ));
 					$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
@@ -205,7 +229,9 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 								<?php endif;?>
 								<?php $det++; ?>	
 							<?php elseif($prof_name=="experience"):?>	
-								 <span class="field-name"><?php echo bp_get_the_profile_field_name();?></span>
+								 <span class="field-name"><?php echo bp_get_the_profile_field_name();?> 
+									<?php echo $edit_link_exp;?>
+								</span>
 								 <div class="data experience">
 									 <?php
 									  if( strtolower(bp_get_the_profile_field_name()) == "experience"){ 
@@ -256,10 +282,10 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 		$has_interests = xprofile_get_field_data('Interests', $user_id);
 		$has_experience = xprofile_get_field_data('Experience', $user_id);
 
-		if($has_interests == "")  echo '<div class="bp-widget"><span class="field-name">Interests</span>'.$text_field_empty.'</div>';
-		if($has_experience == "")  echo '<div class="bp-widget"><span class="field-name">Experience</span>'.$text_field_empty.'</div>';
+		if($has_interests == "")  echo '<div class="bp-widget"><span class="field-name">Interests'.$edit_link_exp.'</span>'.$text_field_empty.'</div>';
+		if($has_experience == "")  echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 			
-	    if( !empty( groups_user()) ) echo groups_user();
+	    if( !empty( groups_user()) ) echo groups_user($edit_link);
 
 		global $wpdb;
  		$user = wp_get_current_user();

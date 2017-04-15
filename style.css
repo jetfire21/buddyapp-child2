@@ -504,7 +504,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 #buddypress .profile .bp-widget .field-name {font-size: 18px; color: #00796b; text-transform: uppercase;}
 #buddypress .profile .bp-widget a { color:#656565;}
 /*#buddypress .profile .bp-widget a:hover, #buddypress .profile .bp-widget a:visited { color:#ff2a5b;}*/
-#buddypress .profile .bp-widget a:hover { color:#ff2a5b !important;}
+#buddypress .profile .bp-widget a:hover:not(.a21_btn_pf_edit) { color:#ff2a5b !important;}
 #buddypress .profile table tr { background: #ccc;}
 #buddypress .profile table td p { font-size: 20px !important; text-align: center;}
 /*#buddypress .profile table.field-avail{border: 3px solid #ccc; width:80%;}*/
@@ -514,6 +514,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 #buddypress .profile table.field-avail td.data{border: 3px solid #ccc; background: #fff; padding: 0; vertical-align: top;}
 #buddypress .profile table.field-avail td.data p{ line-height: 1; padding-top: 10px;}
 #buddypress .profile table.field-avail td.verify{ border: none !important; padding: 0; width:65px; padding-left: 5px; cursor: pointer;}
+a.a21_btn_pf_edit:hover, a.a21_btn_pf_edit{ color:#fff !important; }
 /*#buddypress .profile table.field-avail td.verify span{ display: none;}*/
 /*#buddypress .profile table.field-avail td.verify:hover span{ */
 .wrap_field-avail .sec_mouseover{
