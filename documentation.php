@@ -34,6 +34,7 @@ wp-admin/edit.php?post_type=job_listing&page=edit_job_fields&debug
 	<p><?php printf( __( '<a href="%1$s">Please activate your license key</a> in order to receive updates and support for "%2$s".', 'wp-job-manager-field-editor' ), admin_url( 'index.php?page=smyles-licenses' ), esc_html( $this->plugin_data['Name'] ) ); ?></p>
 </div>
 
+meta_key=_job_group_a21
 
 var_dump(get_option( $this->plugin_slug . '_hide_key_notice' ));
 
