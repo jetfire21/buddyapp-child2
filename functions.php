@@ -1734,5 +1734,3 @@ function deb_last_query(){
 	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
 	echo '<hr>';
 }
-
-
