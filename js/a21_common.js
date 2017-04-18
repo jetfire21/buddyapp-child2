@@ -55,7 +55,7 @@
 		if(colls.length <= 1){
 			html = '<tr class="a21_dinam_row"> \
 							<td class="a21_dinam_coll">\
-								 <input type="text" name="new_event_tasks[0][task]" class="form-control" />\
+								 <input type="text" name="new_event_tasks['+rows.length+'][task]" placeholder="Title task" />\
 							</td>\
 						</tr>';
 		}else{
@@ -67,7 +67,7 @@
 			for(var i=0; i<colls.length; i++){
 				if(i == 0){
 				html = html+'<td class="a21_dinam_coll">\
-								<input type="text" name="new_event_tasks['+rows.length+'][task]" class="form-control" />\
+								<input type="text" name="new_event_tasks['+rows.length+'][task]" placeholder="Title task" class="form-control" />\
 							</td>';
 				}else{
 				html = html+'<td class="a21_dinam_coll">\
@@ -87,32 +87,27 @@
 		var html = '';
 		console.log("new column");
 		var rows = $("#a21_bgc_tasks_shifts .a21_dinam_row");
+		if (rows.length <= 0) { alert("Please first add a row"); return false;}
 		var colls = $("#a21_bgc_tasks_shifts .a21_dinam_row:first .a21_dinam_coll");
+		var num_coll = colls.length + 1;
+		// var title_columns = $("#a21_bgc_tasks_shifts .title_columns th:nth-child("+num_coll+")");
+		var title_columns = $("#a21_bgc_tasks_shifts .title_columns");
+		console.log(typeof colls.length);
 		console.log("------NEW COLUMN count rows-----"+rows.length);
 		console.log("------NEW COLUMN count colls-----"+colls.length);
 		rows.each(function( i ) {
 			console.log("NEW COLUMN ряд "+i);
 			// console.log("counter colls "+j);
   			// console.log( i + ": " + $( this ).html() );
+  			// console.log(title_columns.html());
   			if(i <= 0){			
-  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+colls.length+']" class="form-control" /> top coll</td>';
+  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+colls.length+']" class="form-control" /></td>';
+  				title_columns.append('<th> time '+colls.length+'<input type="text" name="new_event_tasks['+i+'][time]" placeholder="11:00am-12:00am" /></th>');
 			}else{
   				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+colls.length+']" class="form-control" /> </td>';
 			}
   			$(this).append(html);
 		});
-		// for(var i = 0; i<=rows.length,i++){
-		// 	console.log("NEW COLUMN ряд "+i);
-		// 	// console.log("counter colls "+j);
-  // 			// console.log( i + ": " + $( this ).html() );
-  // 			if(i <= 0){			
-  // 				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+j+']" class="form-control" /> top coll</td>';
-		// 	}else{
-  // 				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+j+']" class="form-control" /> </td>';
-		// 	}
-  // 			$(this).append(html);
-  // 			j++;
-		// }
 	});
 
 
