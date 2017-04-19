@@ -1693,7 +1693,7 @@ function wp_get_name_page_template(){
 	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
 	alex_debug(1,1,0,$_SERVER);
 
-	global $wpdb;
+	// global $wpdb;
 	// $table = $wpdb->prefix."bp_groups";
 	// “{person_name_link} just added the amazing {job_title_and_link} opportunity in {city} for the cause {insert_cause_logo_title_link}”
 	// $gr_name = $wpdb->get_var( "SELECT name FROM {$wpdb->prefix}bp_groups WHERE id='8' ");
@@ -1703,10 +1703,10 @@ function wp_get_name_page_template(){
 	// $args = array( "action"=>$action, "component" => "groups", "type" => "new_event2", "item_id"=> 8,"secondary_item_id"=> 10454,"content"=>"content" );
 	// echo " activ_id= ".$activity_id = bp_activity_add( $args );
 
-      $group = groups_get_group( array( 'group_id' => 8 ) );
-      alex_debug(0,1,"",$group);
+ //      $group = groups_get_group( array( 'group_id' => 8 ) );
+ //      alex_debug(0,1,"",$group);
 
-	deb_last_query();
+	// deb_last_query();
 
 
 }
@@ -1717,11 +1717,52 @@ function wp_get_name_page_template(){
 // add_action("wp_footer","a21_memb_reviews");
 function a21_memb_reviews(){
 
+delete_option( 'bp_group_calendar_installed' );
 	// if(class_exists('BP_Member_Reviews')){
 	// 	global $BP_Member_Reviews;
 	// 	alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
 	// 	remove_action('bp_profile_header_meta', array($BP_Member_Reviews, 'embed_rating'));
 	// }
+
+	/***** проверка: есть ли у таблицы колонка (check exist column in table db ******
+
+	global $wpdb;
+	$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+	WHERE table_name = '{$wpdb->prefix}bp_groups_calendars' AND column_name = 'event_slug'"  );
+	alex_debug(1,1,"",$row);
+	// if(!empty($row)) { echo "has value";  ... in no value - add new column in db  }
+	if(empty($row)){
+	   $wpdb->query("ALTER TABLE {$wpdb->prefix}bp_groups_calendars ADD event_slug VARCHAR(200) NOT NULL");
+	   // ALTER TABLE `wp8k_bp_groups_calendars` ADD `event_slug` VARCHAR(200) NOT NULL AFTER `last_edited_stamp`;
+       // $wpdb->query("ALTER TABLE wp_customer_say ADD say_state INT(1) NOT NULL DEFAULT 1");
+	}
+	***** проверка: есть ли у таблицы колонка ******/
+
+	
+	/* **** получение целого столбца (например все id, и изменение/добавление slug к нему ***** *
+	global $wpdb;
+
+	$data = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars`");
+	alex_debug(0,1,"",$data);
+	echo $count_rows = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}bp_groups_calendars`");
+	// получить полностью один столбец (все id)
+
+	$ids = $wpdb->get_col("SELECT id FROM {$wpdb->prefix}bp_groups_calendars");
+	alex_debug(0,1,"",$ids);
+
+	foreach($ids as $id){
+		echo $event_title = $wpdb->get_var( "SELECT event_title FROM {$wpdb->prefix}bp_groups_calendars WHERE id='{$id}'");
+		$event_title = strtolower($event_title);
+		$event_slug = str_replace(" ", "-", $event_title);
+		$query = 
+		$wpdb->update(
+			$wpdb->prefix."bp_groups_calendars",
+			array( 'event_slug' => $event_slug, ),
+			array( 'id' => $id )
+		);
+	}
+	 **** получение целого столбца (например все id, и изменение/добавление slug к нему ***** */
+
 }
 
 

@@ -1139,3 +1139,24 @@ function a21_include_css_js_for_page_edit_profile(){
 						// datep.datepicker({'autoclose':true});
 					});
 				</script>
+
+
+
+
+	// echo $count_rows = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}bp_groups_calendars`");
+	// получить полностью один столбец (все id)
+	$ids = $wpdb->get_col("SELECT id FROM {$wpdb->prefix}bp_groups_calendars");
+
+	foreach($ids as $id){
+		echo $event_title = $wpdb->get_var( "SELECT event_title FROM {$wpdb->prefix}bp_groups_calendars` WHERE id='{$id}'");
+		$event_title = strtolower($event_title);
+		$event_slug = str_replace(" ", "_", $event_title);
+		$query = 
+		$wpdb->update(
+			$wpdb->posts,
+			array( 'event_slug' => $event_slug, ),
+			array( '%s' )
+		);
+	}
+
+/* **** as21 **** */

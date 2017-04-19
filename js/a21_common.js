@@ -67,11 +67,11 @@
 			for(var i=0; i<colls.length; i++){
 				if(i == 0){
 				html = html+'<td class="a21_dinam_coll">\
-								<input type="text" name="new_event_tasks['+rows.length+'][task]" placeholder="Title task" class="form-control" />\
+								<input type="text" name="new_event_tasks['+rows.length+'][task]" placeholder="Title task" />\
 							</td>';
 				}else{
 				html = html+'<td class="a21_dinam_coll">\
-								<input type="text" name="new_event_tasks['+rows.length+'][shift_'+i+']" class="form-control" />\
+								<input type="text" name="new_event_tasks['+rows.length+'][time_'+i+']" />\
 							</td>';
 				}
 			}
@@ -89,22 +89,24 @@
 		var rows = $("#a21_bgc_tasks_shifts .a21_dinam_row");
 		if (rows.length <= 0) { alert("Please first add a row"); return false;}
 		var colls = $("#a21_bgc_tasks_shifts .a21_dinam_row:first .a21_dinam_coll");
+		var th_colls = $("#a21_bgc_tasks_shifts .a21_dinam_th_coll");
 		var num_coll = colls.length + 1;
 		// var title_columns = $("#a21_bgc_tasks_shifts .title_columns th:nth-child("+num_coll+")");
 		var title_columns = $("#a21_bgc_tasks_shifts .title_columns");
 		console.log(typeof colls.length);
 		console.log("------NEW COLUMN count rows-----"+rows.length);
 		console.log("------NEW COLUMN count colls-----"+colls.length);
+		console.log("------NEW COLUMN count th_colls-----"+th_colls.length);
 		rows.each(function( i ) {
 			console.log("NEW COLUMN ряд "+i);
 			// console.log("counter colls "+j);
   			// console.log( i + ": " + $( this ).html() );
   			// console.log(title_columns.html());
   			if(i <= 0){			
-  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+colls.length+']" class="form-control" /></td>';
-  				title_columns.append('<th> time '+colls.length+'<input type="text" name="new_event_tasks['+i+'][time]" placeholder="11:00am-12:00am" /></th>');
+  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']" /></td>';
+  				title_columns.append('<th class="a21_dinam_th_coll"> time '+colls.length+'<input type="text" name="new_event_tasks[time]['+th_colls.length+']" placeholder="11:00am-12:00am" /></th>');
 			}else{
-  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][shift_'+colls.length+']" class="form-control" /> </td>';
+  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']"/> </td>';
 			}
   			$(this).append(html);
 		});
