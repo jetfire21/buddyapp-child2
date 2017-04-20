@@ -115,5 +115,43 @@
 
 	// ///////////// add new row for bp group calendar
 
+	// ///////////// add new volunteer in event
+	$(".a21_add_new_volunteer").click(function(){
+		console.log("add new volunteer");
+		var nick = $(this).attr("data-nick");
+		var user_id = $(this).attr("data-id");
+		var i = $(this).attr("data-i");
+		var cnt = $(this).parent().find(".vol_cnt").html();
+		var task_id = $(this).parent().parent().attr("data-task_id");
+		console.log();
+		console.log(nick);
+		console.log(cnt);
+		console.log("task_id"+task_id);
+		console.log("i"+i);
+		$(this).parent().append("<p>"+nick+"</p>");
+		$(this).remove();
+
+		var data = {
+			'action': 'a21_bgc_add_new_volunteer',
+			'user_id':user_id,
+			'task_id':task_id,
+			'i':i
+		};
+
+		$.ajax({
+			url:KLEO.ajaxurl,
+			data:data, 
+			type:'POST', 
+			success:function(data){
+				console.log(data);
+				if( data ) { 
+				} else { console.log("data send with errors!");}
+			}
+
+		 });
+
+	});
+	// ///////////// add new volunteer in event
+
 	});
 })(jQuery);
