@@ -70,8 +70,8 @@
 								<input type="text" name="new_event_tasks['+rows.length+'][task]" placeholder="Title task" />\
 							</td>';
 				}else{
-				html = html+'<td class="a21_dinam_coll">\
-								<input type="text" name="new_event_tasks['+rows.length+'][time_'+i+']" />\
+				html = html+'<td class="a21_dinam_coll vol_cnt">\
+								<input type="text" name="new_event_tasks['+rows.length+'][time_'+i+']" placeholder="2" />\
 							</td>';
 				}
 			}
@@ -103,10 +103,10 @@
   			// console.log( i + ": " + $( this ).html() );
   			// console.log(title_columns.html());
   			if(i <= 0){			
-  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']" /></td>';
+  				html = '<td class="a21_dinam_coll vol_cnt"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']" placeholder="2" /></td>';
   				title_columns.append('<th class="a21_dinam_th_coll"> time '+colls.length+'<input type="text" name="new_event_tasks[time]['+th_colls.length+']" placeholder="11:00am-12:00am" /></th>');
 			}else{
-  				html = '<td class="a21_dinam_coll"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']"/> </td>';
+  				html = '<td class="a21_dinam_coll vol_cnt"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']" placeholder="2" /> </td>';
 			}
   			$(this).append(html);
 		});
@@ -152,6 +152,28 @@
 
 	});
 	// ///////////// add new volunteer in event
+
+	/* **** as21 counter and compare total volunteers and current count vol **** */
+	$("#a21_bgc_tasks_shifts").on("change",".vol_cnt input",function(){
+		var total_cnt = 0;
+		console.log("change");
+		var init_total_vol = $("#total-volunteers").val();
+		console.log(init_total_vol);
+		if(init_total_vol == "") init_total_vol = 0;
+		init_total_vol = parseInt(init_total_vol);
+		if(init_total_vol <= 0) alert("Field 'Total Event Volunteers Needed' is empty! Please populeted");
+
+		$("#a21_bgc_tasks_shifts .vol_cnt input").each(function(i){
+			var cur_cnt = $(this).val();
+			console.log( typeof cur_cnt);
+			if(cur_cnt == "") cur_cnt = 0;
+			total_cnt = parseInt(total_cnt) + parseInt(cur_cnt);
+			console.log("i "+i+" "+cur_cnt+ " "+ typeof cur_cnt + " " + total_cnt + " "+ typeof total_cnt);
+		});
+		console.log(total_cnt);
+		if( total_cnt > init_total_vol && init_total_vol != 0 ) alert("Current cout volunteers-"+total_cnt+", available is - "+init_total_vol+" Please reduce the current number of volunteers");
+	});
+	/* **** as21 counter and compare total volunteers and current count vol **** */
 
 	});
 })(jQuery);
