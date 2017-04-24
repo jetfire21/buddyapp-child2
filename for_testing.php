@@ -1160,3 +1160,8 @@ function a21_include_css_js_for_page_edit_profile(){
 	}
 
 /* **** as21 **** */
+
+/* ****  извлекает числа из строки **** */
+$str = 'here any 234 $ text';
+$str = preg_replace("/[^0-9]/", '', $str);
+/* ****  извлекает числа из строки **** */

@@ -119,17 +119,18 @@
 	$(".a21_add_new_volunteer").click(function(){
 		console.log("add new volunteer");
 		var nick = $(this).attr("data-nick");
-		var user_id = $(this).attr("data-id");
+		var user_id = Number( $(this).attr("data-id") );
 		var i = $(this).attr("data-i");
 		var cnt = $(this).parent().find(".vol_cnt").html();
 		var task_id = $(this).parent().parent().attr("data-task_id");
 		console.log();
 		console.log(nick);
 		console.log(cnt);
+		console.log("type user_id-"+typeof user_id);
 		console.log("task_id"+task_id);
 		console.log("i"+i);
 		$(this).parent().append("<p>"+nick+"</p>");
-		$(this).remove();
+		if(user_id > 0) $(this).remove();
 
 		var data = {
 			'action': 'a21_bgc_add_new_volunteer',
@@ -154,7 +155,7 @@
 	// ///////////// add new volunteer in event
 
 	/* **** as21 counter and compare total volunteers and current count vol **** */
-	$("#a21_bgc_tasks_shifts").on("change",".vol_cnt input",function(){
+	$("#a21_bgc_tasks_shifts").on("keyup",".vol_cnt input",function(){
 		var total_cnt = 0;
 		console.log("change");
 		var init_total_vol = $("#total-volunteers").val();
