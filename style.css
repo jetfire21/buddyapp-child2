@@ -680,7 +680,7 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 #add-event-form #total-volunteers{ width: 70px;  }
 /* ******* PAGE CALENDAR ********* */
 
-
+.a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 
 .activity-header p{line-height: 1.3 !important;}
 
