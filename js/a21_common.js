@@ -151,13 +151,17 @@
 		console.log("add new volunteer");
 		var nick = $(this).attr("data-nick");
 		var user_id = Number( $(this).attr("data-id") );
+		// var s_need_cnt = Number( $(this).attr("data-s-need-cnt") );
 		var event_id = Number( $("#a21_bgc_tasks_shifts").attr("data-event-id") );
 		var i = $(this).attr("data-i");
-		var cnt = $(this).parent().find(".vol_cnt").html();
+		var s_need_cnt = Number($(this).parent().find(".vol_cnt").text());
+		if(s_need_cnt > 0) s_need_cnt = s_need_cnt-1;
+		$(this).parent().find(".vol_cnt").html(s_need_cnt);
 		var task_id = $(this).parent().parent().attr("data-task_id");
+
 		console.log();
 		console.log(nick);
-		console.log(cnt);
+		console.log("s_need_cnt="+s_need_cnt);
 		console.log("event_id="+event_id);
 		console.log("type user_id="+typeof user_id);
 		console.log("task_id="+task_id);

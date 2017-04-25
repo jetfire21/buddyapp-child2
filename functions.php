@@ -18,7 +18,8 @@ function new_mail_from($old) {
 return 'volunteer@dugoodr.com';
 }
 function new_mail_from_name($old) {
-return 'DuGoodr Scout';
+// return 'DuGoodr Scout';
+return 'Justa DuGoodr';
 }
 
 
@@ -1635,14 +1636,30 @@ function a21_css_class($classes){
 
 /***** TEMP FOR DEBUG *******/
 
+/* **** 1-получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
+
 // add_action("wp_footer","as21_temp_func");
 function as21_temp_func(){
 
-	$option = "bp_group_calendar_installed";
-	echo " option:: $option=".get_option($option);
-	if( delete_option( $option ) ) echo "<br>$option - success delete";
+	if( current_user_can('administrator') && is_front_page()){
 
+		global $wpdb;
+
+		echo "<h3>for debug:</h3>";
+		$option = "bp_group_calendar_installed";
+		echo " option:: $option=".get_option($option);
+		// if( delete_option( $option ) ) echo "<br>$option - success delete";
+
+		// $tables = $wpdb->get_results("SHOW TABLES FROM dugoodr2");
+		// $tables = $wpdb->get_results("SHOW TABLES FROM dugoodr6_wp956");
+		// echo "count tables=".count($tables);echo "<br>";
+		// alex_debug(0,1,"",$tables);
+
+		// $wpdb->query("DROP TABLE {$wpdb->prefix}bp_groups_calendars;");
+	}
 }
+/* **** получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
+
 
 // add_action("wp_footer","wp_get_name_page_template2");
 function wp_get_name_page_template2(){
