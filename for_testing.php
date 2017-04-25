@@ -1165,3 +1165,7 @@ function a21_include_css_js_for_page_edit_profile(){
 $str = 'here any 234 $ text';
 $str = preg_replace("/[^0-9]/", '', $str);
 /* ****  извлекает числа из строки **** */
+
+$option = "bp_group_calendar_installed";
+echo " option $option=".get_option($option);
+if( delete_option( $option ) ) echo " $option - success delete";

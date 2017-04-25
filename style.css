@@ -682,6 +682,7 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .wrap_btns_for_event_tasks {overflow: hidden; clear: both;}
 .wrap_btns_for_event_tasks .d_btn_left {float: left;}
 .wrap_btns_for_event_tasks .d_btn_right{float: right;}
+table.calendar-view {margin:0;}
 /* ******* PAGE CALENDAR ********* */
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
