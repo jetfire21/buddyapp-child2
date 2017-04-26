@@ -474,7 +474,7 @@ function alex_search_form( $atts = array(), $content = null ) {
 				<i> </i>
 	<div class="s-bar">
 	<form id="' . $el_id . '" class="' . $el_class . ' second-menu" method="get" ' . ( $search_page == 'no' ? ' onsubmit="return false;"' : '' ) . ' action="' . $action . '" data-context="' . $context  .'">';
-	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'Find or Add your cause...\';}" value="Find or Add your cause...">';
+	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'Find your cause...\';}" value="Find your cause...">';
 	$output .= '<input type="submit" class="' . $button_class . '" value="Search" />';
 	if ( $ajax_results == 'yes' ) {
 		$output .= '<div class="kleo_ajax_results search-style-' . $form_style . '"></div>';
@@ -1572,7 +1572,7 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 			function __construct() {
 				$args = array(
 					'slug' => 'a21-jobs',
-	//				'name' => 'Jobs',
+					'name' => 'Jobs',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );
@@ -1638,7 +1638,7 @@ function a21_css_class($classes){
 
 /* **** 1-получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
 
-// add_action("wp_footer","as21_temp_func");
+add_action("wp_footer","as21_temp_func");
 function as21_temp_func(){
 
 	if( current_user_can('administrator') && is_front_page()){
