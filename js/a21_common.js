@@ -214,5 +214,53 @@
 	});
 	/* **** as21 counter and compare total volunteers and current count vol **** */
 
+	$(".a21_cancel_my_attandance").on("click",function(){
+
+		var self = $(this);
+		var self_parent = self.parent();
+		var task_id = self.attr("data-task-id");
+		var user_id = self.attr("data-user-id");
+		var i = Number(self.attr("data-i"));
+		console.log("==CLICK #a21_cancel_my_attandance===\r\n"+"task_id="+task_id+" user_id="+user_id+" i="+i+"\r\n");
+		// var s_need_cnt = Number( self.attr("data-s-need-cnt") );
+		var s_need_cnt = Number( self.parent().find(".vol_cnt").text() );
+		console.log("s_need_cnt="+s_need_cnt);
+		console.log( "self="+self.html() );
+		console.log( self.parent().find(".link-user-id-"+user_id ).html() );
+		console.log( self.parent().html() );
+		var link_cur_user = self.parent().find(".link-user-id-"+user_id );
+
+		var data = {
+			'action': 'a21_cancel_my_attandance',
+			'user_id':user_id,
+			'task_id':task_id,
+			'i':i
+		};
+
+		$.ajax({
+			url:KLEO.ajaxurl,
+			data:data, 
+			type:'POST', 
+			success:function(data){
+				if( data ) { 
+					console.log("data after ajax="+data);
+					s_need_cnt = s_need_cnt+1;
+					// console.log( $(this).html() );
+					// console.log( "self="+self.html() );
+					// console.log("parent self="+self.parent().html() );
+					self_parent.find(".vol_cnt").html(s_need_cnt);
+					self_parent.find(".a21_cancel_my_attandance").remove();
+					// console.log( self.parent().find(".link-user-id-"+user_id ).html() );
+					// console.log( self.parent().find(".link-user-id-1" ).html() );
+					// console.log("s_need_cnt="+s_need_cnt);
+					// console.log( self_sparent.html() );
+					link_cur_user.remove();
+					self_parent.removeClass("red-cell");
+				} else { console.log("data send with errors!");}
+			}
+
+		 });
+	})
+
 	});
 })(jQuery);

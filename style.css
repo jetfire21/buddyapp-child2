@@ -676,6 +676,7 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
     width: 100% !important;
 }
 #a21_bgc_tasks_shifts button{ display: block; }
+#a21_bgc_tasks_shifts .avatar { margin-right: 5px; }
 #a21_bgc_add_new_row, #a21_bgc_add_new_column{display: table;}
 #add-event-form #total-volunteers{ width: 70px;  }
 #a21_bgc_del_row, #a21_bgc_del_column{ display: none; }
@@ -683,6 +684,9 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .wrap_btns_for_event_tasks .d_btn_left {float: left;}
 .wrap_btns_for_event_tasks .d_btn_right{float: right;}
 table.calendar-view {margin:0;}
+#a21_bgc_tasks_shifts .red-cell { background-color: #d48668 !important; color: #000;}
+#a21_bgc_tasks_shifts .red-cell .a21-system-message { color: #fff;}
+#a21_bgc_tasks_shifts .yellow-cell { background-color: #ede5ad !important; color: #000;}
 /* ******* PAGE CALENDAR ********* */
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
