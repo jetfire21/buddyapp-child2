@@ -147,8 +147,9 @@
 	// ///////////// add new row for bp group calendar
 
 	// ///////////// add new volunteer in event
-	$(".a21_add_new_volunteer").click(function(){
-		console.log("add new volunteer");
+	// $(".a21_add_new_volunteer").click(function(){
+	$("tr td").on("click", ".a21_add_new_volunteer", function(){
+
 		var nick = $(this).attr("data-nick");
 		var user_id = Number( $(this).attr("data-id") );
 		// var s_need_cnt = Number( $(this).attr("data-s-need-cnt") );
@@ -158,6 +159,8 @@
 		if(s_need_cnt > 0) s_need_cnt = s_need_cnt-1;
 		$(this).parent().find(".vol_cnt").html(s_need_cnt);
 		var task_id = $(this).parent().parent().attr("data-task_id");
+
+		console.log("== CLICK add new volunteer ===\r\n"+"task_id="+task_id+" user_id="+user_id+" i="+i+"\r\n");
 
 		console.log();
 		console.log(nick);
@@ -225,9 +228,9 @@
 		// var s_need_cnt = Number( self.attr("data-s-need-cnt") );
 		var s_need_cnt = Number( self.parent().find(".vol_cnt").text() );
 		console.log("s_need_cnt="+s_need_cnt);
-		console.log( "self="+self.html() );
-		console.log( self.parent().find(".link-user-id-"+user_id ).html() );
-		console.log( self.parent().html() );
+		// console.log( "self="+self.html() );
+		// console.log( self.parent().find(".link-user-id-"+user_id ).html() );
+		// console.log( self.parent().html() );
 		var link_cur_user = self.parent().find(".link-user-id-"+user_id );
 
 		var data = {
@@ -242,7 +245,12 @@
 			data:data, 
 			type:'POST', 
 			success:function(data){
-				if( data ) { 
+				console.log(data);
+				data = JSON.parse(data); 
+				console.log(data.html);
+				console.log(data.cnt_vols_signup_now);
+				console.log("cnt_vols_signup_now "+ typeof data.cnt_vols_signup_now);
+				if( data.html ) { 
 					console.log("data after ajax="+data);
 					s_need_cnt = s_need_cnt+1;
 					// console.log( $(this).html() );
@@ -256,6 +264,9 @@
 					// console.log( self_sparent.html() );
 					link_cur_user.remove();
 					self_parent.removeClass("red-cell");
+					if(data.cnt_vols_signup_now > 0) self_parent.addClass("yellow-cell");
+					else self_parent.removeClass("yellow-cell")
+					self_parent.html(data.html);
 				} else { console.log("data send with errors!");}
 			}
 
