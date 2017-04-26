@@ -148,7 +148,10 @@
 
 	// ///////////// add new volunteer in event
 	// $(".a21_add_new_volunteer").click(function(){
-	$("tr td").on("click", ".a21_add_new_volunteer", function(){
+	$(".a21_dinam_coll").on("click", ".a21_add_new_volunteer", function(){
+
+		var self = $(this);
+		var self_parent = self.parent();
 
 		var nick = $(this).attr("data-nick");
 		var user_id = Number( $(this).attr("data-id") );
@@ -156,8 +159,8 @@
 		var event_id = Number( $("#a21_bgc_tasks_shifts").attr("data-event-id") );
 		var i = $(this).attr("data-i");
 		var s_need_cnt = Number($(this).parent().find(".vol_cnt").text());
-		if(s_need_cnt > 0) s_need_cnt = s_need_cnt-1;
-		$(this).parent().find(".vol_cnt").html(s_need_cnt);
+		// if(s_need_cnt > 0) s_need_cnt = s_need_cnt-1;
+		// $(this).parent().find(".vol_cnt").html(s_need_cnt);
 		var task_id = $(this).parent().parent().attr("data-task_id");
 
 		console.log("== CLICK add new volunteer ===\r\n"+"task_id="+task_id+" user_id="+user_id+" i="+i+"\r\n");
@@ -169,8 +172,8 @@
 		console.log("type user_id="+typeof user_id);
 		console.log("task_id="+task_id);
 		console.log("i"+i);
-		$(this).parent().append("<p>"+nick+"</p>");
-		if(user_id > 0) $(this).remove();
+		// $(this).parent().append("<p>"+nick+"</p>");
+		// if(user_id > 0) $(this).remove();
 
 		var data = {
 			'action': 'a21_bgc_add_new_volunteer',
@@ -186,7 +189,15 @@
 			type:'POST', 
 			success:function(data){
 				console.log(data);
+				data = JSON.parse(data); 
+				console.log(data.html);
+				console.log(data.cnt_vols_signup_now);
+				console.log("cnt_vols_signup_now "+ typeof data.cnt_vols_signup_now);
+
 				if( data ) { 
+					self_parent.html(data.html);
+					self_parent.addClass("yellow-cell");
+					if(data.full) { self_parent.addClass("red-cell"); self_parent.removeClass("yellow-cell"); }
 				} else { console.log("data send with errors!");}
 			}
 
@@ -217,7 +228,9 @@
 	});
 	/* **** as21 counter and compare total volunteers and current count vol **** */
 
-	$(".a21_cancel_my_attandance").on("click",function(){
+	// $(".a21_cancel_my_attandance").on("click",function(){
+	$(".a21_dinam_coll").on("click", ".a21_cancel_my_attandance", function(){
+
 
 		var self = $(this);
 		var self_parent = self.parent();
