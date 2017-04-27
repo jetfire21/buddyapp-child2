@@ -1636,6 +1636,31 @@ function a21_css_class($classes){
 
 /***** TEMP FOR DEBUG *******/
 
+// add_action("wp_footer","as21_temp_func2");
+function as21_temp_func2(){
+
+	if ( !preg_match("#media/$#i", $_SERVER['REQUEST_URI'] ) ) return false;
+	echo "THIS IS MEDIA";
+	echo "==== work as21_temp_func2 ====";
+	 $group = groups_get_group( array( 'group_id' => 2) );
+	 echo $group->name;
+	 alex_debug(0,1,"",$group);
+	// $action = "Signed up to event task";
+	$action ='<a href="http://dugoodr2.dev/i-am/admin/">Admin</a> Signed up to event task<a href="http://dugoodr2.dev/causes/ottawa-mission/">Ottawa Mission</a>';
+	$content = "event link details";
+
+	// INSERT INTO `wp8k_bp_activity` (`id`, `user_id`, `component`, `type`, `action`, `content`, `primary_link`, `item_id`, `secondary_item_id`, `date_recorded`, `hide_sitewide`, `mptt_left`, `mptt_right`, `is_spam`) VALUES (NULL, '1', 'groups', 'joined_group', 'Signed up to event task', '', 'http://dugoodr2.dev/i-am/admin/', '2', '0', '2017-04-27 14:54:15', '0', '0', '0', '0')
+	// component = members,groups
+	// $act_id = bp_activity_add( array(
+	// 								'action' => $action,
+	// 								// 'item_id'=>2,
+	// 								'component' => 'groups',
+	// 								'type'=>'joined_cal_event_task',
+	// 								'content'=>$content,
+	// 								'error_type' => 'wp_error') );
+	var_dump($act_id);
+}
+
 /* **** 1-получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
 
 // add_action("wp_footer","as21_temp_func");
@@ -1693,9 +1718,55 @@ function wp_get_name_page_template2(){
 	// var_dump(is_page_template("single-job_listing.php"));
 	// var_dump(is_page_template("single-job_listing"));
 	echo "<hr>";
-	var_dump(is_singular("post-a-job"));
-	var_dump(is_single("post-a-job"));
-	var_dump(is_page("post-a-job"));
+	// var_dump(is_singular("post-a-job"));
+	// var_dump(is_single("post-a-job"));
+	// var_dump(is_page("post-a-job"));
+
+}
+
+
+// only for debug
+// add_action("wp_footer","as21_groups_action_join_group");
+// this if defined path /buddypress/bp-groups/bp-groups-actions.php
+function as21_groups_action_join_group1() {
+
+	// echo "==as21_groups_action_join_group==";
+	if ( !bp_is_groups_component() ) return false;
+
+	// // Nonce check.
+	// if ( !check_admin_referer( 'groups_join_group' ) )
+	// 	return false;
+
+	$bp = buddypress();
+
+	// checking values
+	// echo "<br> bp_loggedin_user_id=".bp_loggedin_user_id();
+	// echo "<br> bp->groups->current_group->id=".$bp->groups->current_group->id;
+	// var_dump( groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) );
+	// var_dump(groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id) );
+	// var_dump( groups_join_group( $bp->groups->current_group->id ) );
+
+	// Skip if banned or already a member.
+	if ( !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) && !groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+
+		/*// User wants to join a group that is not public.
+		if ( $bp->groups->current_group->status != 'public' ) {
+			if ( !groups_check_user_has_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+				bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
+				bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+			}
+		}
+		*/
+
+		/*// User wants to join any group.
+		if ( !groups_join_group( $bp->groups->current_group->id ) )
+			bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
+		else
+			bp_core_add_message( __( 'You joined the group!', 'buddypress' ) );
+		*/
+		// bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		groups_join_group( $bp->groups->current_group->id );
+	}
 
 }
 
@@ -1725,7 +1796,7 @@ function wp_get_name_page_template(){
 	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
 	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
 	alex_debug(1,1,0,$_SERVER);
-
+exit;
 	// global $wpdb;
 	// $table = $wpdb->prefix."bp_groups";
 	// “{person_name_link} just added the amazing {job_title_and_link} opportunity in {city} for the cause {insert_cause_logo_title_link}”

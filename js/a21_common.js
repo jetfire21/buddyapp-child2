@@ -286,5 +286,9 @@
 		 });
 	})
 
+	$(".a21_bgc_user_signup").click(function(){
+		$(".show-login").trigger("click");
 	});
+
+  });
 })(jQuery);
