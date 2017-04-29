@@ -140,6 +140,14 @@ function alex_display_social_groups() {
         else $data = false;
 
         if( !empty($data) ){
+        	// var_dump($data);
+        	// var_dump($field->post_title);
+        	// var_dump(preg_match("#google#i", $field->post_title));
+			if(preg_match("#google#i", $field->post_title)) {
+				$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+				$field->post_title = str_replace("+", "", $field->post_title);
+			}
+        	// var_dump($field->post_title);
 
         	switch ($field->post_title) {
         		case 'Website':
@@ -148,7 +156,8 @@ function alex_display_social_groups() {
         		case 'Facebook':
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/fb.png" />';
         			break;  		
-        		case 'Google+':
+        		// case 'Google+':
+        		case 'Youtube':
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/youtube.png" />';
         			break;
         		case 'Twitter':
@@ -227,6 +236,13 @@ function alex_edit_group_fields(){
 		// "alex_gfilds"
 	) );
 	foreach ($fields as $field) {
+		// var_dump($field);
+		// if(preg_match("#google+#i", $field->post_title) ) 
+		// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
+		if(preg_match("#google#i", $field->post_title)) {
+			$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+			$field->post_title = str_replace("+", "", $field->post_title);
+		}
 
 		echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
 		echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
@@ -276,8 +292,8 @@ add_action( 'groups_group_details_edited', 'alex_edit_group_fields_save' );
 function alex_get_postid_and_fields( $wpdb = false){
 
 	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	// $fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
+	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
 	$id = $last_post_id+1;
 	$id_and_fields = array($id,$fields);
 	return $id_and_fields;
@@ -333,6 +349,8 @@ function add_soclinks_only_for_one_group_db(){
 	$fields = $postid_and_fields[1];
 
 	// alex_debug(0,1,"fie",$fields);
+	// alex_debug(0,1,"fie",$_COOKIE);
+	// exit;
 
 	foreach ($fields as $field_name) {
 
@@ -340,7 +358,12 @@ function add_soclinks_only_for_one_group_db(){
 			$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
 		}
 		else $post_content = '';
-		if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
+
+		if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
+			 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
+		}
+
+		// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
 		
 		// echo $field_name." - ";
 
@@ -353,6 +376,8 @@ function add_soclinks_only_for_one_group_db(){
 			);
 			$postid++; 
 		// }
+			// deb_last_query();
+
 	} 
 
 	foreach ($fields as $field_name) {
@@ -360,10 +385,12 @@ function add_soclinks_only_for_one_group_db(){
 		// delete cookie
 		setcookie( 'alex-'.$field_name, false, time() - 1000, COOKIEPATH, COOKIE_DOMAIN, is_ssl() );
 	}
+	// exit;
 }
 
 // Fires after the group has been successfully created (variation 1)
-add_action( 'groups_group_create_complete','add_soclinks_only_for_one_group_db');
+// add_action( 'groups_group_create_complete','add_soclinks_only_for_one_group_db');
+add_action( 'bp_after_group_settings_creation_step','add_soclinks_only_for_one_group_db');
 
 add_action( 'groups_create_group_step_save_group-details','alex_save_socialinks_cookies' );
 function alex_save_socialinks_cookies(){
@@ -392,7 +419,14 @@ function alex_group_create_add_socialinks(){
 		}
 		else $user_fill = '';
 
-		if(preg_match("#google#i", $field) === 1) $field = $field."+";
+		// if(preg_match("#google#i", $field) === 1) $field = $field."+";
+		// if(preg_match("#google\+#i", $field) === 1) $field = preg_replace("#google\+#i", "Youtube", $field);
+		if(preg_match("#google#i", $field)) {
+				$field = preg_replace("#google#i", "Youtube", $field);
+				$field = str_replace("+", "", $field);
+		}
+
+
 
 		echo '<label class="" for="alex-'.$field.'">'.$field.'</label>';
 		echo '<input id="alex-'.$field.'" name="alex-'.$field.'" type="url" value="'.$user_fill.'" />';
