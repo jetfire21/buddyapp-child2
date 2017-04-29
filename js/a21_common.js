@@ -188,7 +188,9 @@
 			data:data, 
 			type:'POST', 
 			success:function(data){
-				console.log(data);
+				console.log("----from WP AJAX data---");
+				console.log("data="+data);
+				console.log(typeof data);
 				data = JSON.parse(data); 
 				console.log(data.html);
 				console.log(data.cnt_vols_signup_now);

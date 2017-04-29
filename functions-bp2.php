@@ -149,7 +149,7 @@ function alex_display_social_groups() {
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/fb.png" />';
         			break;  		
         		case 'Google+':
-					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/youtube.png" />';
+					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/google+.png" />';
         			break;
         		case 'Twitter':
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/twitter.png" />';
@@ -277,7 +277,7 @@ function alex_get_postid_and_fields( $wpdb = false){
 
 	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
 	// $fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google","Linkedin");
 	$id = $last_post_id+1;
 	$id_and_fields = array($id,$fields);
 	return $id_and_fields;
@@ -474,7 +474,7 @@ function alex_search_form( $atts = array(), $content = null ) {
 				<i> </i>
 	<div class="s-bar">
 	<form id="' . $el_id . '" class="' . $el_class . ' second-menu" method="get" ' . ( $search_page == 'no' ? ' onsubmit="return false;"' : '' ) . ' action="' . $action . '" data-context="' . $context  .'">';
-	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'e.g. Awesome Todd\';}" value="e.g. Awesome Todd">';
+	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'Find or Add your cause...\';}" value="Find or Add your cause...">';
 	$output .= '<input type="submit" class="' . $button_class . '" value="Search" />';
 	if ( $ajax_results == 'yes' ) {
 		$output .= '<div class="kleo_ajax_results search-style-' . $form_style . '"></div>';
