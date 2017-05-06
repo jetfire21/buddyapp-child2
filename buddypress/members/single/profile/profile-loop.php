@@ -313,7 +313,7 @@ endif;
 
 	    <?php 
 	    /* **** as21 temp - need if future for bp-group-calendar **** */
-	    do_action("a21_bgc_message_thankyou");
+	    // do_action("a21_bgc_message_thankyou");
 	    /* **** as21 temp - need if future for bp-group-calendar **** */
 	    ?>
 
@@ -356,6 +356,7 @@ endif;
 			          </div>
 			      </li>
 		      <?php endforeach; endif;?>
+		      <?php do_action("a21_bgc_message_thankyou"); ?>
 		   </ul> 
 
 		</div>

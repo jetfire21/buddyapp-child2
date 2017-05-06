@@ -81,6 +81,7 @@ License URI: license.txt
     background-color: rgba(0,0,0,.05) !important;
  }
  #timeliner .readmore {overflow: hidden;}
+ #timeliner .content .event_image img{  height: 40px; max-width: 60px; margin-right: 10px; float: left;}
 .bp-users-reviews-list{ padding-left: 8px; }
 a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
@@ -448,6 +449,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 #timeliner .alex_btn_add_new button{ background: #cddc39; border:0; }
  #timeliner .alex_btn_add_new button:hover{ background: #b2c022; }
  #timeliner span{ margin-bottom: 0 !important; display: inline; }
+ .is_event_thank_you button{display: none;}
 /* for fix css after inc css timeline
 .bp-user fieldset legend{ font-size: 14px; width: auto; margin-bottom: 0;}
 .bp-user label{ font-size: 11.25px;}

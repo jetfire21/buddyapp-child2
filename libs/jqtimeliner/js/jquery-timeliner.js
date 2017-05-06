@@ -252,7 +252,10 @@
         // Fetching default item
         var fetchDefault = function(_obj, _selector, _options){
             var el = $(_obj).find(_selector);
-            return $.trim(el.val() || el.text());
+
+            // as21 changed to get full html insted only text for .content
+            if(_selector == ".content") return $.trim(el.html());
+            else return $.trim(el.val() || el.text());
         };
 
         // Fetching ID function
@@ -278,7 +281,8 @@
 
         // Fetching Class function
         var fetchClass = function(_obj, _options){
-            // console.log($(_obj).attr("class"));
+            // console.log("fetchClass="+$(_obj).attr("class"));
+            // console.log("fetchClass "+$(_obj).html() );
             var klass = $(_obj).attr("class").replace("timeliner_element", "");
             // console.log("klass="+klass);
             return $.trim(klass);
@@ -313,7 +317,6 @@
                 item[_key] = _value(_obj, self.config);
             }
         });
-        
         return item;
     }
 

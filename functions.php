@@ -606,19 +606,18 @@ function my_bp_loop_querystring( $query_string, $object ) {
 add_action( 'bp_legacy_theme_ajax_querystring', 'my_bp_loop_querystring', 100, 2 );
 
 /* вывод системных данных в форматированном виде */
-function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $sep = "| "){
+function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
 
-	// Example: alex_debug(1,0,'s',$search);
+	// e.g: alex_debug(0, 1, "name_var", $get_tasks_by_event_id, 1);
 	$debug_text = "<br>========Debug MODE==========<br>";
 	if( boolval($show_text) ) echo $debug_text;
 	if( boolval($is_arr) ){
 		echo "<br>".$title."-";
 		echo "<pre>";
-		print_r($var);
+		if($var_dump) var_dump($var); else print_r($var);
 		echo "</pre>";
-		echo "<hr>";
 	} else echo $title."-".$var;
-	if($sep == "l") echo "<hr>"; else echo $sep;
+	if( is_string($var) ) { if($sep == "l") echo "<hr>"; else echo $sep; }
 }
 /* вывод системных данных в форматированном виде */
 
