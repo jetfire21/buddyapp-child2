@@ -80,8 +80,10 @@ License URI: license.txt
     /*background: none !important; */
     background-color: rgba(0,0,0,.05) !important;
  }
- #timeliner .readmore {overflow: hidden;}
- #timeliner .content .event_image img{  height: 40px; max-width: 60px; margin-right: 10px; float: left;}
+ #timeliner .readmore {overflow: hidden; clear: none !important;}
+ #timeliner .content {overflow: hidden;}
+ #timeliner .content .event_image{  height: 40px; max-width: 60px; /*margin-right: 10px;*/ float: left; margin-top: 6px;}
+ #timeliner .content p{  margin-bottom:0; margin-left: 70px; /*float:left;*/}
 .bp-users-reviews-list{ padding-left: 8px; }
 a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
