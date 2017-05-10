@@ -70,14 +70,14 @@
         init: function() {
             this.add(this.$el.find(this.config.itemSelector)).render();
             /* **** as21 **** */
-            this.add(this.$el.find(this.config.a21_newItems)).render();
+            this.add(this.config.a21_newItems).render();
             /* **** as21 **** */
             if($.type(this.config.onInit) === "function"){
                 this.config.onInit.call(this, this);
             }
             console.log("==== step 2: init timeliner=====");
             // console.log("==== step 2: this.config =====" + this.config);
-            console.log("==== step 2: my new html from ajax - this.config.a21_newItems =====\r\n" + this.config.a21_newItems);
+            // console.log("==== step 2: my new html from ajax - this.config.a21_newItems =====\r\n" + this.config.a21_newItems);
             return this;
         },
         add: function(_item){
@@ -114,6 +114,11 @@
                 var a21_1 = pushItem.call(this, _item);
                  console.log("==== a21_1  =====" + a21_1 );
             }
+
+             //  console.log("==== ADD-this =====\r\n" +this );
+             //  for (var key in this) {
+             //    console.log(key + " " + this[key]);
+             // }
 
             return this;
         },
@@ -246,8 +251,18 @@
                     }
                 });
             }
-          console.log("==== step 4: render html =====\r\n" + html);
+
+            /* **** as21 **** */
+            // html += self.config.a21_newItems;
+            // console.log("==== self.config.a21_newItems =====\r\n" + self.config.a21_newItems);
+            /* **** as21 **** */
+
+          // console.log("==== step 4: render html =====\r\n" + html);
           console.log("==== step 4: render script =====\r\n" +script );
+         //  console.log("==== step 4: render script-this =====\r\n" +this );
+         //  for (var key in this) {
+         //    console.log(key + " " + this[key]);
+         // }
 
             return this;
         },
@@ -430,7 +445,7 @@
     var getHtml = function(_tpl, _data){
 
         // console.log("=== func getHtml _data === \r\n" + _data);
-        console.log("\r\n \r\n === func getHtml _tpl === \r\n \r\n " + _tpl);
+        // console.log("\r\n \r\n === func getHtml _tpl === \r\n \r\n " + _tpl);
 
         var html = this.config[_tpl];
         _data = _data || "";

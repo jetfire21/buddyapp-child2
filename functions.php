@@ -905,9 +905,10 @@ function alex_custom_scripts()
 					// data = JSON.parse(data); 
 
 					if( data ) { 
-						$("#timeliner .timeliner").append(data);
+						// $("#timeliner .timeliner").append(data);
 						 // var tl1 = $('#timeliner').timeliner({a21_gets:getScript});
-						 var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
+						 // var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
+						 var tl1 = $('#timeliner .timeliner').timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
 					} else { console.log("data send with errors!");}
 				}
 
@@ -973,7 +974,7 @@ function a21_load_part_timeline_data() {
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
-			ORDER BY ID ASC LIMIT 6",
+			ORDER BY ID ASC LIMIT 3",
 			$user_id,
 			"alex_timeline"
 		) );
