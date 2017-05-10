@@ -295,7 +295,7 @@ endif;
 		global $wpdb;
  		$user = wp_get_current_user();
 		global $bp;
-		$quest_id = $bp->displayed_user->id;
+		$quest_id = (int)$bp->displayed_user->id;
 
 		/* select timeline data (title,content,date etc) */
 
@@ -304,8 +304,8 @@ endif;
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
-			ORDER BY ID ASC",
-			intval( $quest_id ),
+			ORDER BY ID ASC LIMIT 2",
+			$quest_id,
 			"alex_timeline"
 		) );
 		?>
@@ -356,11 +356,17 @@ endif;
 			          </div>
 			      </li>
 		      <?php endforeach; endif;?>
-		      <?php do_action("a21_bgc_message_thankyou"); ?>
+		      <?php //do_action("a21_bgc_message_thankyou"); ?>
 		   </ul> 
 
 		</div>
-		</div>
+
+		<li class="load-more">
+			<!-- <a href="http://dugoodr2.dev/i-am/admin/activity/?acpage=2">Load More</a> -->
+			<a href="#" id="a21_load_part_timeline_data" data-user-id="<?php echo $quest_id;?>">Load More</a>
+		</li>
+
+		</div> 
 
 	<?php //endif;  ?> 
 	<!-- end timeline -->

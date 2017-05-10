@@ -882,6 +882,40 @@ function alex_custom_scripts()
 				 });
 			}
 
+		/* **** as21 ajax load part timeline data **** */
+		$("#a21_load_part_timeline_data").on("click",function(e){
+
+			e.preventDefault();
+			console.log("====a21_load_part_timeline_data=====");
+			var user_id = $(this).attr("data-user-id");
+			console.log(user_id);
+			var data = {
+				'action': 'a21_load_part_timeline_data',
+				'user_id':user_id
+			};
+
+			$.ajax({
+				url:KLEO.ajaxurl,
+				data:data, 
+				type:'POST', 
+				success:function(data){
+					console.log("----from WP AJAX data---");
+					console.log("data="+data);
+					console.log(typeof data);
+					// data = JSON.parse(data); 
+
+					if( data ) { 
+						$("#timeliner .timeliner").append(data);
+						 // var tl1 = $('#timeliner').timeliner({a21_gets:getScript});
+						 var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
+					} else { console.log("data send with errors!");}
+				}
+
+			 });
+
+		});
+		/* **** as21 ajax load part timeline data **** */
+
 		    var tl = jQuery('#timeliner').timeliner({onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
 
 		    <?php
@@ -923,6 +957,70 @@ function alex_del_timeline(){
 	}
 	exit;
 }
+
+add_action('wp_ajax_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
+
+function a21_load_part_timeline_data() {
+
+	// alex_debug(0,1,"",$_POST);
+	$user_id = ( !empty($_POST['user_id']) ) ? (int)$_POST['user_id'] : '' ;
+
+	if( !empty( $user_id) ){
+
+		global $wpdb;
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+			FROM {$wpdb->posts}
+			WHERE post_parent = %d
+			    AND post_type = %s
+			ORDER BY ID ASC LIMIT 6",
+			$user_id,
+			"alex_timeline"
+		) );
+	     	 
+     	 if( !empty($fields) ): foreach ($fields as $field):
+			
+				$group = groups_get_group($field->menu_order);
+				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+				$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+				$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+			 $color_class = ( !empty($field->post_name) ) ? $field->post_name : "teal";
+		     $html .= '
+		     <li>
+		          <div class="timeliner_element '.$color_class.'">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($field->post_title).'</span>
+		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
+		              </div>
+		              <div class="content">
+		              	   '.stripslashes($field->post_content).'
+		              </div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>'; endif;
+				          if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+			              	   if($group->name):
+			              	  	 $html .= '<div id="alex_gr_name_select">'. $group->name.'</div>';
+			              	   endif;
+		              	  if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
+		              	  $html .= '
+		              	  <span class="alex_item_id">'.$field->ID.'</span>
+		                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+		                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+		                  <a href="#" class="btn btn-info">
+		                      Read More <i class="fa fa-arrow-circle-right"></i>
+		                  </a>
+		              </div>
+		          </div>
+		      </li>';
+	      endforeach;
+	      echo "<ul class='columns'>".$html."</ul>";
+	    endif;
+
+	}
+	exit;
+}
+
 
 add_action('wp_ajax_alex_add_timeline', 'alex_add_timeline');
 
@@ -1911,4 +2009,16 @@ function deb_last_query(){
 	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
 	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
 	echo '<hr>';
+}
+
+// add_action("wp_footer","a21_check_tables");
+
+function a21_check_tables(){
+	if( current_user_can('administrator') && is_front_page()){
+		global $wpdb;
+		$get_event_images = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM ".$wpdb->base_prefix."bp_groups_groupmeta WHERE meta_key=%s", 'a21_bgc_event_image') );
+		alex_debug(0,1,"",$get_event_images);
+	    $wpdb->delete( $wpdb->base_prefix."bp_groups_groupmeta", array('id'=>138), array('%d') );
+	    deb_last_query();
+	}
 }

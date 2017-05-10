@@ -3,6 +3,7 @@
 
 		// ///////////// for quick editing timeline
 		$("#a21_add_new_row_qedit_timel").on("click",function(){
+
 			console.log("click add new");
 			var row_i = $(".a21_js").length,el=1;
 			console.log( row_i );
@@ -25,6 +26,40 @@
 		console.log("dp");
 		console.log($(".profile-edit .datepicker.datepicker-dropdown").html());
 	// ///////////// for quick editing timeline
+
+		/* **** as21 ajax load part timeline data **** *
+		$("#a21_load_part_timeline_data").on("click",function(e){
+
+			e.preventDefault();
+			console.log("====a21_load_part_timeline_data=====");
+			var user_id = $(this).attr("data-user-id");
+			console.log(user_id);
+			var data = {
+				'action': 'a21_load_part_timeline_data',
+				'user_id':user_id
+			};
+
+			$.ajax({
+				url:KLEO.ajaxurl,
+				data:data, 
+				type:'POST', 
+				success:function(data){
+					console.log("----from WP AJAX data---");
+					console.log("data="+data);
+					console.log(typeof data);
+					// data = JSON.parse(data); 
+
+					if( data ) { 
+						$("#timeliner .timeliner").append(data);
+						 $('#timeliner').timeliner();
+					} else { console.log("data send with errors!");}
+				}
+
+			 });
+
+		});
+		* **** as21 ajax load part timeline data **** */
+
 
 	// ///////////// add new row for bp group calendar
 	// $("#a21_bgc_tasks_shifts").on("click",function(){
