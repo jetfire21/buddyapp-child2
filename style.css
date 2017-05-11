@@ -87,6 +87,9 @@ License URI: license.txt
 .bp-users-reviews-list{ padding-left: 8px; }
 a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 
+/*.global-timeliner {display: none;}*/
+.global-timeliner .alex_btn_add_new {display: none;}
+
 /* 767px to 861px - fix broken groups header */
 
 /* @media only screen and (min-width: 768px) */

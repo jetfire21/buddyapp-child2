@@ -40,6 +40,10 @@
 
         // Store a $ reference  to the source element
         this.$el = $(_element);
+        console.log("=== this.$el ===" + this.$el);
+        // for (var key in this.$el) {
+        //     console.log(key + " " + key[this.$el]);
+        // }
 
         // Set a random (and normally unique) id for the object
         this.instanceId = Math.round(new Date().getTime() + (Math.random() * 100));
@@ -78,6 +82,8 @@
             console.log("==== step 2: init timeliner=====");
             // console.log("==== step 2: this.config =====" + this.config);
             // console.log("==== step 2: my new html from ajax - this.config.a21_newItems =====\r\n" + this.config.a21_newItems);
+
+
             return this;
         },
         add: function(_item){
@@ -263,6 +269,10 @@
          //  for (var key in this) {
          //    console.log(key + " " + this[key]);
          // }
+         // console.log("=== this.$el ===" + this.$el);
+         //    for (var key in this.$el) {
+         //        console.log(key + " " + key[this.$el]);
+         //    }
 
             return this;
         },
@@ -492,6 +502,8 @@
             },
             async: false
         });
+        console.log("========response ajax=======");
+        console.log(response);
         return response;
     }
     // ------- TRASHED: end ------- //

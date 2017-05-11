@@ -299,12 +299,14 @@ endif;
 
 		/* select timeline data (title,content,date etc) */
 
+		$offset = 0;
+		$count_timeline = 2;
 		$fields = $wpdb->get_results( $wpdb->prepare(
 			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
-			ORDER BY ID ASC LIMIT 2",
+			ORDER BY post_date DESC LIMIT {$offset},{$count_timeline}",
 			$quest_id,
 			"alex_timeline"
 		) );
@@ -319,6 +321,7 @@ endif;
 
 		<span class='field-name'>Timeline</span>
 		<?php if( empty($fields)) echo $text_field_empty; ?>
+		<div class="wrap_timeliner">
 		<div id="timeliner">
 		  <ul class="columns alex_timeline_wrap">
 		      <?php	if( !empty($fields) ): foreach ($fields as $field):?>
@@ -358,12 +361,12 @@ endif;
 		      <?php endforeach; endif;?>
 		      <?php //do_action("a21_bgc_message_thankyou"); ?>
 		   </ul> 
-
+		
 		</div>
-
+		</div>
 		<li class="load-more">
 			<!-- <a href="http://dugoodr2.dev/i-am/admin/activity/?acpage=2">Load More</a> -->
-			<a href="#" id="a21_load_part_timeline_data" data-user-id="<?php echo $quest_id;?>">Load More</a>
+			<a href="#" id="a21_load_part_timeline_data" data-offset="2" data-user-id="<?php echo $quest_id;?>">Load More</a>
 		</li>
 
 		</div> 

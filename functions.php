@@ -886,12 +886,16 @@ function alex_custom_scripts()
 		$("#a21_load_part_timeline_data").on("click",function(e){
 
 			e.preventDefault();
+			var self = $(this);
 			console.log("====a21_load_part_timeline_data=====");
 			var user_id = $(this).attr("data-user-id");
+			var offset = $(this).data("offset");
+			console.log("offset" + offset);
 			console.log(user_id);
 			var data = {
 				'action': 'a21_load_part_timeline_data',
-				'user_id':user_id
+				'user_id':user_id,
+				'offset':offset
 			};
 
 			$.ajax({
@@ -902,13 +906,36 @@ function alex_custom_scripts()
 					console.log("----from WP AJAX data---");
 					console.log("data="+data);
 					console.log(typeof data);
-					// data = JSON.parse(data); 
+					data = JSON.parse(data); 
+					console.log("data="+data.date);
 
 					if( data ) { 
 						// $("#timeliner .timeliner").append(data);
 						 // var tl1 = $('#timeliner').timeliner({a21_gets:getScript});
 						 // var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
-						 var tl1 = $('#timeliner .timeliner').timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
+				 			offset += 1;
+							offset = self.data("offset",offset);
+							console.log("offset" + offset);
+
+							var date_f = false, date_b = false;
+							// перебираем год,месяц и вставляем в нужное место текущую запись
+							$(".date_separator span").each(function(i,e){
+								date_f = $(this).text();
+								console.log(i +"-"+ e + date_f);
+								for (k in data.date){
+									date_b = data.date[k].substr(3);
+									console.log( date_b );
+								}
+							});
+							return false;
+
+							console.log("\r\n length ");
+							var item = $(".global-timeliner").length;
+							console.log( item );
+							if( item > 0) $(".wrap_timeliner").append("<div class='item-timel-"+item+" global-timeliner'></div>");
+							else $(".wrap_timeliner").append("<div class='item-timel-0 global-timeliner'></div>")
+						  // $('#timeliner .timeliner').timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
+						  $('.item-timel-' + item).timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
 					} else { console.log("data send with errors!");}
 				}
 
@@ -965,16 +992,19 @@ function a21_load_part_timeline_data() {
 
 	// alex_debug(0,1,"",$_POST);
 	$user_id = ( !empty($_POST['user_id']) ) ? (int)$_POST['user_id'] : '' ;
+	$offset = ( !empty($_POST['offset']) ) ? (int)$_POST['offset'] : '' ;
 
-	if( !empty( $user_id) ){
+	if( !empty( $user_id) && !empty( $offset) ){
 
 		global $wpdb;
+		$count_timeline = 2;
+
 		$fields = $wpdb->get_results( $wpdb->prepare(
 			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
-			ORDER BY ID ASC LIMIT 3",
+			ORDER BY post_date DESC LIMIT {$offset},{$count_timeline}",
 			$user_id,
 			"alex_timeline"
 		) );
@@ -985,6 +1015,10 @@ function a21_load_part_timeline_data() {
 				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
 				$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
 				$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+			/* **** as21 new way**** */
+			$way2['date'][] = $field->post_excerpt; 
+			/* **** as21 new way**** */
 
 			 $color_class = ( !empty($field->post_name) ) ? $field->post_name : "teal";
 		     $html .= '
@@ -1015,7 +1049,8 @@ function a21_load_part_timeline_data() {
 		          </div>
 		      </li>';
 	      endforeach;
-	      echo "<ul class='columns'>".$html."</ul>";
+	      // echo "<ul class='columns'>".$html."</ul>";
+	      echo json_encode($way2);
 	    endif;
 
 	}
@@ -2010,6 +2045,57 @@ function deb_last_query(){
 	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
 	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
 	echo '<hr>';
+}
+
+add_action("wp_footer","a21_tmp_query_db");
+
+function a21_tmp_query_db(){
+
+	global $wpdb;
+
+	// Преобразует дату '28 Jan 2017' в '2017-01-28', a mysql работает с форматом 0000-00-00 00:00:00
+	echo date("Y-m-d",strtotime("28 Jan 2017"));
+
+	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** *
+
+	$date_timeline = $wpdb->get_results( "SELECT ID,post_excerpt FROM ".$wpdb->posts." WHERE post_type='alex_timeline'" );
+	// alex_debug(0,1,"",$date_timeline);
+
+	foreach ($date_timeline as $date) {
+		$parse_date = date("Y-m-d",strtotime($date->post_excerpt));
+		$query = $wpdb->prepare( "UPDATE " . $wpdb->posts."
+		        	SET post_date=%s WHERE post_type=%s AND ID=%d
+		        	",$parse_date, 'alex_timeline',(int)$date->ID);
+		$wpdb->query( $query );
+		deb_last_query();
+	}
+
+	* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
+
+	
+	$fields = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_parent = %d
+		    AND post_type = %s
+		  ORDER BY post_date DESC LIMIT 0,2", 
+		 // ORDER BY post_date DESC LIMIT 15",
+		1,
+		"alex_timeline"
+	) );
+	alex_debug(0,1,"",$fields);
+
+	$fields2 = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_parent = %d
+		    AND post_type = %s
+		  ORDER BY post_date DESC LIMIT 2,5", 
+		 // ORDER BY post_date DESC LIMIT 15",
+		1,
+		"alex_timeline"
+	) );
+	alex_debug(0,1,"",$fields2);
 }
 
 // add_action("wp_footer","a21_check_tables");
