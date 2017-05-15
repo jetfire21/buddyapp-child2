@@ -30,9 +30,6 @@
      */
     function Timeliner(_element, _options) {
         // Contain raw items 
-        console.log("\r\n###################\r\n");
-        console.log("=== step1 start timeliner ===");
-
         this.items = [];
 
         // Store a reference to the source element
@@ -40,10 +37,6 @@
 
         // Store a $ reference  to the source element
         this.$el = $(_element);
-        console.log("=== this.$el ===" + this.$el);
-        // for (var key in this.$el) {
-        //     console.log(key + " " + key[this.$el]);
-        // }
 
         // Set a random (and normally unique) id for the object
         this.instanceId = Math.round(new Date().getTime() + (Math.random() * 100));
@@ -73,25 +66,12 @@
          */
         init: function() {
             this.add(this.$el.find(this.config.itemSelector)).render();
-            /* **** as21 **** */
-            this.add(this.config.a21_newItems).render();
-            /* **** as21 **** */
             if($.type(this.config.onInit) === "function"){
                 this.config.onInit.call(this, this);
             }
-            console.log("==== step 2: init timeliner=====");
-            // console.log("==== step 2: this.config =====" + this.config);
-            // console.log("==== step 2: my new html from ajax - this.config.a21_newItems =====\r\n" + this.config.a21_newItems);
-
-
             return this;
         },
         add: function(_item){
-
-             console.log("==== step 3: add =====");
-             console.log("==== _item =====" + $(_item));
-             console.log("==== this =====" + this);
-
             var self = this;
             if($.type(_item) === "string"){
                 var el = $(_item);
@@ -103,11 +83,6 @@
             }else if(_item instanceof $ && _item.hasOwnProperty('selector')){
                 _item.each(function(_key, _value){
                     self.add($(_value));
-                    console.log("==== $(_value)  =====" + _value );
-                    // for (var key in _value) {
-                    //     console.log(key + " " + key[_value]);
-                    // }
-
                 });
             }else if(_item instanceof $ && _item.hasOwnProperty('context')){
                 self.add(fetchHtmlItem.call(this, _item, this.config));
@@ -116,22 +91,12 @@
                     self.add($(_value));
                 });
             }else if($.type(_item) === "object"){
-                // pushItem.call(this, _item);
-                var a21_1 = pushItem.call(this, _item);
-                 console.log("==== a21_1  =====" + a21_1 );
+                pushItem.call(this, _item);
             }
-
-             //  console.log("==== ADD-this =====\r\n" +this );
-             //  for (var key in this) {
-             //    console.log(key + " " + this[key]);
-             // }
 
             return this;
         },
         render: function(){
-
-          console.log("==== step 4: render =====");
-
             var html = '',
                 script = '',
                 self = this;
@@ -155,11 +120,6 @@
             var sorted = {}
             self.items.sort(self.config.sortComparer);
             $.each(self.items, function( _index, _item ) {
-
-                console.log("\r\n---sorting--" + _item);
-                for(var i in _item){
-                    console.log("i="+ _item[i]);
-                }
                 var point = self.config.pointFormater.call(self, _item);
                 sorted[point] = sorted[point] || [];
                 sorted[point].push(_item);
@@ -262,22 +222,6 @@
                     }
                 });
             }
-
-            /* **** as21 **** */
-            // html += self.config.a21_newItems;
-            // console.log("==== self.config.a21_newItems =====\r\n" + self.config.a21_newItems);
-            /* **** as21 **** */
-
-          // console.log("==== step 4: render html =====\r\n" + html);
-          console.log("==== step 4: render script =====\r\n" +script );
-         //  console.log("==== step 4: render script-this =====\r\n" +this );
-         //  for (var key in this) {
-         //    console.log(key + " " + this[key]);
-         // }
-         // console.log("=== this.$el ===" + this.$el);
-         //    for (var key in this.$el) {
-         //        console.log(key + " " + key[this.$el]);
-         //    }
 
             return this;
         },
@@ -423,16 +367,18 @@
         _obj.$delBtnId = _obj.$pk + '-delete-btn';
 
         var edtBtn = getHtml.call(this,'editBtnTpl');
+        // console.log("editBtn="+edtBtn);
         var delBtn = getHtml.call(this,'deleteBtnTpl');
         edtBtn = addAttr.call(this, edtBtn, 'id', _obj.$edtBtnId);
         delBtn = addAttr.call(this, delBtn, 'id', _obj.$delBtnId);
 
         var html = getHtml.call(this, 'itemTpl', _obj);
-        console.log("\r\n====html itemTpl ===== \r\n\r\n" + html);
-
+        // console.log("html=====\r\n");
+        // console.log(html);
         html = html.replace('{{edit-button}}', edtBtn);
         html = html.replace('{{delete-button}}', delBtn);
         _obj.$html = html;
+        // console.log("\r\n_obj.$html\r\n "+_obj.$html);
 
 
         if(_obj.$pk && _obj.$dk){
@@ -459,9 +405,6 @@
 
     var getHtml = function(_tpl, _data){
 
-        // console.log("=== func getHtml _data === \r\n" + _data);
-        // console.log("\r\n \r\n === func getHtml _tpl === \r\n \r\n " + _tpl);
-
         var html = this.config[_tpl];
         _data = _data || "";
         html = html || "";
@@ -475,7 +418,6 @@
                 }
             });
         }
-        // console.log("\r\n \r\n === func getHtml html === \r\n \r\n " + html);
 
         return html;
     }
@@ -490,7 +432,6 @@
                 script += '$("#' + this.config[_selector] + '").on("' + e + '", ' + func + ')';
             }
         }
-        console.log("========getScript========");
         return script;
     }
 
@@ -507,8 +448,6 @@
             },
             async: false
         });
-        console.log("========response ajax=======");
-        console.log(response);
         return response;
     }
     // ------- TRASHED: end ------- //
@@ -531,11 +470,12 @@
     }
 
     var onEdit = function(_data, _callback){
+        console.log("==onEdit== _data="+_data);
         _callback(_data);
-        console.log("=======onedit"+_data);
     }
 
     var onDelete = function(_data, _callback){
+        console.log("from js plugin onDelete");
         if(confirm("Are you sure to delete ?")){
             _callback(_data);
         }
@@ -545,8 +485,6 @@
     /* Bootstrap fetch item mapping functions
     /* -------------------------------------------------- */
     var sortComparer = function(_a, _b){
-        console.log("sortComparer _a = " + _a.$dk);
-        console.log("sortComparer== " + _a.$dk.getTime());
         return _b.$dk.getTime() - _a.$dk.getTime();
     };
 
@@ -584,8 +522,7 @@
     var pointTpl = '<div class="date_separator"><span>{{data}}</span></div>';
     var sectionTpl = '<ul class="columns">{{data}}</ul>';
     var itemTpl = 
-        '\r\n\
-        <li >\
+        '<li >\
             <div class="timeliner_element {{class}}">\
                 <div class="timeliner_title">\
                     <span class="timeliner_label">{{title}}</span><span class="timeliner_date">{{date}}</span>\
@@ -598,8 +535,7 @@
                     </a>\
                 </div>\
             </div>\
-        </li>\
-        \r\n';
+        </li>';
     var formTpl = 
         '<li>\
             <div class="timeliner_element" style="float: none;">\

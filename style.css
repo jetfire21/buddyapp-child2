@@ -84,6 +84,10 @@ License URI: license.txt
  #timeliner .content {overflow: hidden;}
  #timeliner .content .event_image{  height: 40px; max-width: 60px; /*margin-right: 10px;*/ float: left; margin-top: 6px;}
  #timeliner .content p{  margin-bottom:0; margin-left: 70px; /*float:left;*/}
+ .profile .activity-list .load-more{ list-style: none; }
+ .profile .activity-list .load-more a{ text-decoration: none !important; color:#4d4d4d !important;}
+ .profile .activity-list .load-more a:focus{ background: none !important; border-color: #bdbdbd !important;}
+ .profile .activity-list .load-more a:hover{ background: #cddc39 !important;}
 .bp-users-reviews-list{ padding-left: 8px; }
 a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 

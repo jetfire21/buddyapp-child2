@@ -140,6 +140,14 @@ function alex_display_social_groups() {
         else $data = false;
 
         if( !empty($data) ){
+        	// var_dump($data);
+        	// var_dump($field->post_title);
+        	// var_dump(preg_match("#google#i", $field->post_title));
+			if(preg_match("#google#i", $field->post_title)) {
+				$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+				$field->post_title = str_replace("+", "", $field->post_title);
+			}
+        	// var_dump($field->post_title);
 
         	switch ($field->post_title) {
         		case 'Website':
@@ -148,8 +156,9 @@ function alex_display_social_groups() {
         		case 'Facebook':
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/fb.png" />';
         			break;  		
-        		case 'Google+':
-					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/google+.png" />';
+        		// case 'Google+':
+        		case 'Youtube':
+					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/youtube.png" />';
         			break;
         		case 'Twitter':
 					$img = '<img src="'.$home.'/wp-content/themes/buddyapp-child/images/twitter.png" />';
@@ -227,6 +236,13 @@ function alex_edit_group_fields(){
 		// "alex_gfilds"
 	) );
 	foreach ($fields as $field) {
+		// var_dump($field);
+		// if(preg_match("#google+#i", $field->post_title) ) 
+		// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
+		if(preg_match("#google#i", $field->post_title)) {
+			$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+			$field->post_title = str_replace("+", "", $field->post_title);
+		}
 
 		echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
 		echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
@@ -276,8 +292,8 @@ add_action( 'groups_group_details_edited', 'alex_edit_group_fields_save' );
 function alex_get_postid_and_fields( $wpdb = false){
 
 	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	// $fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Google","Linkedin");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
+	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
 	$id = $last_post_id+1;
 	$id_and_fields = array($id,$fields);
 	return $id_and_fields;
@@ -333,6 +349,8 @@ function add_soclinks_only_for_one_group_db(){
 	$fields = $postid_and_fields[1];
 
 	// alex_debug(0,1,"fie",$fields);
+	// alex_debug(0,1,"fie",$_COOKIE);
+	// exit;
 
 	foreach ($fields as $field_name) {
 
@@ -340,7 +358,12 @@ function add_soclinks_only_for_one_group_db(){
 			$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
 		}
 		else $post_content = '';
-		if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
+
+		if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
+			 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
+		}
+
+		// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
 		
 		// echo $field_name." - ";
 
@@ -353,6 +376,8 @@ function add_soclinks_only_for_one_group_db(){
 			);
 			$postid++; 
 		// }
+			// deb_last_query();
+
 	} 
 
 	foreach ($fields as $field_name) {
@@ -360,10 +385,12 @@ function add_soclinks_only_for_one_group_db(){
 		// delete cookie
 		setcookie( 'alex-'.$field_name, false, time() - 1000, COOKIEPATH, COOKIE_DOMAIN, is_ssl() );
 	}
+	// exit;
 }
 
 // Fires after the group has been successfully created (variation 1)
-add_action( 'groups_group_create_complete','add_soclinks_only_for_one_group_db');
+// add_action( 'groups_group_create_complete','add_soclinks_only_for_one_group_db');
+add_action( 'bp_after_group_settings_creation_step','add_soclinks_only_for_one_group_db');
 
 add_action( 'groups_create_group_step_save_group-details','alex_save_socialinks_cookies' );
 function alex_save_socialinks_cookies(){
@@ -392,7 +419,14 @@ function alex_group_create_add_socialinks(){
 		}
 		else $user_fill = '';
 
-		if(preg_match("#google#i", $field) === 1) $field = $field."+";
+		// if(preg_match("#google#i", $field) === 1) $field = $field."+";
+		// if(preg_match("#google\+#i", $field) === 1) $field = preg_replace("#google\+#i", "Youtube", $field);
+		if(preg_match("#google#i", $field)) {
+				$field = preg_replace("#google#i", "Youtube", $field);
+				$field = str_replace("+", "", $field);
+		}
+
+
 
 		echo '<label class="" for="alex-'.$field.'">'.$field.'</label>';
 		echo '<input id="alex-'.$field.'" name="alex-'.$field.'" type="url" value="'.$user_fill.'" />';
@@ -474,7 +508,7 @@ function alex_search_form( $atts = array(), $content = null ) {
 				<i> </i>
 	<div class="s-bar">
 	<form id="' . $el_id . '" class="' . $el_class . ' second-menu" method="get" ' . ( $search_page == 'no' ? ' onsubmit="return false;"' : '' ) . ' action="' . $action . '" data-context="' . $context  .'">';
-	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'Find or Add your cause...\';}" value="Find or Add your cause...">';
+	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'e.g. Awesome Todd\';}" value="e.g. Awesome Todd">';
 	$output .= '<input type="submit" class="' . $button_class . '" value="Search" />';
 	if ( $ajax_results == 'yes' ) {
 		$output .= '<div class="kleo_ajax_results search-style-' . $form_style . '"></div>';
@@ -572,19 +606,18 @@ function my_bp_loop_querystring( $query_string, $object ) {
 add_action( 'bp_legacy_theme_ajax_querystring', 'my_bp_loop_querystring', 100, 2 );
 
 /* вывод системных данных в форматированном виде */
-function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $sep = "| "){
+function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
 
-	// Example: alex_debug(1,0,'s',$search);
+	// e.g: alex_debug(0, 1, "name_var", $get_tasks_by_event_id, 1);
 	$debug_text = "<br>========Debug MODE==========<br>";
 	if( boolval($show_text) ) echo $debug_text;
 	if( boolval($is_arr) ){
 		echo "<br>".$title."-";
 		echo "<pre>";
-		print_r($var);
+		if($var_dump) var_dump($var); else print_r($var);
 		echo "</pre>";
-		echo "<hr>";
 	} else echo $title."-".$var;
-	if($sep == "l") echo "<hr>"; else echo $sep;
+	if( is_string($var) ) { if($sep == "l") echo "<hr>"; else echo $sep; }
 }
 /* вывод системных данных в форматированном виде */
 
@@ -763,6 +796,8 @@ function alex_custom_scripts()
 		jQuery( document ).ready(function($) {
 
 			function alex_onadd(_data){
+
+					console.log("onadd");
 					var alex_tl_grp_id = false;
 				    for (var key in grs) {
 				    	if(grs[key] == _data.alex_gr_name_select) alex_tl_grp_id = key;
@@ -791,13 +826,22 @@ function alex_custom_scripts()
 			}
 
 			function alex_ondelete(_data){
-		        if(confirm("Are you sure to delete ?")){
-    				$( "#timeliner" ).on( "click", ".readmore .btn-danger", function() {
+				// $( "#timeliner" ).on( "click", ".readmore .btn-danger", function() {
+
+			   		 if(!confirm("Are you sure to delete ?")) return false;
+					 // console.log("--------delete li !!!!! 1---------------"+$(this).html());
+					// console.log("--------delete li !!!!! 1---------------"+_data.html());
+
+					$( "#timeliner" ).on( "click", ".readmore .btn-danger", function() {
+						// console.log("--------2 delete li !!!!!---------------");
+
 					   var html = $(this).parents("li");
+					  //  console.log(html.html());
+					  // return false;
 					   var id = html.find(".alex_item_id").text();
 					   html.hide();
 
-	   					var data = {
+							var data = {
 							'action': 'alex_del_timeline',
 							'id':id
 						};
@@ -814,10 +858,15 @@ function alex_custom_scripts()
 						 });
 						// end ajax
 					});
-		        }
 			}
 
 			function alex_onedit(_data){
+
+				// console.log("====onedit======");
+			 //    for (var key in _data) {
+			 //    	console.log("key-"+key+"="+_data[key]);
+			 //    }
+				// return false;
 				var alex_tl_grp_id = false;
 			    for (var key in grs) {
 			    	if(grs[key] == _data.alex_gr_name_select) alex_tl_grp_id = key;
@@ -841,13 +890,402 @@ function alex_custom_scripts()
 					success:function(data){
 						console.log("ajax response get success!");
 						if( data ) { 
-							// console.log(data);
+							console.log(data);
 				      		location.reload();  		
 						} else { console.log("data send with errors!");}
 					}
 
 				 });
 			}
+
+		/* **** as21 ajax load part timeline data **** */
+		$("#a21_load_part_timeline_data").on("click",function(e){
+
+			e.preventDefault();
+			var self = $(this);
+			// var num = parseInt("a4r t 4r43 43a b345b 123 cc gaeg4".replace(/\D+/g,""));
+			// console.log(num);
+			console.log("====a21_load_part_timeline_data=====");
+			var user_id = $(this).attr("data-user-id");
+			var offset = $(this).data("offset");
+			console.log("offset" + offset);
+			console.log(user_id);
+			var data = {
+				'action': 'a21_load_part_timeline_data',
+				'user_id':user_id,
+				'offset':offset
+			};
+
+			$.ajax({
+				url:KLEO.ajaxurl,
+				data:data, 
+				type:'POST', 
+				success:function(data){
+					console.log("\r\n################# from WP AJAX data ######\r\n\r\n");
+					console.log("data="+data);
+					console.log(typeof data);
+					if(data) data = JSON.parse(data); 
+					else $(".activity-list .load-more").hide();
+					console.log("data="+data.date);
+
+					if( data ) { 
+						// $("#timeliner .timeliner").append(data);
+						 // var tl1 = $('#timeliner').timeliner({a21_gets:getScript});
+						 // var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
+				 			offset += 4;
+							offset = self.data("offset",offset);
+							console.log("offset" + offset);
+							// from 0-jan 11-dec
+					        var months = {Jan:"January", Feb:"February", Mar:"March", Apr:"April", 
+						                    May:"May", Jun:"June", Jul:"July", Aug:"August", Sep:"September",
+						                    Oct:"October", Nov:"November", Dec:"December"};
+
+
+							var date_fd = false, date_bd = false;
+
+							/* **** as21 for create new date separator**** */
+							var obj_short_date_fd = [], obj_short_date_bd = [],new_date_sep=[],del_same_short_date_bd=[];
+
+							$(".date_separator:not(.alex_btn_add_new)").each(function(i,e){
+
+								console.log("\r\n====loop .date_separator span====\r\n");
+								// date_fd = $(this).text(); // January 2017
+								date_fd = $(this).find("span").text(); // January 2017
+								console.log("fd item=" + i +" --- "+ date_fd);
+
+								year_fd = parseInt(date_fd.replace(/\D+/g,"")); // 2017
+								var m_fd = date_fd.substr(0,3); // Sep,Jun...
+								var short_date_fd = m_fd + " "+year_fd;
+								obj_short_date_fd[i] = short_date_fd;
+							});
+
+							// for (var key in data.date){
+
+							// 	console.log("====loop date_bd=====\r\n");
+							// 	console.log("=k="+key+"\r\n");
+							// 	var date_bd = data.date[key];
+							// 	var date_day_bd = parseInt(date_bd.substr(0,2));
+							// 	var obj_short_date_bd[key] = data.date[key].substr(3);
+							// 	console.log( "date_bd: "+date_bd );	
+							// 	console.log( "short_date_bd: "+short_date_bd );	
+							// }
+
+							//  delete double short_month_year from date bd
+							for (var key in data.date){
+								var short_date_bd = data.date[key].substr(3);
+								if(key == 0) del_same_short_date_bd[key] = short_date_bd;	
+								if( key > 0) { 
+									if(short_date_bd == del_same_short_date_bd[key]) break;
+									else del_same_short_date_bd[key] = short_date_bd;
+								 }
+								// console.log("%%% del_same_short_date_bd[key] "+del_same_short_date_bd[key]+" %%%%% short_date_bd "+short_date_bd);
+							}
+
+
+							// console.log("\r\n====="+typeof obj_short_date_fd+"===\r\n");
+
+							for (k_osdf in obj_short_date_fd){
+								// console.log("\r\n====="+k_osdf+"==="+obj_short_date_fd[k_osdf]+"\r\n");
+
+								for (var key in del_same_short_date_bd){
+										var short_date_bd = data.date[key].substr(3);
+										if( short_date_bd != obj_short_date_fd[k_osdf] ) {
+											new_date_sep[key] = short_date_bd;	
+										}
+										// else { new_date_sep[key] = false; break;}		
+										// console.log("%%% new_date_sep[key] "+new_date_sep[key]+"%%%%% short_date_bd"+short_date_bd);
+										// console.log("%%% key "+key+"%%%%% ");
+								}
+							}
+
+							for (var key in new_date_sep){
+								console.log("---new_date_sep[key]----"+new_date_sep[key]);
+								if(new_date_sep[key]) {
+									var year = parseInt(new_date_sep[key].replace(/\D+/g,"")); // 2017
+									var full_month_year = months[new_date_sep[key].substr(0,3)]+" "+year; 
+									var last_date_sep = $(".date_separator:not(.alex_btn_add_new)").last().find("span").text();
+									// console.log("last_date_sep "+last_date_sep);
+									if( last_date_sep != full_month_year) $("#timeliner .timeliner").append('<div class="date_separator"><span>'+full_month_year+'</span></div>');
+								}
+							}
+							// return false;
+
+							/* **** as21 for create new date separator**** */
+
+							// перебираем год,месяц и вставляем в нужное место текущую запись
+
+							// $(".date_separator span").each(function(i,e){
+							$(".date_separator:not(.alex_btn_add_new)").each(function(i,e){
+
+								console.log("\r\n ############# loop .date_separator span ####### \r\n");
+								// date_fd = $(this).text(); // January 2017
+								date_fd = $(this).find("span").text(); // January 2017
+								// console.log("fd item=" + i +" --- "+ date_fd);
+
+								year_fd = parseInt(date_fd.replace(/\D+/g,"")); // 2017
+								var m_fd = date_fd.substr(0,3); // Sep,Jun...
+								var short_date_fd = m_fd + " "+year_fd;
+								// console.log("short_date_fd ="+short_date_fd);
+
+								// for (var m in months){
+								// 		var short_m_fd = months[m].substr(0,3); // sep,jun...
+								// 		console.log("m="+m +"-"+ short_m_fd); 
+								// 		var short_date_fd = short_m_fd +" "+ year_fd;
+								// 		console.log("fd after parse: "+short_date_fd);
+								// 		if(date_bd == short_date_fd) break;
+								// }
+								// for (var k in data.date){
+							   $(this).after("<ul class='columns'></ul>");
+								for (var key in data.date){
+
+									console.log("====loop date_bd=====\r\n");
+									console.log("=k="+key+"\r\n");
+									var date_bd = data.date[key];
+									var date_day_bd = parseInt(date_bd.substr(0,2));
+									var short_date_bd = data.date[key].substr(3);
+									console.log( "date_bd: "+date_bd );	
+									console.log( "short_date_bd: "+short_date_bd );	
+
+									var render_items_li = '';
+									// if date_separator == current date
+
+									if(short_date_fd == short_date_bd ) {
+
+										// $(this).parent().after("<p>new el "+date_bd+"</p>");
+										// var item_li = $(this).parent();
+										var ul_li_items = $(".columns").eq(i+1);
+										// console.log("\r\n===next==="+ul_li_items.html());
+										// var count_li = ul_li_items.find("li").length;
+										var count_li = 4;
+										console.log( "count="+count_li);
+
+									 render_items_li = render_items_li + data.li[date_bd];
+									$(".timeliner .columns").last().append(render_items_li);
+
+										/*
+										if( count_li == 0) { 
+											console.log("\r\n start count_li: NO ITEMS LI=======\r\n");
+											console.log("\r\n ==="+date_bd+"====\r\n");
+											console.log("\r\n ==="+data.li+"====\r\n");
+											console.log("\r\n ==="+data.li[date_bd]+"====\r\n");
+										    $(this).after("<ul class='columns'>"+data.li[date_bd]+"</ul>");
+										    console.log("\r\n end count_li:\r\n");
+										}
+										*/
+
+										/*
+										for(var li=0;li<count_li;li++){
+
+											var li_date_fd = ul_li_items.find("li").eq(li).find(".timeliner_date").text();
+											var li_date_day = parseInt(li_date_fd.substr(0,2));
+											console.log( "li eq====="+ li_date_fd +" day= "+li_date_day+"\r\n");
+
+											// if after date separator have item li_date_day
+											// if( li_date_fd){
+
+												if(date_day_bd > li_date_day) {
+													console.log(" "+date_day_bd +">"+ li_date_day);
+													// ul_li_items.find("li").eq(li).before("<li>"+date_bd+"</li>");
+													// ul_li_items.find("li").eq(li).before("<li>"+date_bd+"</li>");
+													ul_li_items.find("li").eq(li).before(data.li[key]);
+													// break;
+												}
+												if(date_day_bd < li_date_day) {
+													console.log(" "+date_day_bd +"<"+ li_date_day);
+													// ul_li_items.find("li").eq(li).after("<li>"+date_bd+"</li>");
+													ul_li_items.find("li").eq(li).after(data.li[key]);
+													console.log("data.date_bd======"+data.date_bd);
+													console.log("data.date_bd======"+data.li[key]);
+													// break;
+												}
+										    // }else console.log("\r\n NO ITEM LI=======\r\n");
+
+										}
+										*/
+
+										// ul_li_items.each(function(i2,e2){
+										// 	console.log("ul_li_items=" + i2 +" --- "+ e2);
+										// 	console.log( $(this).html());
+										// });
+									}
+
+
+									// else {
+									// 	// $(this).after("<p>new el error</p>");
+									// 	console.log("data.date_bd======"+date_bd);
+									// 	$("#timeliner .timeliner").append('<div class="date_separator"><span>'+date_bd+'</span></div>');
+									// 	// break;
+									// }
+
+								}
+							   // $(this).after("<ul class='columns'>"+render_items_li+"</ul>");
+							// $(".timeliner .columns").last().append(render_items_li);
+
+
+							});
+							return false;
+
+							console.log("\r\n length ");
+							var item = $(".global-timeliner").length;
+							console.log( item );
+							if( item > 0) $(".wrap_timeliner").append("<div class='item-timel-"+item+" global-timeliner'></div>");
+							else $(".wrap_timeliner").append("<div class='item-timel-0 global-timeliner'></div>")
+						  // $('#timeliner .timeliner').timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
+						  $('.item-timel-' + item).timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
+					} else { console.log("data send with errors!");}
+				}
+
+			 });
+
+		});
+
+		$("#timeliner").on("click",".li-load-ajax-del", function(){
+
+			// console.log( $(this).html() );
+			// alex_ondelete($(this));
+   		 	if(!confirm("Are you sure to delete ?")) return false;
+			// console.log("--------delete li !!!!! 1---------------"+$(this).html());
+			// console.log("--------delete li !!!!! 1---------------"+_data.html());
+
+			   var html = $(this).parents("li");
+			  //  console.log(html.html());
+			  // return false;
+			   var id = html.find(".alex_item_id").text();
+			   html.hide();
+
+					var data = {
+					'action': 'alex_del_timeline',
+					'id':id
+				};
+
+				$.ajax({
+					url:ajaxurl, // обработчик
+					data:data, // данные
+					type:'POST', // тип запроса
+					success:function(data){
+						if( data ) { 
+						} else { console.log("data send with errors!");}
+					}
+
+				 });
+				// end ajax
+	});
+
+		$("#timeliner").on("click",".li-load-ajax", function(){
+
+			// console.log("come-bd-ajax="+$(this).parent().parent().html());
+			var current_li = $(this).closest("li");
+			var old_li = current_li.html();
+			console.log("come-bd-ajax="+current_li.html());
+			var grs_html = '';
+			var cur_li_date = $.trim( current_li.find(".timeliner_date").text() );
+			var cur_li_title = $.trim( current_li.find(".timeliner_label").text() );
+			var cur_li_content = $.trim( current_li.find(".content").text() );
+			var cur_li_item_id = $.trim( current_li.find(".alex_item_id").text() );
+			var cur_li_all_grs = $.trim( current_li.find(".all_grs").text() );
+			var cur_li_gr_name = $.trim( current_li.find("#alex_gr_name_select").text() );
+			console.log("all_grs="+cur_li_all_grs+"\r\n\r\n");
+			console.log("cur_li_gr_name="+cur_li_gr_name+"\r\n\r\n");
+			var cur_li_all_grs = cur_li_all_grs.split(",");
+			for (k in cur_li_all_grs){
+				console.log("k="+k+"-"+cur_li_all_grs[k]);
+				if(cur_li_gr_name == cur_li_all_grs[k]) gr_selected = 'selected'; else gr_selected = '';
+                 grs_html = grs_html + '<option value="'+cur_li_all_grs[k]+'" '+gr_selected+'>'+cur_li_all_grs[k]+'</option>';
+			}
+			if(!cur_li_all_grs){
+           		grs_html = '<option value="" seleted="selected">None</option>';
+			}
+		    var formTpl = 
+		        '\
+		            <div class="timeliner_element" style="float: none;">\
+		                <form role="form" class="form-horizontal timeline_element" >\
+		                <input type="hidden" name="id" class="form-control" >\
+		                <div class="timeline_title"> &nbsp; </div>\
+		                <div class="content">\
+		                    <div class="form-group">\
+		                        <label class="col-sm-2 control-label" for="form-field-2"> Date </label>\
+		                        <div class="col-sm-9">\
+		                            <input type="text" placeholder="Add Date" name="date" class="form-control datepicker" required="required" data-date-format="dd M yyyy" value="'+cur_li_date+'">\
+		                        </div>\
+		                    </div>\
+		                    <div class="form-group">\
+		                        <label class="col-sm-2 control-label" for="form-field-1"> Title </label>\
+		                        <div class="col-sm-9">\
+		                            <input type="text" placeholder="Event Title" name="title" class="form-control title" required="required" value="'+cur_li_title+'">\
+		                            <input type="hidden" placeholder="Event Title" name="id_alex" class="form-control id_alex" required="required" value="'+cur_li_item_id+'">\
+		                        </div>\
+		                    </div>\
+		                    <div class="form-group">\
+		                        <label class="col-sm-2 control-label" for="form-field-12"> Content </label>\
+		                        <div class="col-sm-9">\
+		                            <textarea placeholder="Add a brief description" name="content" class="form-control textarea-content" required="required">'+cur_li_content+'</textarea>\
+		                        </div>\
+		                    </div>\
+		                    <div class="form-group">\
+		                        <label class="col-sm-2 control-label" for="form-field-12"> Shade </label>\
+		                        <div class="col-sm-9">\
+		                            <select class="form-control" name="class" id="class_bg">\
+		                                <option value="" seleted="selected">None</option>\
+		                                <option value="bricky">Red</option>\
+		                                <option value="green">Green</option>\
+		                                <option value="purple">Purple</option>\
+		                                <option value="teal">Teal</option>\
+		                            </select>\
+		                        </div>\
+		                    </div>\
+		                    <div class="form-group">\
+		                        <label class="col-sm-2 control-label" for="form-field-12"> Group </label>\
+		                        <div class="col-sm-9">\
+		                            <select class="form-control select-group" name="alex_gr_name_select" id="alex_gr_name_select">\
+		                                '+grs_html+
+		                            '</select>\
+		                        </div>\
+		                    </div>\
+		                </div>\
+		                <div class="readmore">\
+		                    <button class="btn" type="reset"><i class="fa fa-times"></i> Cancel</button>\
+		                    <button class="btn btn-primary load-ajax-save-edit" type="submit"><i class="fa fa-save"></i> Save</button>\
+		                </div>\
+		                </form>\
+		            </div>\
+		        ';
+		        current_li.html(formTpl);
+		    	current_li.find('.datepicker').datepicker();
+
+		        // current_li.replaceWith(formTpl);
+		        $("button[type='reset']").click(function(){
+		        	console.log("reset====");
+		    		console.log("come-bd-ajax="+typeof old_li);
+		    		console.log("old_li="+old_li);
+		        	// current_li.html(current_li);
+		        	$(this).closest("li").html(old_li);
+		        });
+
+		});
+
+		$("#timeliner").on("click",".load-ajax-save-edit", function(e){		        
+		        // $(".a21_y").click(function(e){
+		        	e.preventDefault();
+		        	console.log("submit====");
+		        	var cur_form = $(this).closest("li");
+		        	var _data = {};
+		        	_data.id_alex = cur_form.find('.id_alex').val();
+		        	_data.title = cur_form.find('.title').val();
+		        	_data.date = cur_form.find('.datepicker').val();
+		        	_data.content = cur_form.find(".textarea-content").val();
+		        	_data.alex_gr_name_select = cur_form.find("#alex_gr_name_select").val();
+		        	_data.class= cur_form.find("#class_bg").val();
+
+		        	console.log("---frm--"+cur_form.html()+"\r\n\r\n");
+				    for (var key in _data) {
+				    	console.log("key-"+key+"="+_data[key]);
+				    }
+		        	// return false;
+			        alex_onedit(_data);
+			        // alex_onedit1(_data);
+		        });
+		       
+		/* **** as21 ajax load part timeline data **** */
 
 		    var tl = jQuery('#timeliner').timeliner({onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
 
@@ -891,6 +1329,127 @@ function alex_del_timeline(){
 	exit;
 }
 
+add_action('wp_ajax_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
+add_action('wp_ajax_nopriv_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
+
+function a21_load_part_timeline_data() {
+
+	// alex_debug(0,1,"",$_POST);
+	$user_id = ( !empty($_POST['user_id']) ) ? (int)$_POST['user_id'] : '' ;
+	$offset = ( !empty($_POST['offset']) ) ? (int)$_POST['offset'] : '' ;
+
+	if( !empty( $user_id) && !empty( $offset) ){
+
+		global $wpdb;
+		$count_timeline = 4;
+
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+			FROM {$wpdb->posts}
+			WHERE post_parent = %d
+			    AND post_type = %s
+			ORDER BY post_date DESC LIMIT {$offset},{$count_timeline}",
+			$user_id,
+			"alex_timeline"
+		) );
+	     	 
+     	 if( !empty($fields) ): foreach ($fields as $field):
+			
+				$group = groups_get_group($field->menu_order);
+				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+				$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+				$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+			/* **** as21 new way**** */
+			$way2['date'][] = $field->post_excerpt; 
+			/* **** as21 new way**** */
+			$html = '';
+			 $class_bg = ( !empty($field->post_name) ) ? $field->post_name : "teal";
+			 /*
+		     $html .= '
+		     <li>
+		          <div class="timeliner_element '.$color_class.'">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($field->post_title).'</span>
+		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
+		              </div>
+		              <div class="content">
+		              	   '.stripslashes($field->post_content).'
+		              </div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>'; endif;
+				          if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+			              	   if($group->name):
+			              	  	 $html .= '<div id="alex_gr_name_select">'. $group->name.'</div>';
+			              	   endif;
+		              	  if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
+		              	  $html .= '
+		              	  <span class="alex_item_id">'.$field->ID.'</span>
+		                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+		                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+		                  <a href="#" class="btn btn-info">
+		                      Read More <i class="fa fa-arrow-circle-right"></i>
+		                  </a>
+		              </div>
+		          </div>
+		      </li>';
+		      */
+		    $grs = '';
+			$group_ids =  groups_get_user_groups( bp_loggedin_user_id() ); 	
+			// print_r($group_ids);
+			foreach($group_ids["groups"] as $group_id) { 
+				$group_for_select = groups_get_group(array( 'group_id' => $group_id ));
+				// $grs .= $group->id.':"'.$group->name.'",';
+				$grs .= $group_for_select->name.',';
+			}
+			$grs = substr($grs,0,-1);
+
+		     $title = stripslashes($field->post_title); 
+		     $edit_btn_title = str_replace(" ", "-", strtolower($title));
+		     $edit_btn_date = str_replace(" ", "-", strtolower($field->post_excerpt));
+		     $title_edit_btn = $edit_btn_title."-".$edit_btn_date."-edit-btn";
+		     $html .= '
+		     <li>
+		          <div class="timeliner_element '.$class_bg.'" data-class_bg="'.$class_bg.'">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.$title.'</span>
+		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
+		              </div>
+		              <div class="content">
+		              	   '.stripslashes($field->post_content).'
+		              </div>
+		              <div class="readmore">';
+				          if($group): 
+				          		$html .= '<div id="alex_tl_grp_id" data-gr-id="'.$group->id.'">
+					          				<a href="'.$group_permalink.'">';
+					            if($gr_avatar): $html .= '<img src="'.$gr_avatar.'" />'; endif;
+					            $html .= '</a>';
+		              	     if($group->name):
+			              	  	 $html .= '<span id="alex_gr_name_select">'. $group->name.'</span>';
+			              	   endif;
+
+					            $html .= '</div>';
+					            $html .= '<div class="all_grs" style="display:none;">'.$grs.'</div>';
+				           endif;
+		              	  // if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
+		              	  $html .= '
+		              	  <span class="alex_item_id" style="display: none;">'.$field->ID.'</span>
+          	              <button class="btn btn-danger li-load-ajax-del"><i class="fa fa-trash"></i> </button>
+		                  <button class="btn btn-primary li-load-ajax" id="'.$title_edit_btn.'"><i class="fa fa-pencil"></i> </button>
+		              </div>
+		          </div>
+		      </li>';
+		      $way2['li'][$field->post_excerpt] = $html;
+	      endforeach;
+	      // echo "<ul class='columns'>".$html."</ul>";
+	      echo json_encode($way2);
+	    endif;
+
+	}
+	exit;
+}
+
+
 add_action('wp_ajax_alex_add_timeline', 'alex_add_timeline');
 
 function alex_add_timeline() {
@@ -900,6 +1459,7 @@ function alex_add_timeline() {
 	$content = sanitize_text_field($_POST['content']);
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
+	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
 
 	global $wpdb;
 	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
@@ -908,8 +1468,8 @@ function alex_add_timeline() {
 
 	$wpdb->insert(
 		$wpdb->posts,
-		array( 'ID' => $last_post_id+1, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date, 'post_type' => 'alex_timeline', 'post_parent'=> $member_id, 'menu_order'=>$alex_tl_grp_id),
-		array( '%d','%s','%s','%s','%s','%s','%d','%d' )
+		array( 'post_date'=>$sort_date ,'ID' => $last_post_id+1, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date, 'post_type' => 'alex_timeline', 'post_parent'=> $member_id, 'menu_order'=>$alex_tl_grp_id),
+		array( '%s','%d','%s','%s','%s','%s','%s','%d','%d' )
 	);
 	$res = true;
 	echo $res;
@@ -926,14 +1486,16 @@ function alex_edit_timeline() {
 	$content = sanitize_text_field($_POST['content']);
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
+	// alex_debug(0,1,"",$_POST); exit;
 
+	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
 
 	if($id > 0){
 		global $wpdb;
 		$wpdb->update( $wpdb->posts,
-			array( 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id ),
+			array( 'post_date' => $sort_date, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id ),
 			array( 'ID' => $id ),
-			array( '%s', '%s', '%s', '%s','%d' ),
+			array( '%s','%s', '%s', '%s', '%s','%d' ),
 			array( '%d' )
 		);
 	}
@@ -1878,4 +2440,67 @@ function deb_last_query(){
 	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
 	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
 	echo '<hr>';
+}
+
+// add_action("wp_footer","a21_tmp_query_db");
+
+function a21_tmp_query_db(){
+
+	global $wpdb;
+
+	// Преобразует дату '28 Jan 2017' в '2017-01-28', a mysql работает с форматом 0000-00-00 00:00:00
+	echo date("Y-m-d",strtotime("28 Jan 2017"));
+
+	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
+
+	$date_timeline = $wpdb->get_results( "SELECT ID,post_excerpt FROM ".$wpdb->posts." WHERE post_type='alex_timeline'" );
+	// alex_debug(0,1,"",$date_timeline);
+
+	foreach ($date_timeline as $date) {
+		$parse_date = date("Y-m-d",strtotime($date->post_excerpt));
+		$query = $wpdb->prepare( "UPDATE " . $wpdb->posts."
+		        	SET post_date=%s WHERE post_type=%s AND ID=%d
+		        	",$parse_date, 'alex_timeline',(int)$date->ID);
+		$wpdb->query( $query );
+		deb_last_query();
+	}
+
+	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
+
+	
+	$fields = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_parent = %d
+		    AND post_type = %s
+		  ORDER BY post_date DESC LIMIT 0,2", 
+		 // ORDER BY post_date DESC LIMIT 15",
+		1,
+		"alex_timeline"
+	) );
+	alex_debug(0,1,"",$fields);
+
+	$fields2 = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_parent = %d
+		    AND post_type = %s
+		  ORDER BY post_date DESC LIMIT 2,5", 
+		 // ORDER BY post_date DESC LIMIT 15",
+		1,
+		"alex_timeline"
+	) );
+	alex_debug(0,1,"",$fields2);
+}
+
+// add_action("wp_footer","a21_check_tables");
+
+function a21_check_tables(){
+	if( current_user_can('administrator') && is_front_page()){
+		global $wpdb;
+		$get_event_images = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM ".$wpdb->base_prefix."bp_groups_groupmeta WHERE meta_key=%s", 'a21_bgc_event_image') );
+		alex_debug(0,1,"",$get_event_images);
+	    $wpdb->delete( $wpdb->base_prefix."bp_groups_groupmeta", array('id'=>138), array('%d') );
+	    deb_last_query();
+	}
 }

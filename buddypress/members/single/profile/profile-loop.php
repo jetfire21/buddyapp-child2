@@ -297,12 +297,14 @@ endif;
 		global $bp;
 		$quest_id = (int)$bp->displayed_user->id;
 
+		do_action("a21_bgc_message_thankyou"); 
+
 		/* select timeline data (title,content,date etc) */
 
 		$offset = 0;
-		$count_timeline = 2;
+		$count_timeline = 5;
 		$fields = $wpdb->get_results( $wpdb->prepare(
-			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
@@ -326,48 +328,103 @@ endif;
 		  <ul class="columns alex_timeline_wrap">
 		      <?php	if( !empty($fields) ): foreach ($fields as $field):?>
 				<?php //
-					$group = groups_get_group($field->menu_order);
-					$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-					$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-					$gr_avatar = bp_core_fetch_avatar($avatar_options);
 
-				 ?>
-			      <li>
-			          <div class="timeliner_element <?php echo !empty($field->post_name) ? $field->post_name : "teal"; ?>">
-						<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
-			              <div class="timeliner_title">
-			                  <span class="timeliner_label"><?php echo stripslashes($field->post_title);?></span>
-			                  <span class="timeliner_date"><?php echo $field->post_excerpt;?></span>
-			              </div>
-			              <div class="content">
-			              	   <?php echo stripslashes($field->post_content);?>
-			              </div>
-			              <div class="readmore">
-			              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
-			              	  <?php if($group_permalink):?> <div id="alex_gr_link"><?php echo $group_permalink;?></div><?php endif;?>
-			              	  <?php if($group->name):?> 
-			              	  	 <div id="alex_gr_name_select"><?php echo $group->name;?></div>
-			              	  <?php endif;?>
-			              	  <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
-			              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
-			                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
-			                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
-			                  <a href="#" class="btn btn-info">
-			                      Read More <i class="fa fa-arrow-circle-right"></i>
-			                  </a>
-			              </div>
-			          </div>
-			      </li>
-		      <?php endforeach; endif;?>
-		      <?php //do_action("a21_bgc_message_thankyou"); ?>
+					//
+					if( !empty($field->guid) ):
+						$event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars WHERE id = %d", (int)$field->guid ) );
+
+						$get_event_image = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
+		            	WHERE group_id=%d AND meta_key=%s LIMIT 1", (int)$event->id, 'a21_bgc_event_image') );
+
+						$event_time = strtotime($event->event_time);
+						$event_time = date("d M Y",$event_time);
+						$group = groups_get_group(array( 'group_id' => $event->group_id ));
+						$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+						$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+						$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+					?>
+
+					      <li>
+					          <div class="timeliner_element is_event_thank_you">
+								<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
+					              <div class="timeliner_title">
+					                  <span class="timeliner_label"><?php echo stripslashes($event->event_title);?></span>
+					                  <span class="timeliner_date"><?php echo $event_time;?></span>
+					              </div>
+					              <div class="content">
+					              	   <?php if( !empty($get_event_image) ) {
+					              	    echo "<a href='".$group_permalink."/callout/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
+					              	    echo "<p>".stripslashes($event->thank_you)."</p>";
+					              	    }else echo stripslashes($event->thank_you);
+					              	    ?>
+					              </div>
+					              <div class="readmore">
+					              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
+					              	  <?php if($group_permalink):?> <div id="alex_gr_link"><?php echo $group_permalink;?></div><?php endif;?>
+					              	  <?php if($group->name):?> 
+					              	  	 <div id="alex_gr_name_select"><?php echo $group->name;?></div>
+					              	  <?php endif;?>
+		<!-- 			            
+									 <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
+					              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
+					                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+					                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+					                  <a href="#" class="btn btn-info">
+					                      Read More <i class="fa fa-arrow-circle-right"></i>
+					                  </a>
+		 -->			    
+		 				          </div>
+					          </div>
+					      </li>
+					<?php else:
+
+						$group = groups_get_group($field->menu_order);
+						$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+						$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+						$gr_avatar = bp_core_fetch_avatar($avatar_options);
+ 					?>
+
+					      <li>
+					          <div class="timeliner_element <?php echo !empty($field->post_name) ? $field->post_name : "teal"; ?>">
+								<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
+					              <div class="timeliner_title">
+					                  <span class="timeliner_label"><?php echo stripslashes($field->post_title);?></span>
+					                  <span class="timeliner_date"><?php echo $field->post_excerpt;?></span>
+					              </div>
+					              <div class="content">
+					              	   <?php echo stripslashes($field->post_content);?>
+					              </div>
+					              <div class="readmore">
+					              	  <?php if($gr_avatar):?> <div id="alex_gr_avatar"><?php echo $gr_avatar;?></div><?php endif;?>
+					              	  <?php if($group_permalink):?> <div id="alex_gr_link"><?php echo $group_permalink;?></div><?php endif;?>
+					              	  <?php if($group->name):?> 
+					              	  	 <div id="alex_gr_name_select"><?php echo $group->name;?></div>
+					              	  <?php endif;?>
+					              	  <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
+					              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
+					                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+					                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+					                  <a href="#" class="btn btn-info">
+					                      Read More <i class="fa fa-arrow-circle-right"></i>
+					                  </a>
+					              </div>
+					          </div>
+					      </li>
+		      		<?php endif;
+		      endforeach; endif;?>
+		      <?php // do_action("a21_bgc_message_thankyou");  ?>
 		   </ul> 
 		
 		</div>
 		</div>
+
+		<ul class="activity-list item-list">
 		<li class="load-more">
 			<!-- <a href="http://dugoodr2.dev/i-am/admin/activity/?acpage=2">Load More</a> -->
-			<a href="#" id="a21_load_part_timeline_data" data-offset="2" data-user-id="<?php echo $quest_id;?>">Load More</a>
+			<a href="#" id="a21_load_part_timeline_data" data-offset="<?php echo $count_timeline;?>" data-user-id="<?php echo $quest_id;?>">Load More</a>
 		</li>
+		</ul>
 
 		</div> 
 

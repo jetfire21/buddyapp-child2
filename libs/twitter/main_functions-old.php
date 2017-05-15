@@ -21,41 +21,21 @@ $gr_permalink = sanitize_text_field($_POST['gr_permalink']);
 $gr_name = sanitize_text_field($_POST['gr_name']);
 $gr_avatar = sanitize_text_field($_POST['gr_avatar']);
 $tw_user = sanitize_text_field($_POST['user']);
-global $wpdb,$bp;
-
-if($gr_id > 0) {
-	$twitter_url = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->prefix."bp_groups_groupmeta
-            	WHERE group_id=%d AND meta_key=%s LIMIT 1", $gr_id, 'al21_twitteer_url') );
-	if( !empty($twitter_url) && strpos($twitter_url, "twitter.com") !== false) 
-	{
-		$crop_twitter_url = explode(".com/", $twitter_url);
-		$twitter_username = $crop_twitter_url[1];
-		// var_dump($crop_twitter_url);
-		// echo $twitter_username."<br>";
-		$twitter_username = str_replace("/", "", $twitter_username);
-		// echo $twitter_username;
-	}
-}
-// exit;
-// $res['html'] = $twitter_url;
-// 	echo json_encode($res);
-// 	exit;
-
 require_once 'tw-api.php';
-$twitter_debug = false;
+$twitter_debug = true;
 // $twitter_username = 'ottawafoodbank';
 // $twitter_username = 'kaspersky_ru';
 // $tweets = a21_tw_get_tweets($settings,$url,$getfield,$requestMethod,$twitter_debug,5);
 // $tweets = a21_tw_get_tweets($tw_user,$settings,$url,$requestMethod,$twitter_debug, 10);
 // $tweets = a21_tw_get_tweets($twitter_username,$twitter_debug,$number_tweets = 15);
 
-if( !empty($twitter_username) ) $tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$requestMethod,$twitter_debug,15);
+$tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$requestMethod,$twitter_debug,15);
 
-
+global $wpdb,$bp;
 $table_activity = $wpdb->prefix."bp_activity";
 // $res['debug'] = 'for debug: ';
 $tw_i = 1;
-if(!$twitter_debug && !empty($tweets) ):
+if(!$twitter_debug):
 	foreach ($tweets as $k => $v):
 
 		$date_format = ago($v->created_at,1,1);
@@ -183,8 +163,8 @@ if(!$twitter_debug && !empty($tweets) ):
 		// echo $i++;
 	}
 
-	// $res['html'] = "html";
-	$res['html'] = $html;
+	$res['html'] = "html";
+	// $res['html'] = $html;
 	$end_time =	microtime(true);
 	// $res['debug'] .= ($end_time - $st_time) ." sec ";
 
@@ -235,7 +215,7 @@ function alex_tweet(){
 					type:'POST', // тип запроса
 					success:function(data){
 						console.log("js ok!");
-						// console.log(data);
+						console.log(data);
 						// // console.log(typeof data);
 						// var data = JSON.parse(data);
 						// console.log(data.debug);
