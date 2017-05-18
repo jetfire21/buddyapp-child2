@@ -66,23 +66,12 @@
          */
         init: function() {
             this.add(this.$el.find(this.config.itemSelector)).render();
-            console.log("this.$el.find(this.config.itemSelector========="+this.$el.find(this.config.itemSelector).html() );
             if($.type(this.config.onInit) === "function"){
                 this.config.onInit.call(this, this);
             }
             return this;
         },
         add: function(_item){
-            console.log("==== _item ====== "+_item);
-            // console.log("==== _item.html() ====== \r\n"+_item.html());
-            // for(k in _item){
-            //     console.log("k-"+k+" == "+_item[k]);
-            //     console.log("typeof===="+typeof _item[k]);
-            //     // if( typeof _item[k] )      {
-            //     //     console.log("==== _item[k].html() ====== \r\n"+_item[k].html());
-            //     // }
-            //     // if (k=="jquery") return false;
-            // }
             var self = this;
             if($.type(_item) === "string"){
                 var el = $(_item);
@@ -102,7 +91,6 @@
                     self.add($(_value));
                 });
             }else if($.type(_item) === "object"){
-                // console.log("==== _item.html() ====== \r\n"+_item.html());
                 pushItem.call(this, _item);
             }
 
@@ -384,7 +372,7 @@
         delBtn = addAttr.call(this, delBtn, 'id', _obj.$delBtnId);
 
         var html = getHtml.call(this, 'itemTpl', _obj);
-        console.log("this=====\r\n");
+        // console.log("html=====\r\n");
         // console.log(html);
         html = html.replace('{{edit-button}}', edtBtn);
         html = html.replace('{{delete-button}}', delBtn);

@@ -271,10 +271,23 @@ function a21_tmp_query_db(){
 
 	global $wpdb;
 
+	$get_all_timeline = $wpdb->get_results( "SELECT post_date,post_title,guid FROM ".$wpdb->posts." WHERE post_type='alex_timeline' AND post_date'=>'1970-01-01 00:00:00'" );
+	// alex_debug(0,1,"get_all_timeline",$get_all_timeline);
+	echo "---------------------777";
+
+	// $is_cur_thankyou = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE 'post_type'=>%s,post_date'=>%s",'alex_timeline'));
+	// deb_last_query();
+	var_dump($is_cur_thankyou);
+	// exit;
+	 $wpdb->delete( $wpdb->posts, array('post_type' => 'alex_timeline','post_date'=>'1970-01-01 00:00:00'), array('%s','%s') );
+	 deb_last_query();
+
+
+
 	// Преобразует дату '28 Jan 2017' в '2017-01-28', a mysql работает с форматом 0000-00-00 00:00:00
 	echo date("Y-m-d",strtotime("28 Jan 2017"));
 
-	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
+	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** *
 
 	$date_timeline = $wpdb->get_results( "SELECT ID,post_excerpt FROM ".$wpdb->posts." WHERE post_type='alex_timeline'" );
 	// alex_debug(0,1,"",$date_timeline);
@@ -288,11 +301,11 @@ function a21_tmp_query_db(){
 		deb_last_query();
 	}
 
-	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
+	 **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
 
-	
+	/*
 	$fields = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		"SELECT *
 		FROM {$wpdb->posts}
 		WHERE post_parent = %d
 		    AND post_type = %s
@@ -304,7 +317,7 @@ function a21_tmp_query_db(){
 	alex_debug(0,1,"",$fields);
 
 	$fields2 = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+		"SELECT *
 		FROM {$wpdb->posts}
 		WHERE post_parent = %d
 		    AND post_type = %s
@@ -314,6 +327,7 @@ function a21_tmp_query_db(){
 		"alex_timeline"
 	) );
 	alex_debug(0,1,"",$fields2);
+	*/
 }
 
 // add_action("wp_footer","a21_check_tables");
@@ -326,4 +340,117 @@ function a21_check_tables(){
 	    $wpdb->delete( $wpdb->base_prefix."bp_groups_groupmeta", array('id'=>138), array('%d') );
 	    deb_last_query();
 	}
+}
+
+// add_action("wp_footer",'as21_temp_timeline',999);
+
+function as21_temp_timeline(){
+?>
+<!-- /* **** as21 динмаическое добавление данных в метод плагина, например через ajax
+ http://www.jqueryscript.net/time-clock/Responsive-Dynamic-Timeline-Plugin-For-jQuery-Timeliner.html  **** */
+     Timeliner.prototype = {
+        init: function() { // ...какой-то код метода },
+        add: function(_item){ // ...какой-то код метода }
+      };
+  -->    
+ <!-- разметка для плагина -->   
+<div id="as21">
+	 <li>
+	  <div class="timeliner_element teal">
+	      <div class="timeliner_title">
+	          <span class="timeliner_label">Event Title</span><span class="timeliner_date">03 Nov 2014</span>
+	      </div>
+	      <div class="content">
+	           <b>Lorem Ipsum</b> is simply dummy text of the printing and typesetting industry Lorem Ipsum has been the industry's standard dummy text evsince he 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only fcenturies, ut also the leap into electronic typesetting, remaining essentially unchang
+	      </div>
+	      <div class="readmore">
+	          <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+	          <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+	          <a href="#" class="btn btn-info">
+	              Read More <i class="fa fa-arrow-circle-right"></i>
+	          </a>
+	      </div>
+	   </div>
+	  </li>
+	  <!-- ....... можно добавить сколько угодно li -->
+</div>
+
+<script type="text/javascript">
+jQuery( document ).ready(function($) {
+
+var new_li = '<li>\
+				  <div class="timeliner_element teal">\
+				      <div class="timeliner_title">\
+				          <span class="timeliner_label">Event Title</span><span class="timeliner_date">10 Nov 2014</span>\
+				      </div>\
+				      <div class="content">\
+				           11111111111\
+				      </div>\
+				      <div class="readmore">\
+				          <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>\
+				          <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>\
+				          <a href="#" class="btn btn-info">\
+				              Read More <i class="fa fa-arrow-circle-right"></i>\
+				          </a>\
+				      </div>\
+				   </div>\
+			  </li>\
+			  <li>\
+				  <div class="timeliner_element teal">\
+				      <div class="timeliner_title">\
+				          <span class="timeliner_label">Event Title</span><span class="timeliner_date">15 Nov 2014</span>\
+				      </div>\
+				      <div class="content">\
+				           22222\
+				      </div>\
+				      <div class="readmore">\
+				          <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>\
+				          <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>\
+				          <a href="#" class="btn btn-info">\
+				              Read More <i class="fa fa-arrow-circle-right"></i>\
+				          </a>\
+				      </div>\
+				   </div>\
+			  </li>';
+
+	var tl = $('#as21').timeliner();
+	tl.add(new_li).render();
+	// tl.destroy(); //work
+});
+</script>
+
+<!-- /* **** as21 динмаическое добавление данных в метод плагина, например через ajax
+ http://www.jqueryscript.net/time-clock/Responsive-Dynamic-Timeline-Plugin-For-jQuery-Timeliner.html  **** */ -->
+
+<?php
+
+}
+
+add_action("wp_footer","as21_get_info_group_calendar");
+
+function as21_get_info_group_calendar(){
+
+	// it wll work if ?dev=1
+	if( (bool)$_GET['dev'] == true ) {
+
+		global $wpdb;
+		//$wpdb->query("DELETE FROM {$wpdb->prefix}bp_groups_groupmeta WHERE id='128' AND meta_key='a21_bgc_event_image' ");
+		// deb_last_query();
+		$get_all_event_image = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
+	            	WHERE meta_key=%s", 'a21_bgc_event_image') );
+		alex_debug(0,1,"get_all_event_image",$get_all_event_image);
+
+		$all_events = $wpdb->get_results( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}bp_groups_calendars"));
+		foreach ($all_events as $k => $event) {
+			unset($all_events[$k]->event_description);
+		}
+		alex_debug(0,1,"all_events",$all_events);
+
+	}
+}
+
+add_action("wp_head","as21_temp_google",999);
+
+function as21_temp_google(){
+	if( is_home() or is_front_page() ) 		echo '<meta name="google-site-verification" content="DzNJ5_KD5zeNnQXMMOcMLyb5I9b1FUPH3H1nd1Wy7lo" />';
 }

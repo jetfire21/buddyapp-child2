@@ -680,6 +680,18 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 
 /* ******* PAGE VOLUNTEER********* */
 
+#show-signup-report-modal{
+  background: #fff;
+  width: 100%;
+  margin:0 auto;
+  height: 500px;
+}
+.print img{ height: 35px;  cursor: pointer;}
+@media print
+{
+    .print{ display: none; }
+    body{ background: #000; }
+}
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}

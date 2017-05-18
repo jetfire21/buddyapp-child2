@@ -164,7 +164,7 @@ endif;
  -->
 							<div class="profile-fields mission hentry">
 							<div class="entry-content">
-								<?php bp_the_profile_field_value(); ?>
+								<?php echo stripslashes( bp_get_the_profile_field_value() ); ?>
 								</div>
 							</div>
 							<?php elseif($prof_name == "basic info"):?>
@@ -241,7 +241,7 @@ endif;
 									 <?php
 									  if( strtolower(bp_get_the_profile_field_name()) == "experience"){ 
 									  	// with text formatting
-									 	if( !empty($experience) ) echo wpautop($experience->data->value);
+									 	if( !empty($experience) ) echo stripslashes( wpautop($experience->data->value ));
 									 	// bp_the_profile_field_value();
 									 }
 									  else { bp_the_profile_field_value(); }
@@ -312,6 +312,10 @@ endif;
 			$quest_id,
 			"alex_timeline"
 		) );
+
+		$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
+		// deb_last_query();
+
 		?>
 		<div class="bp-widget">
 
@@ -419,12 +423,14 @@ endif;
 		</div>
 		</div>
 
+		<?php if($count_all_timelines > $count_timeline):?>
 		<ul class="activity-list item-list">
 		<li class="load-more">
 			<!-- <a href="http://dugoodr2.dev/i-am/admin/activity/?acpage=2">Load More</a> -->
 			<a href="#" id="a21_load_part_timeline_data" data-offset="<?php echo $count_timeline;?>" data-user-id="<?php echo $quest_id;?>">Load More</a>
 		</li>
 		</ul>
+		<?php endif;?>
 
 		</div> 
 
