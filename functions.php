@@ -1496,14 +1496,15 @@ foreach ( $kleo_modules as $module ) {
 /* ********** Load modules ******** */
 
 
-function as21_get_cover_image_from_db_for_fb(){
+function as21_get_cover_image_from_db_for_fb( $only_image=false ){
 
 	global $wpdb,$bp;
 
 	// if( bp_is_members_component() ) $user_id = bp_get_member_user_id();
-	// if( bp_is_user() ) $user_id = $bp->displayed_user->id;
+	if( bp_is_user() ) $user_id = $bp->displayed_user->id;
+	else $user_id = bp_get_member_user_id();
     // array( 'user_id' => $user_ID, 'meta_key'=>'_afbdata', 'meta_value'=>$ser_fb_data),
-    $user_id = bp_get_member_user_id();
+    var_dump($user_id);
     if( !empty( $user_id) ){
 		$table = $wpdb->prefix."usermeta";
 		$get_fb_data = $wpdb->get_results( $wpdb->prepare(
@@ -1517,17 +1518,21 @@ function as21_get_cover_image_from_db_for_fb(){
 		if( !empty($get_fb_data[0]->meta_value) ) { 
 			$cover_url = unserialize($get_fb_data[0]->meta_value); 
 			// return $cover_url['cover']; 
-			return 'class="item-cover has-cover" style="background:url('. $cover_url['cover'].') no-repeat center center;background-size:cover;"';
+			if( !empty($cover_url['cover']) && $only_image ) return $cover_url['cover']; 
+			if( !empty($cover_url['cover']) ) return 'class="item-cover has-cover" style="background:url('. $cover_url['cover'].') no-repeat center center;background-size:cover;"';
+			else return ' class="item-cover" ';
 		}else return ' class="item-cover" ';
 	}
 }
 
 // add_action("bp_after_member_home_content",'get_cover_image_from_fbuser');
-/* 
+
 add_action("bp_before_member_header",'get_cover_image_from_fbuser');
 function get_cover_image_from_fbuser(){
 
-	$cover_url = get_cover_image_from_db();
+	// $cover_url = get_cover_image_from_db();
+	$cover_url = as21_get_cover_image_from_db_for_fb(true);
+	var_dump($cover_url);
 	if( !empty($cover_url) ){
 	?>
 	<script type="text/javascript">
@@ -1537,7 +1542,7 @@ function get_cover_image_from_fbuser(){
 	<?php
 	}
 }
-*/
+
 
 /* ************ DW actions ************ */
 
