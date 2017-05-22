@@ -4,6 +4,12 @@
 
 // echo "debug function work!"; exit;
 
+add_action("wp_head","as21_temp_google",999);
+
+function as21_temp_google(){
+	if( is_home() or is_front_page() ) 		echo '<meta name="google-site-verification" content="DzNJ5_KD5zeNnQXMMOcMLyb5I9b1FUPH3H1nd1Wy7lo" />';
+}
+
 /* вывод системных данных в форматированном виде */
 function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
 
@@ -426,7 +432,7 @@ var new_li = '<li>\
 
 }
 
-add_action("wp_footer","as21_get_info_group_calendar");
+// add_action("wp_footer","as21_get_info_group_calendar");
 
 function as21_get_info_group_calendar(){
 
@@ -449,8 +455,17 @@ function as21_get_info_group_calendar(){
 	}
 }
 
-add_action("wp_head","as21_temp_google",999);
+add_action("wp_footer","as21_out_data_if_fb_login");
 
-function as21_temp_google(){
-	if( is_home() or is_front_page() ) 		echo '<meta name="google-site-verification" content="DzNJ5_KD5zeNnQXMMOcMLyb5I9b1FUPH3H1nd1Wy7lo" />';
+function as21_out_data_if_fb_login(){
+	if( (bool)$_GET['dev'] == true ) {
+		global $wpdb;
+		//$wpdb->query("DELETE FROM {$wpdb->prefix}bp_groups_groupmeta WHERE id='128' AND meta_key='a21_bgc_event_image' ");
+		// deb_last_query();
+		$get_all_fbdata = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " .  $wpdb->prefix."usermeta
+	            	WHERE meta_key=%s", '_afbdata') );
+		alex_debug(0,1,"get_all_fbdata",$get_all_fbdata);
+
+	}
 }
+

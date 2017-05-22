@@ -62,12 +62,12 @@ do_action( 'bp_before_members_loop' );
 
 		<li <?php bp_member_class(); ?>>
 			<div class="item-wrap">
-				<?php 
-				$cover_url = get_cover_image_from_db(); 
-				$cover_class = kleo_bp_get_member_cover_attr();
-				if( !empty($cover_url) ) $cover_class = str_replace( "item-cover","item-cover has-cover", $cover_class); 
-				?>
-				<div <?php echo $cover_class; ?> <?php echo 'style="background:url('.$cover_url.'); background-position: center; background-repeat: no-repeat; background-size:cover;"';?> >
+
+					<div 
+					<?php if(kleo_bp_get_member_cover_attr() == 'class="item-cover"') echo as21_get_cover_image_from_db_for_fb();
+					 else echo kleo_bp_get_member_cover_attr();	?>
+					>
+
 					<div class="item-avatar">
 						<a href="<?php bp_member_permalink(); ?>"><?php bp_member_avatar(array('type' => 'full', 'width' => 80, 'height' => 80)); ?></a>
 						<?php do_action('bp_member_online_status', bp_get_member_user_id()); ?>

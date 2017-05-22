@@ -39,9 +39,21 @@
 		<?php while ( bp_group_members() ) : bp_group_the_member(); ?>
 
 			<li>
-				<div class="item-wrap">
-					<div <?php echo kleo_bp_get_member_cover_attr(); ?>>
+			<?php 
+			// echo $cover_url = get_cover_image_from_db();
+			// if( bp_is_members_component() )  $user_id = bp_get_member_user_id();
+			// if( bp_is_user() ) $user_id = $bp->displayed_user->id;
+			//  $user_id = bp_get_member_user_id();
+			// echo "user_id ".$user_id ;
+			 // deb_last_query();
+			 ?>
 
+				<div class="item-wrap">
+					<!-- <div <?php // echo kleo_bp_get_member_cover_attr(); ?>> -->
+					<div 
+					<?php if(kleo_bp_get_member_cover_attr() == 'class="item-cover"') echo as21_get_cover_image_from_db_for_fb();
+					 else echo kleo_bp_get_member_cover_attr();	?>
+					>
 						<div class="profile-cover-inner"></div>
 						<div class="item-avatar">
 							<a href="<?php bp_group_member_domain(); ?>">
