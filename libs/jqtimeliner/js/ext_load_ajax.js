@@ -95,7 +95,7 @@ jQuery( document ).ready(function($) {
 			success:function(data){
 				console.log("ajax response get success!");
 				if( data ) {
-					console.log(data);
+					// console.log(data);
 		      		location.reload();
 				} else { console.log("data send with errors!");}
 			}
@@ -435,6 +435,7 @@ $("#timeliner").on("click",".load-ajax-save-edit", function(e){
         	_data.content = cur_form.find(".textarea-content").val();
         	_data.alex_gr_name_select = cur_form.find("#alex_gr_name_select").val();
         	_data.class= cur_form.find("#class_bg").val();
+        	// console.log("---"+data.class);
 
       //   	console.log("---frm--"+cur_form.html()+"\r\n\r\n");
 		    // for (var key in _data) {

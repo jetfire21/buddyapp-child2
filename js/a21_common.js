@@ -9,7 +9,7 @@
 			console.log( row_i );
 			if(row_i > 0) el = row_i+el;
 			console.log("el "+el);
-			var html = '<tr> \
+			var html = '<tr class="dinam_row_js"> \
 			<td class="timel_title a21_js">\
 				 <input type="text" required="required" placeholder="" name="new_data['+el+'][timel_title]" class="form-control" value="">\
 			</td>\
@@ -17,6 +17,15 @@
 				 <input  data-date-orientation="right bottom" data-provide="datepicker" type="text" placeholder="" name="new_data['+el+'][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="">\
 			</td>\
 			<td><textarea placeholder="" required="required" name="new_data['+el+'][timel_content]" class="form-control"></textarea>\
+			</td>\
+			<td class="qe_color">\
+			    <select class="form-control" name="new_data['+el+'][timel_class]">\
+			        <option value="" >None</option>\
+			        <option value="bricky" >Red</option>\
+			        <option value="green">Green</option>\
+			        <option value="purple" >Purple</option>\
+			        <option value="teal">Teal</option>\
+			    </select>\
 			</td>\
 			</tr>';
 			$("#a21_timeleline_quick_edit").append(html);

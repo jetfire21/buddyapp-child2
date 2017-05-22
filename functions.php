@@ -1015,7 +1015,9 @@ function alex_edit_timeline() {
 	$content = sanitize_text_field($_POST['content']);
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
+	if( preg_match('#none#i', strtolower($class)) ) $class = "";
 	// alex_debug(0,1,"",$_POST); exit;
+	// echo $class."--"; exit;
 
 	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
 
@@ -1504,7 +1506,7 @@ function as21_get_cover_image_from_db_for_fb( $only_image=false ){
 	if( bp_is_user() ) $user_id = $bp->displayed_user->id;
 	else $user_id = bp_get_member_user_id();
     // array( 'user_id' => $user_ID, 'meta_key'=>'_afbdata', 'meta_value'=>$ser_fb_data),
-    var_dump($user_id);
+    // var_dump($user_id);
     if( !empty( $user_id) ){
 		$table = $wpdb->prefix."usermeta";
 		$get_fb_data = $wpdb->get_results( $wpdb->prepare(
@@ -1532,8 +1534,8 @@ function get_cover_image_from_fbuser(){
 
 	// $cover_url = get_cover_image_from_db();
 	$cover_url = as21_get_cover_image_from_db_for_fb(true);
-	var_dump($cover_url);
-	if( !empty($cover_url) ){
+	// var_dump($cover_url);
+	if( !empty($cover_url && $cover_url != 'class="item-cover"') ){
 	?>
 	<script type="text/javascript">
 		var e = document.getElementById("header-cover-image");

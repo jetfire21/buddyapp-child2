@@ -45,11 +45,11 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				/* select timeline data (title,content,date etc) */
 
 				$fields = $wpdb->get_results( $wpdb->prepare(
-					"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+					"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,post_date
 					FROM {$wpdb->posts}
 					WHERE post_parent = %d
 					    AND post_type = %s
-					ORDER BY post_excerpt DESC",
+					ORDER BY post_date DESC",
 					intval( $quest_id ),
 					"alex_timeline"
 				) );
@@ -58,32 +58,45 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 				// 	echo $field->post_title;
 				// }
 
-				echo '<a id="link_edit_timeline" href="'.$user_link.'">To click for editing</a>'; 
+				echo '<a id="link_edit_timeline" href="'.$user_link.'" class="button">To click for editing</a>'; 
 				// echo "<h3>This section is under development</h3>";
 				echo '<table id="a21_timeleline_quick_edit">
-					<tr><th class="timel_title">Title</th><th>Date</th><th>Description</th></tr>';
+					<tr><th class="timel_title">Title</th><th>Date</th><th>Description</th><th class="qe_color">Color</th></tr>';
 				$i=1; $dp=1;
 				foreach ($fields as $field):
 					// if($i%6==0) $dp++;
 					// if($dp>1) $datepicker_id = "a21_wrap_datepicker".$dp ;
 					// else $datepicker_id = "a21_wrap_datepicker";
-				?>
-				<tr class="<?php echo $field->post_name;?>">
-				<td class="timel_title">
-				<?php // echo $field->post_title;?>
-				 <input type="hidden" placeholder="" name="data[<?php echo $i;?>][timel_id]" class="form-control" value="<?php echo $field->ID;?>">
-				 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo stripcslashes($field->post_title);?>">
-				</td>
-				<td id="a21_wrap_datepicker">
-					 <input data-date-orientation="left bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
-				</td>
-				<td>
-				<?php //echo $field->post_content;?>
-					 <textarea placeholder="" name="data[<?php echo $i;?>][timel_content]" class="form-control"><?php echo stripcslashes($field->post_content);?></textarea>
-				</td>
-				</tr>
-				<?php
-				$i++;
+					// echo $field->ID."==".$field->post_name."--";
+					if( !empty($field->post_title) ):
+					?>
+					<tr class="<?php if( !empty($field->post_name)) echo $field->post_name; else echo "teal";?>">
+					<td class="timel_title">
+					<?php // echo $field->post_title;?>
+					 <input type="hidden" placeholder="" name="data[<?php echo $i;?>][timel_id]" class="form-control" value="<?php echo $field->ID;?>">
+					 <input type="text" placeholder="" name="data[<?php echo $i;?>][timel_title]" class="form-control" value="<?php echo stripcslashes($field->post_title);?>">
+					</td>
+					<td id="a21_wrap_datepicker">
+						 <input data-date-orientation="left bottom" data-provide="datepicker" type="text" placeholder="" name="data[<?php echo $i;?>][timel_date]" class="form-control" required="required" data-date-format="dd M yyyy" value="<?php echo $field->post_excerpt;?>">
+					</td>
+					<td>
+					<?php //echo $field->post_content;?>
+						 <textarea placeholder="" name="data[<?php echo $i;?>][timel_content]" class="form-control"><?php echo stripcslashes($field->post_content);?></textarea>
+					</td>
+					<td class="qe_color">
+					    <select class="form-control" name="data[<?php echo $i;?>][timel_class]">
+					        <!-- <option value="">None</option> -->
+					        <option value="bricky" <?php if($field->post_name=="bricky") echo 'selected="selected"';?>>Red</option>
+					        <option value="green" <?php if($field->post_name=="green") echo 'selected="selected"';?>>Green</option>
+					        <option value="purple" <?php if($field->post_name=="purple") echo 'selected="selected"';?>>Purple</option>
+					        <option value="teal" <?php if($field->post_name=="teal" || empty($field->post_name)) echo 'selected="selected"';?>>Teal</option>
+					        <!--<option value="teal"><?php echo $field->post_name;?></option>-->
+					    </select>
+					</td>	
+					</tr>
+					<?php
+					$i++;
+					endif;
 				endforeach;
 				// echo '<tr>
 				// <td class="timel_title"><input type="text" placeholder="" class="form-control" value=""></td>

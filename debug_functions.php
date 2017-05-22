@@ -440,7 +440,7 @@ function as21_get_info_group_calendar(){
 	if( (bool)$_GET['dev'] == true ) {
 
 		global $wpdb;
-		//$wpdb->query("DELETE FROM {$wpdb->prefix}bp_groups_groupmeta WHERE id='128' AND meta_key='a21_bgc_event_image' ");
+		// $wpdb->query("DELETE FROM {$wpdb->prefix}bp_groups_groupmeta WHERE id='160' AND meta_key='a21_bgc_event_image' ");
 		// deb_last_query();
 		$get_all_event_image = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
 	            	WHERE meta_key=%s", 'a21_bgc_event_image') );
@@ -455,9 +455,10 @@ function as21_get_info_group_calendar(){
 	}
 }
 
-// add_action("wp_footer","as21_out_data_if_fb_login");
+add_action("wp_footer","as21_out_data_if_fb_login");
 
 function as21_out_data_if_fb_login(){
+	// get all facebook user
 	if( (bool)$_GET['dev'] == true ) {
 		global $wpdb;
 		//$wpdb->query("DELETE FROM {$wpdb->prefix}bp_groups_groupmeta WHERE id='128' AND meta_key='a21_bgc_event_image' ");
@@ -465,6 +466,9 @@ function as21_out_data_if_fb_login(){
 		$get_all_fbdata = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " .  $wpdb->prefix."usermeta
 	            	WHERE meta_key=%s", '_afbdata') );
 		alex_debug(0,1,"get_all_fbdata",$get_all_fbdata);
+
+		$get_all_users = $wpdb->get_results( "SELECT * FROM " .  $wpdb->prefix."users" );
+		alex_debug(0,1,"get_all_users",$get_all_users);
 
 	}
 }

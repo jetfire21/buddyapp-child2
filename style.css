@@ -89,7 +89,8 @@ License URI: license.txt
  .profile .activity-list .load-more a:focus{ background: none !important; border-color: #bdbdbd !important;}
  .profile .activity-list .load-more a:hover{ background: #cddc39 !important;}
 .bp-users-reviews-list{ padding-left: 8px; }
-a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
+/*a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }*/
+a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight: bold;*/ }
 
 /*.global-timeliner {display: none;}*/
 .global-timeliner .alex_btn_add_new {display: none;}
@@ -469,9 +470,16 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
 .bp-user #a21_timeleline_quick_edit .bricky td{background-color: #E68176 !important; color:#fff !important;}
 .bp-user #a21_timeleline_quick_edit .purple td{background-color: #9f9daa !important; color:#fff !important;}
 .bp-user #a21_timeleline_quick_edit .green td{background-color: #3D9400 !important; color:#fff !important;}
-.bp-user #a21_timeleline_quick_edit .teal *,.bp-user #a21_timeleline_quick_edit .purple *,
+/*.bp-user #a21_timeleline_quick_edit .teal *,.bp-user #a21_timeleline_quick_edit .purple *,
 .bp-user #a21_timeleline_quick_edit .green *,.bp-user #a21_timeleline_quick_edit .bricky *
-{color:#eae8e8 !important;}
+*/
+.bp-user #a21_timeleline_quick_edit td *{color:#eae8e8 !important;}
+.bp-user #a21_timeleline_quick_edit select option{ color:#000 !important; }
+.bp-user #a21_timeleline_quick_edit .dinam_row_js td *{ color: #000 !important; }
+/*.bp-user #a21_timeleline_quick_edit select:not([multiple]):focus {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAoCAYAAAAVBmHYAAAAGXRFW…hUnCphvglqoBm1DAaH+WjtP2r4qOGjho8aPmr4gBoOEGAA1cYU3Dv/MDAAAAAASUVORK5CYII=) 100% 50% no-repeat !important;}
+*/
+.bp-user #a21_timeleline_quick_edit select { padding-left:5px; border-bottom: none !important; margin-bottom: 0;}
 .bp-user #a21_timeleline_quick_edit .teal input:focus,.bp-user #a21_timeleline_quick_edit .purple input:focus,
 .bp-user #a21_timeleline_quick_edit .green input:focus,.bp-user #a21_timeleline_quick_edit .bricky input:focus,
 .bp-user #a21_timeleline_quick_edit .teal textarea:focus,.bp-user #a21_timeleline_quick_edit .purple textarea:focus,
@@ -483,6 +491,7 @@ a#link_edit_timeline{ display: block; margin:20px 0 50px 0; font-weight: bold; }
    margin: 0; background: transparent !important; border: 0; padding: 0;
    font-size: 12px; line-height: 18px; width: 100%;}
 .bp-user #a21_timeleline_quick_edit td{ padding:12px; }
+.bp-user #a21_timeleline_quick_edit .qe_color{ width:30px; }
 .bp-user #a21_timeleline_quick_edit td.timel_title{ width: 30%; }
 .datepicker {
     margin-bottom: 40px;
