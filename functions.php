@@ -1699,9 +1699,9 @@ if(class_exists('BP_Member_Reviews')){
 
 	add_action("bp_profile_header_meta","a21_override_bp_mr_embed_rating");
 
+	/*
 	function a21_override_bp_mr_embed_rating(){
 		global $BP_Member_Reviews, $bp;
-		// echo "a21 new_html========";
 	    $user_id = bp_displayed_user_id();
         $BP_Member_Reviews->calc_rating($user_id);
         $rating = get_user_meta($user_id, 'bp-user-reviews', true);
@@ -1725,6 +1725,96 @@ if(class_exists('BP_Member_Reviews')){
 		</div>
 		<?
 	}
+	*/
+	
+	function a21_override_bp_mr_embed_rating(){
+		global $BP_Member_Reviews, $bp;
+		// echo "a21 new_html========";
+	    $user_id = bp_displayed_user_id();
+        $BP_Member_Reviews->calc_rating($user_id);
+        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
+       
+        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
+		?>
+		<div class="bp-users-reviews-stars">
+		    <span   content="<?php echo $rating['result']; ?>"></span>
+		    <span  content="100"></span>
+		    <span content="<?php echo $rating['count']; ?>"></span>
+		    <span content="Person"></span>
+		    <span content="<?php echo $BP_Member_Reviews->get_username($user_id); ?>"></span>
+		    <!--<span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>-->
+		    <span  content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>reviews/"></span>
+		    <?php // override only due add image property ?>
+		    <span content="<?php echo $user_avatar; ?>"></span>
+
+		    <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    <div class="active" style="width:<?php echo $rating['result']; ?>%">
+		        <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    </div>
+		</div>
+
+		<?
+	}
+	
+
+
+	add_action("wp_head","as21_add_microdata",999);
+	function as21_add_microdata(){
+		global $BP_Member_Reviews, $bp,$wpdb;
+	    $user_id = bp_displayed_user_id();
+        $BP_Member_Reviews->calc_rating($user_id);
+        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
+        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
+        $r = $wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE meta_key='user_id' AND meta_value='{$user_id}' ");
+        $first_review = $wpdb->get_var("SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='review' AND post_id='".$r[0]->post_id."' ");
+        // $r = get_post_meta($user_id, 'bp-user-reviews', true);
+        // deb_last_query();
+        // var_dump($d);
+        // alex_debug(0,1,"dddddd",$rating);
+        // alex_debug(0,1,"",$BP_Member_Reviews);
+        // var_dump($BP_Member_Reviews->calc_rating($user_id ));
+        // var_dump( $BP_Member_Reviews->calc_stars( $rating['result'],$rating['count'] ));
+        $rating_5 = ceil( $rating['result']*$BP_Member_Reviews->settings['stars']/100 );
+
+        $url =  $_SERVER['REQUEST_URI'];
+        $is_profile = strpos($url, 'i-am') ;
+        $is_page_reviews = strpos($url, 'reviews');
+        if ( (bool)$is_profile !== false && (bool)$is_page_reviews === false ){
+			?>
+
+			<script type="application/ld+json">
+			{
+			  "@context": "http://schema.org",
+			  "@type": "AggregateRating",
+			  "name": "<?php echo bp_core_get_user_displayname($user_id);?>",
+			  "ratingCount": <?php echo $rating['count']; ?>,
+			  "image": {
+			  "@type": "ImageObject",
+			  "name": "Image",
+			  "url": "<?php echo $user_avatar; ?>",
+			  "height": "50",
+			  "width": "50"
+			  },
+			  "bestRating": "5",
+			  "ratingValue": "<?php echo $rating_5;?>",
+			  "itemReviewed": {
+			    "@type": "Thing",
+			    "name": "Person"
+			  }
+			}
+			</script>
+		    <script async src="https://cdn.ampproject.org/v0.js"></script>
+   		 <?php
+   		}
+	}
+}
+
+add_filter('breadcrumb_trail_args', "as21_disable_rich_snippet");
+function as21_disable_rich_snippet($args){
+	$args['rich_snippet']=false;
+	// alex_debug(0,1,"",$args);
+	// exit;
+	return $args;
 }
 
 add_filter('post_class',"a21_css_class");

@@ -336,5 +336,12 @@
 		$(".show-login").trigger("click");
 	});
 
+	$("#a21_timeleline_quick_edit select").click(function(){
+		console.log("quick edit");
+		var color = $(this).val();
+		console.log ( $(this).val() );
+		$(this).closest("tr").removeClass().addClass(color);
+	});
+
   });
 })(jQuery);
