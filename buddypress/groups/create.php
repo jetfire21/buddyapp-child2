@@ -92,6 +92,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 					<input type="text" name="city_state" id="city_state" value="<?php echo esc_attr($city[0]->meta_value);?>" />
 				</div>
 
+
+
 				<?php
 
 				/**

@@ -219,33 +219,40 @@ function alex_edit_group_fields(){
 
 		echo '<label class="" for="job_board_link">Add link to your websites Job Board:</label>';
 		echo '<input id="job_board_link" name="job_board_link" type="url" value="' . esc_attr($job_board_link) . '" />';
-	}
+	
 
-	// info about all groups
-	$groups = groups_get_groups();
-	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	// var_dump($a);
-	$fields = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt
-		FROM {$wpdb->posts}
-		WHERE post_parent = %d
-		    AND post_type = %s
-		ORDER BY ID ASC",
-		intval( $gid ),
-		"alex_grsoclink"
-		// "alex_gfilds"
-	) );
-	foreach ($fields as $field) {
-		// var_dump($field);
-		// if(preg_match("#google+#i", $field->post_title) ) 
-		// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
-		if(preg_match("#google#i", $field->post_title)) {
-			$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
-			$field->post_title = str_replace("+", "", $field->post_title);
+		// info about all groups
+		$groups = groups_get_groups();
+		$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
+		// var_dump($a);
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT ID, post_title, post_content, post_excerpt
+			FROM {$wpdb->posts}
+			WHERE post_parent = %d
+			    AND post_type = %s
+			ORDER BY ID ASC",
+			intval( $gid ),
+			"alex_grsoclink"
+			// "alex_gfilds"
+		) );
+
+		// as21_system_message();
+		// alex_debug(0,1,'',$fields);
+
+		foreach ($fields as $field) {
+			// var_dump($field);
+
+			// if(preg_match("#google+#i", $field->post_title) ) 
+			// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
+			if(preg_match("#google#i", $field->post_title)) {
+				$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+				$field->post_title = str_replace("+", "", $field->post_title);
+			}
+
+			echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
+			echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
 		}
 
-		echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
-		echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
 	}
 }
 
@@ -308,54 +315,6 @@ function alex_edit_group_fields_save(){
 
 add_action( 'groups_group_details_edited', 'alex_edit_group_fields_save' );
 
-// without hook,for reused code
-function alex_get_postid_and_fields( $wpdb = false){
-
-	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
-	$id = $last_post_id+1;
-	$id_and_fields = array($id,$fields);
-	return $id_and_fields;
-}
-
-function alex_add_soclinks_for_all_groups_db(){
-
-	global $wpdb;
-	$groups = groups_get_groups();
-	$k = 0;
-	foreach ($groups['groups'] as $gr) {
-		// echo $gr->id;s
-		$gid[$k] = $gr->id;
-		$k++;
-	}
-
-	$postid_and_fields = alex_get_postid_and_fields($wpdb);
-	$postid = $postid_and_fields[0]+1;
-	$fields = $postid_and_fields[1];
-
-	$g = 0;
-	$total_group = count($gid);
-	for( $i=0; $i < $total_group; $i++){
-		foreach ($fields as $field_name) {
-			if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
-			$wpdb->insert(
-				$wpdb->posts,
-				array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gid[$g]),
-				// array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gid[$g]),
-				array( '%d','%s','%s','%d' )
-			);
-			$postid++; 
-		} 
-		$g++;
-	}
-	echo "Fields for groups has been successfully imported! Total group: ".$total_group;
-
-}
-
-// IMPORTANT !!! execute only 1 time !!! add all fields social links for groups in data base
-// add_action("wp_head","alex_add_soclinks_for_all_groups_db");
-// add_action( 'bp_before_group_body','alex_add_soclinks_for_all_groups_db');
 
 /* *********** */
 
@@ -372,34 +331,44 @@ function add_soclinks_only_for_one_group_db(){
 	// alex_debug(0,1,"fie",$_COOKIE);
 	// exit;
 
-	foreach ($fields as $field_name) {
+	// echo "=========add_soclinks_only_for_one_group_db=======";
+	// echo $gr_last_id->id;
+	$is_first_soclink = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type=%s AND post_parent=%d AND post_title=%s",'alex_grsoclink',$gr_last_id->id,"Facebook"));
+	// deb_last_query();
+	// var_dump($is_first_soclink);
+	// exit;
 
-		if( !empty($_COOKIE['alex-'.$field_name]) ) {
-			$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
-		}
-		else $post_content = '';
+	if( is_null($is_first_soclink)){
+		foreach ($fields as $field_name) {
 
-		if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
-			 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
-		}
+			if( !empty($_COOKIE['alex-'.$field_name]) ) {
+				$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
+			}
+			else $post_content = '';
 
-		// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
-		
-		// echo $field_name." - ";
+			if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
+				 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
+			}
 
-		// if( !empty($post_content)){
-			$wpdb->insert(
-				$wpdb->posts,
-				array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
-				// array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
-				array( '%d','%s','%s','%d', '%s' )
-			);
-			$postid++; 
-		// }
-			// deb_last_query();
+			// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
+			
+			// echo $field_name." - ";
 
-	} 
+			// if( !empty($post_content)){
+			
+				$wpdb->insert(
+					$wpdb->posts,
+					array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
+					// array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
+					array( '%d','%s','%s','%d', '%s' )
+				);
+				$postid++; 
+			
+			// }
+				// deb_last_query();
 
+		} 
+	}
 	foreach ($fields as $field_name) {
 		// unset($_COOKIE['alex-'.$field_name]);
 		// delete cookie
@@ -428,9 +397,11 @@ function alex_group_create_add_socialinks(){
 
 	global $bp,$wpdb;
 
+	// echo "===group-details=====";
 	// get fields social links
 	$postid_and_fields = alex_get_postid_and_fields($wpdb);
 	$fields = $postid_and_fields[1];
+	// alex_debug(0,1,'',$_COOKIE);
 
 	foreach ($fields as $field) {
 
@@ -445,8 +416,6 @@ function alex_group_create_add_socialinks(){
 				$field = preg_replace("#google#i", "Youtube", $field);
 				$field = str_replace("+", "", $field);
 		}
-
-
 
 		echo '<label class="" for="alex-'.$field.'">'.$field.'</label>';
 		echo '<input id="alex-'.$field.'" name="alex-'.$field.'" type="url" value="'.$user_fill.'" />';
@@ -1860,6 +1829,20 @@ function a21_css_class($classes){
 	// alex_debug(1,1,"",$classes);
 	// exit;
 	return $classes;
+}
+
+add_action( 'groups_group_create_complete',"as21_delete_cookies_for_group_soclinks" );
+function as21_delete_cookies_for_group_soclinks(){
+	// echo "=====8787=====";
+	// not exist google
+	// alex_debug(0,1,'',$_COOKIE);
+	foreach ($_COOKIE as $k => $v) {
+		if( strpos($k,'alex-') !== false) {
+			setcookie( $k, false, time() - 1000, COOKIEPATH, COOKIE_DOMAIN, is_ssl() );
+		}
+	}
+	// alex_debug(0,1,'',$_COOKIE);
+	// exit;
 }
 
 require_once 'debug_functions.php';

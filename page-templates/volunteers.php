@@ -64,7 +64,7 @@ function a21_kleo_show_page_title(){
     global $wpdb;
     $website = $wpdb->get_results( $wpdb->prepare(
       "SELECT post_content
-      FROM {$wpdb->postmeta}
+      FROM {$wpdb->posts}
       WHERE post_parent = %d
           AND post_type = %s
           AND post_title = %s

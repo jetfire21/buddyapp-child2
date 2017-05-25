@@ -1,6 +1,7 @@
 <?php
 
-/***** TEMP - ONLY FOR DEBUG *******/
+/***** After production it is possible to remove safely this file
+TEMP - MAIN DEBUGING FUNCTIONS *******/
 
 // echo "debug function work!"; exit;
 
@@ -20,6 +21,11 @@ function deb_last_query(){
 	echo '<hr>';
 }
 
+function as21_system_message(){
+  	echo "<p class='a21-system-box'>It's temporary for debugging:</p>";
+}
+
+
 /* вывод системных данных в форматированном виде */
 function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
 
@@ -35,6 +41,58 @@ function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var,
 	if( is_string($var) ) { if($sep == "l") echo "<hr>"; else echo $sep; }
 }
 /* вывод системных данных в форматированном виде */
+
+
+// without hook,for reused code
+function alex_get_postid_and_fields( $wpdb = false){
+
+	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
+	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
+	$id = $last_post_id+1;
+	$id_and_fields = array($id,$fields);
+	return $id_and_fields;
+}
+
+function alex_add_soclinks_for_all_groups_db(){
+
+	global $wpdb;
+	$groups = groups_get_groups();
+	$k = 0;
+	foreach ($groups['groups'] as $gr) {
+		// echo $gr->id;s
+		$gid[$k] = $gr->id;
+		$k++;
+	}
+
+	$postid_and_fields = alex_get_postid_and_fields($wpdb);
+	$postid = $postid_and_fields[0]+1;
+	$fields = $postid_and_fields[1];
+
+	$g = 0;
+	$total_group = count($gid);
+	for( $i=0; $i < $total_group; $i++){
+		foreach ($fields as $field_name) {
+			if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
+			$wpdb->insert(
+				$wpdb->posts,
+				array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gid[$g]),
+				// array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gid[$g]),
+				array( '%d','%s','%s','%d' )
+			);
+			$postid++; 
+		} 
+		$g++;
+	}
+	echo "Fields for groups has been successfully imported! Total group: ".$total_group;
+
+}
+
+// IMPORTANT !!! execute only 1 time !!! add all fields social links for groups in data base
+// add_action("wp_head","alex_add_soclinks_for_all_groups_db");
+// add_action( 'bp_before_group_body','alex_add_soclinks_for_all_groups_db');
+
+/* //////// ADDITIONALS DEBUGING FUNCTIONS ////////////  */
 
 
 // add_action("wp_footer","as21_temp_func2");
@@ -474,3 +532,89 @@ function as21_out_data_if_fb_login(){
 	}
 }
 
+// add_action("wp_footer","as21_get_grsoclink");
+
+function as21_get_grsoclink(){
+
+	if( (bool)$_GET['dev'] == true ) {
+
+		global $wpdb;
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT post_parent,ID, post_title, post_content
+			FROM {$wpdb->posts}
+			WHERE post_type = %s AND ID>10643
+			ORDER BY post_parent DESC",
+			"alex_grsoclink"
+			// "alex_gfilds"
+		) );
+		alex_debug(0,1,'',$fields);
+		// 10647-10652
+
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10647' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10648' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10649' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10650' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10651' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10652' AND post_type='alex_grsoclink' ");
+		deb_last_query();
+	}
+}
+
+// logging of user clicks to help fix bugs
+add_action("wp_footer","as21_find_where_bug_was");
+function as21_find_where_bug_was(){
+	/*
+	?>
+	<script>
+	var useragent = navigator.userAgent;
+	var w = window.screen.availWidth;
+	var h = window.screen.availHeight;
+	console.log("\r\n"+w+"x"+h);
+	console.log(useragent);
+	// var geo = navigator.geolocation
+	// console.log("User-agent header: " + geo);
+	// for (k in geo){
+	// 	console.log(k+"-"+geo[k]);
+	// }
+	</script>
+	<?php
+	*/
+	$ip = $_SERVER['REMOTE_ADDR'];
+	// $ip = "127.0.0.111";
+	$name = "as21_error.log";
+	$is_ip = false;
+
+	function as21_write($ip,$name){
+
+		// echo "===write===";
+		$date = date("d-m-Y")." ".(date("H")+3).date(":i:s");
+		$fp = fopen($name, "a"); 
+		$text = "{$date} {$ip} ".$_SERVER['REQUEST_URI']."\r\n"; 
+		$test = fwrite($fp, $text); 
+		// if ($test) echo 'Данные в файл успешно занесены.'; else echo 'Ошибка при записи в файл.';
+		fclose($fp); 
+	}
+
+	function as21_read($ip,$name){
+
+		// echo "===read===";
+		$file = file($name); // Считываем весь файл в массив 
+		// var_dump($ip);
+		for($i = 0; $i < sizeof($file); $i++)
+		{
+			// if($i == $num_stroka) unset($file[$i]); 
+			// echo $file[$i]."<br>";
+			if($ip == trim($file[$i])) { $is_ip = true; break; }
+			else{$is_ip = false;}
+			// var_dump($file[$i]);
+		}
+		// var_dump($is_ip);
+		if( !$is_ip ) as21_write($ip,$name);
+		// $fp = fopen($name, "w");
+		// fputs($fp, implode("", $file));
+		// fclose($fp);
+	}
+	// as21_read($ip,$name);
+	as21_write($ip,$name);
+
+}
