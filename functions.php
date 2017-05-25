@@ -207,18 +207,18 @@ function alex_edit_group_fields(){
 
 	if( !bp_is_group_creation_step( 'group-details' ) ){
 	    $table_grmeta = $wpdb->prefix."bp_groups_groupmeta";
-		$city = $wpdb->get_results( $wpdb->prepare(
-			"SELECT meta_value
-			FROM {$table_grmeta}
-			WHERE group_id = %d
-			    AND meta_key = %s
-			",
-			intval( $gid ),
-			"city_state"
+		$city = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
+			intval( $gid ),	"city_state"
+		) );
+		$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
+			intval( $gid ),	"job_board_link"
 		) );
 
 		echo '<label class="" for="city_state">City, Province/State</label>';
-		echo '<input id="city_state" name="city_state" type="text" value="' . esc_attr($city[0]->meta_value) . '" />';
+		echo '<input id="city_state" name="city_state" type="text" value="' . esc_attr($city) . '" />';
+
+		echo '<label class="" for="job_board_link">Add link to your websites Job Board:</label>';
+		echo '<input id="job_board_link" name="job_board_link" type="url" value="' . esc_attr($job_board_link) . '" />';
 	}
 
 	// info about all groups
@@ -255,6 +255,7 @@ add_action( 'groups_custom_group_fields_editable', 'alex_edit_group_fields');
 function alex_edit_group_fields_save(){
 
 		global $wpdb;
+		// alex_debug(0,1,'',$_POST);		exit;
 		
 		foreach ( $_POST as $data => $value ) {
 			if ( substr( $data, 0, 5 ) === 'alex-' ) {
@@ -284,6 +285,25 @@ function alex_edit_group_fields_save(){
 			array( 'meta_key' => 'city_state', 'group_id' => $gid),          
 			array('%s'), array('%s','%d')                   
 		);
+
+		$job_board_link = sanitize_text_field($_POST['job_board_link']);
+		$is_job_board_link = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_grmeta WHERE group_id=%d AND meta_key=%s",$gid,'job_board_link'));
+
+		if( is_null($is_job_board_link)) 
+		{	
+			$add_jbl = $wpdb->insert(
+				$table_grmeta,
+				array( 'group_id'=>$gid,'meta_key'=>'job_board_link','meta_value'=>$job_board_link),
+				array( '%d','%s','%s' )
+			);
+		}else{
+			$up_job_board_link = $wpdb->update($table_grmeta,array(
+					'meta_value' => $job_board_link,    
+				),
+				array( 'meta_key' => 'job_board_link', 'group_id' => $gid),          
+				array('%s'), array('%s','%d')                   
+			);
+		}
 }
 
 add_action( 'groups_group_details_edited', 'alex_edit_group_fields_save' );
@@ -1533,9 +1553,9 @@ add_action("bp_before_member_header",'get_cover_image_from_fbuser');
 function get_cover_image_from_fbuser(){
 
 	// $cover_url = get_cover_image_from_db();
-	$cover_url = as21_get_cover_image_from_db_for_fb(true);
+	$cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
 	// var_dump($cover_url);
-	if( !empty($cover_url && $cover_url != 'class="item-cover"') ){
+	if( !empty($cover_url) && $cover_url != 'class="item-cover"' ){
 	?>
 	<script type="text/javascript">
 		var e = document.getElementById("header-cover-image");
@@ -1670,13 +1690,13 @@ function a21_kleo_frontend_files2(){
 	// wp_enqueue_script("jquery-ui-slider",array("jquery"));
 }
 
-
+/*
 if ( class_exists( 'BP_Group_Extension' ) ) :
 	class a21_job_nav_tab_in_group extends BP_Group_Extension {
 			function __construct() {
 				$args = array(
 					'slug' => 'a21-jobs',
-	//				'name' => 'Jobs',
+					// 'name' => 'Jobs',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );
@@ -1686,6 +1706,21 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 		bp_register_group_extension( 'a21_job_nav_tab_in_group' );
 		
 endif;
+*/
+
+add_action("bp_group_options_nav",'as21_add_group_new_nav_link');
+function as21_add_group_new_nav_link(){
+
+	global $bp,$wpdb;
+	$group_id = $bp->groups->current_group->id;
+	// $group = groups_get_group($group_id);
+	$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$wpdb->prefix}bp_groups_groupmeta WHERE group_id = %d AND meta_key = %s",
+		intval( $group_id ),"job_board_link"
+	) );
+
+	if(!empty($job_board_link)) echo '<li id="job-board-groups-li"><a href="'.$job_board_link.'" target="_blank">JobBoard Link</a></li>';
+}
+
 
 if(class_exists("WP_Job_Manager_Field_Editor")) require_once 'job_manager/wp-job-manager-groups/index.php';
 
@@ -1756,9 +1791,7 @@ if(class_exists('BP_Member_Reviews')){
 		<?
 	}
 	
-
-
-	add_action("wp_head","as21_add_microdata",999);
+	add_action("wp_head","as21_add_microdata");
 	function as21_add_microdata(){
 		global $BP_Member_Reviews, $bp,$wpdb;
 	    $user_id = bp_displayed_user_id();
@@ -1779,7 +1812,9 @@ if(class_exists('BP_Member_Reviews')){
         $url =  $_SERVER['REQUEST_URI'];
         $is_profile = strpos($url, 'i-am') ;
         $is_page_reviews = strpos($url, 'reviews');
-        if ( (bool)$is_profile !== false && (bool)$is_page_reviews === false ){
+        // echo "======777";  var_dump(bp_is_user_profile());
+        // if ( (bool)$is_profile !== false && (bool)$is_page_reviews === false ){
+        if(bp_is_user_profile()){
 			?>
 
 			<script type="application/ld+json">
@@ -1803,10 +1838,11 @@ if(class_exists('BP_Member_Reviews')){
 			  }
 			}
 			</script>
-		    <script async src="https://cdn.ampproject.org/v0.js"></script>
+		    <!--<script async src="https://cdn.ampproject.org/v0.js"></script>-->
    		 <?php
    		}
 	}
+
 }
 
 add_filter('breadcrumb_trail_args', "as21_disable_rich_snippet");

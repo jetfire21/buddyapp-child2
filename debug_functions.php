@@ -10,6 +10,16 @@ function as21_temp_google(){
 	if( is_home() or is_front_page() ) 		echo '<meta name="google-site-verification" content="DzNJ5_KD5zeNnQXMMOcMLyb5I9b1FUPH3H1nd1Wy7lo" />';
 }
 
+function deb_last_query(){
+
+	global $wpdb;
+	echo '<hr>';
+	echo "<b>last query:</b> ".$wpdb->last_query."<br>";
+	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
+	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
+	echo '<hr>';
+}
+
 /* вывод системных данных в форматированном виде */
 function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
 
@@ -261,15 +271,6 @@ delete_option( 'bp_group_calendar_installed' );
 }
 
 
-function deb_last_query(){
-
-	global $wpdb;
-	echo '<hr>';
-	echo "<b>last query:</b> ".$wpdb->last_query."<br>";
-	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
-	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
-	echo '<hr>';
-}
 
 // add_action("wp_footer","a21_tmp_query_db");
 
@@ -455,7 +456,7 @@ function as21_get_info_group_calendar(){
 	}
 }
 
-add_action("wp_footer","as21_out_data_if_fb_login");
+// add_action("wp_footer","as21_out_data_if_fb_login");
 
 function as21_out_data_if_fb_login(){
 	// get all facebook user
