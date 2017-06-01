@@ -54,6 +54,7 @@
 							$a = preg_replace("#\"nav-a21-jobs\"[^>]+#i", "\"nav-a21-jobs\" href=\"/jobs/?id={$cur_gr_id}\"", $a);
 							ob_end_clean();
 							echo $a; 
+							// echo $a."3333333333"; 
 						?>
 
 

@@ -1667,13 +1667,19 @@ function a21_kleo_frontend_files2(){
 	// wp_enqueue_script("jquery-ui-slider",array("jquery"));
 }
 
-/*
+
 if ( class_exists( 'BP_Group_Extension' ) ) :
 	class a21_job_nav_tab_in_group extends BP_Group_Extension {
+	
 			function __construct() {
+				global $bp,$wpdb;
+				$group_id = (int)$bp->groups->current_group->id;
+				$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
+				// var_dump($ids);
+				$jobs_count_gr = (count($ids)>0) ? count($ids) : 0 ;
 				$args = array(
 					'slug' => 'a21-jobs',
-					// 'name' => 'Jobs',
+					'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );
@@ -1683,7 +1689,7 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 		bp_register_group_extension( 'a21_job_nav_tab_in_group' );
 		
 endif;
-*/
+
 
 add_action("bp_group_options_nav",'as21_add_group_new_nav_link');
 function as21_add_group_new_nav_link(){

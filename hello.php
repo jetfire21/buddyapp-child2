@@ -1,5 +1,6 @@
 <?php
 /*
+TEMP
     public function groups_get_group_members2() {
         $this->init('groups');
 

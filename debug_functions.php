@@ -576,6 +576,22 @@ function as21_get_job_listing(){
 
 	}
 }
+
+
+// add_action("wp_footer","as21_get_all_jobs_by_group_id");
+
+function as21_get_all_jobs_by_group_id(){
+
+	echo "========================777=========";
+	if( (bool)$_GET['dev'] == true ) {
+		global $wpdb;
+		$group_id = 14;
+		$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
+		deb_last_query();
+		var_dump($ids);
+	}
+}
+
 /************** logging of user clicks to help fix bugs ***********/
 
 // $usag = '31-05-2017 12:13:55==88.198.54.49==/causes/help-santa-toy-parade/callout/2007/10/26/====Mozilla/5.0 (compatible; MJ12bot/v1.4.7; http://mj12bot.com/)==';
