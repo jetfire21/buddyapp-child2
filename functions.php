@@ -236,8 +236,7 @@ function alex_edit_group_fields(){
 			// "alex_gfilds"
 		) );
 
-		// as21_system_message();
-		// alex_debug(0,1,'',$fields);
+		// as21_system_message();	alex_debug(0,1,'',$fields);
 
 		foreach ($fields as $field) {
 			// var_dump($field);
@@ -703,6 +702,15 @@ function a21_get_wpjm_for_page_preview(){
 
 }
 */
+
+add_action('wp_enqueue_scripts','as21_include_custom_js_css');
+function as21_include_custom_js_css(){
+	if( bp_is_user_profile() ){
+		 wp_enqueue_script('circle-donut-chart',get_stylesheet_directory_uri().'/libs/circle-dount-chart/circleDonutChart.js',array('jquery'),'',true);
+		 wp_enqueue_script('common-profile',get_stylesheet_directory_uri().'/js/common-profile.js',array('circle-donut-chart'),'',true);
+	}
+	// echo "test777===";var_dump(bp_is_user_profile() );
+}
 
 add_filter('body_class','a21_my_class_names');
 function a21_my_class_names( $classes ) {
@@ -1831,6 +1839,17 @@ function a21_css_class($classes){
 	return $classes;
 }
 
+// without hook,for reused code
+function alex_get_postid_and_fields( $wpdb = false){
+
+	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
+	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
+	$id = $last_post_id+1;
+	$id_and_fields = array($id,$fields);
+	return $id_and_fields;
+}
+
 add_action( 'groups_group_create_complete',"as21_delete_cookies_for_group_soclinks" );
 function as21_delete_cookies_for_group_soclinks(){
 	// echo "=====8787=====";
@@ -1844,5 +1863,6 @@ function as21_delete_cookies_for_group_soclinks(){
 	// alex_debug(0,1,'',$_COOKIE);
 	// exit;
 }
+
 
 require_once 'debug_functions.php';

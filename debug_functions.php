@@ -43,16 +43,7 @@ function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var,
 /* вывод системных данных в форматированном виде */
 
 
-// without hook,for reused code
-function alex_get_postid_and_fields( $wpdb = false){
 
-	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
-	$id = $last_post_id+1;
-	$id_and_fields = array($id,$fields);
-	return $id_and_fields;
-}
 
 function alex_add_soclinks_for_all_groups_db(){
 
@@ -542,7 +533,7 @@ function as21_get_grsoclink(){
 		$fields = $wpdb->get_results( $wpdb->prepare(
 			"SELECT post_parent,ID, post_title, post_content
 			FROM {$wpdb->posts}
-			WHERE post_type = %s AND ID>10643
+			WHERE post_type = %s AND ID>10605 AND ID<10620
 			ORDER BY post_parent DESC",
 			"alex_grsoclink"
 			// "alex_gfilds"
@@ -550,71 +541,191 @@ function as21_get_grsoclink(){
 		alex_debug(0,1,'',$fields);
 		// 10647-10652
 
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10647' AND post_type='alex_grsoclink' ");
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10648' AND post_type='alex_grsoclink' ");
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10649' AND post_type='alex_grsoclink' ");
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10650' AND post_type='alex_grsoclink' ");
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10651' AND post_type='alex_grsoclink' ");
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10652' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10609' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10610' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10611' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10612' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10613' AND post_type='alex_grsoclink' ");
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID='10614' AND post_type='alex_grsoclink' ");
 		deb_last_query();
 	}
 }
 
-// logging of user clicks to help fix bugs
-add_action("wp_footer","as21_find_where_bug_was");
-function as21_find_where_bug_was(){
-	/*
-	?>
-	<script>
-	var useragent = navigator.userAgent;
-	var w = window.screen.availWidth;
-	var h = window.screen.availHeight;
-	console.log("\r\n"+w+"x"+h);
-	console.log(useragent);
-	// var geo = navigator.geolocation
-	// console.log("User-agent header: " + geo);
-	// for (k in geo){
-	// 	console.log(k+"-"+geo[k]);
-	// }
-	</script>
-	<?php
-	*/
-	$ip = $_SERVER['REMOTE_ADDR'];
-	// $ip = "127.0.0.111";
-	$name = "as21_error.log";
-	$is_ip = false;
 
-	function as21_write($ip,$name){
+// add_action("wp_footer","as21_get_job_listing");
+
+function as21_get_job_listing(){
+
+	if( (bool)$_GET['dev'] == true ) {
+		global $wpdb;
+		// $id = '10636';
+		$id = '10655';
+		$listings = $wpdb->get_results("SELECT * FROM $wpdb->posts WHERE ID=$id AND post_type='job_listing'");
+		//$listings = $wpdb->get_results("SELECT * FROM $wpdb->posts WHERE post_type='job_listing'");
+		alex_debug(0,1,'l',$listings);
+		$content= "test aaaa";
+
+		// $wpdb->update(
+		// 	$wpdb->posts,
+		// 	array( 'post_content'=> $content),
+		// 	array( 'ID' => $id,'post_type' => 'job_listing' )
+		// );
+		deb_last_query();
+		$listings = $wpdb->get_results("SELECT * FROM $wpdb->posts WHERE ID=$id AND post_type='job_listing'");
+		alex_debug(0,1,'l',$listings);
+
+	}
+}
+/************** logging of user clicks to help fix bugs ***********/
+
+// $usag = '31-05-2017 12:13:55==88.198.54.49==/causes/help-santa-toy-parade/callout/2007/10/26/====Mozilla/5.0 (compatible; MJ12bot/v1.4.7; http://mj12bot.com/)==';
+// if( strpos($usag, "mj12bot") !== fasle ) echo "====999 mj12bot";
+// var_dump(strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot"));
+if( strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "YandexBot") === false ){
+
+	add_action("wp_footer","as21_find_where_bug_was");
+	function as21_find_where_bug_was(){
+		/*
+		?>
+		<script>
+		var useragent = navigator.userAgent;
+		var w = window.screen.availWidth;
+		var h = window.screen.availHeight;
+		console.log("\r\n"+w+"x"+h);
+		console.log(useragent);
+		// var geo = navigator.geolocation
+		// console.log("User-agent header: " + geo);
+		// for (k in geo){
+		// 	console.log(k+"-"+geo[k]);
+		// }
+		</script>
+		<?php
+		*/
+		// echo "==========inside function===";
+
+		$ip = $_SERVER['REMOTE_ADDR'];
+		// $ip = "127.0.0.111";
+		$name = "as21_error.log";
+		$is_ip = false;
+
+		function as21_write($ip,$name){
+
+			// echo "===write===";
+			$date = date("d-m-Y")." ".(date("H")+3).date(":i:s");
+			$fp = fopen($name, "a"); 
+			$text = "\r{$date}=={$ip}==".$_SERVER['REQUEST_URI']."==".$_SERVER['HTTP_REFERER']."==".$_SERVER['HTTP_USER_AGENT']."=="; 
+			$test = fwrite($fp, $text); 
+			// if ($test) echo 'Данные в файл успешно занесены.'; else echo 'Ошибка при записи в файл.';
+			fclose($fp); 
+		}
+
+			as21_write($ip,$name);
+
+
+		function as21_read($ip,$name){
+
+			// echo "===read===";
+			$file = file($name); // Считываем весь файл в массив 
+			// var_dump($ip);
+			for($i = 0; $i < sizeof($file); $i++)
+			{
+				// if($i == $num_stroka) unset($file[$i]); 
+				// echo $file[$i]."<br>";
+				if($ip == trim($file[$i])) { $is_ip = true; break; }
+				else{$is_ip = false;}
+				// var_dump($file[$i]);
+			}
+			// var_dump($is_ip);
+			if( !$is_ip ) as21_write($ip,$name);
+			// $fp = fopen($name, "w");
+			// fputs($fp, implode("", $file));
+			// fclose($fp);
+		}
+		// as21_read($ip,$name);
+
+
+		?>
+		<script type="text/javascript">
+		jQuery( document ).ready(function($) {
+
+					var h = window.screen.availHeight;
+					var w = window.screen.availWidth;
+					var screen = w+"x"+h;
+					var data = { 'action': 'as21_get_screen_resolution','screen': screen};
+					// console.log(screen);	console.log(ajaxurl);  console.log(data);
+					$.ajax({
+						url:ajaxurl, // обработчик
+						data:data, // данные
+						type:'POST', // тип запроса
+						success:function(data){
+							// if( data ) // console.log(data); console.log('success ajax');
+							 // else { console.log("data send with errors!");}
+						}
+
+					 });
+			});
+		</script>
+		<?php
+
+	}
+
+
+	function as21_write_screen($name,$screen){
 
 		// echo "===write===";
 		$date = date("d-m-Y")." ".(date("H")+3).date(":i:s");
 		$fp = fopen($name, "a"); 
-		$text = "{$date} {$ip} ".$_SERVER['REQUEST_URI']."\r\n"; 
+		// $text = "{$date} ".$_SERVER['REMOTE_ADDR']." - ".$_SERVER['REQUEST_URI']." ref: ".$_SERVER['HTTP_REFERER']." - ".$_SERVER['HTTP_USER_AGENT']." - ".$screen."\r\n"; 
+		$text = $screen; 
 		$test = fwrite($fp, $text); 
 		// if ($test) echo 'Данные в файл успешно занесены.'; else echo 'Ошибка при записи в файл.';
 		fclose($fp); 
 	}
 
-	function as21_read($ip,$name){
-
-		// echo "===read===";
-		$file = file($name); // Считываем весь файл в массив 
-		// var_dump($ip);
-		for($i = 0; $i < sizeof($file); $i++)
-		{
-			// if($i == $num_stroka) unset($file[$i]); 
-			// echo $file[$i]."<br>";
-			if($ip == trim($file[$i])) { $is_ip = true; break; }
-			else{$is_ip = false;}
-			// var_dump($file[$i]);
-		}
-		// var_dump($is_ip);
-		if( !$is_ip ) as21_write($ip,$name);
-		// $fp = fopen($name, "w");
-		// fputs($fp, implode("", $file));
-		// fclose($fp);
+	add_action('wp_ajax_as21_get_screen_resolution', 'as21_get_screen_resolution');
+	add_action('wp_ajax_nopriv_as21_get_screen_resolution', 'as21_get_screen_resolution');
+	function as21_get_screen_resolution(){
+		// echo "-----------------";
+		// alex_debug(0,1,'',$_POST);
+		as21_write_screen($_SERVER["DOCUMENT_ROOT"].'/as21_error.log', $_POST['screen']);
+		exit;
 	}
-	// as21_read($ip,$name);
-	as21_write($ip,$name);
-
 }
+/************** logging of user clicks to help fix bugs ***********/
+
+/* **** as21 json-api new controller **** */
+
+/*
+// add_action("wp_footer","as21_get_memeber_cover_image");
+function as21_get_memeber_cover_image(){
+	echo "7771 =============".kleo_bp_get_member_cover_attr(2);
+} 
+
+function add_hello_controller($controllers) {
+  $controllers[] = 'hello';
+  return $controllers;
+}
+add_filter('json_api_controllers', 'add_hello_controller');
+
+function set_hello_controller_path() {
+  return __DIR__."/hello.php";
+}
+add_filter('json_api_hello_controller_path', 'set_hello_controller_path');
+// echo __DIR__;
+
+// add_action("init",'as21_x');
+function as21_x(){
+
+	// if (!is_admin()) exit;
+	// class JSON_API_Alex_Controller extends  JSON_API_BuddypressRead_Controller {
+
+	//   public function hello_world() {
+	//     return array(
+	//       "message" => "Hello, world"
+	//     );
+	//   }
+	// }
+}
+*/
+
+/* **** as21 json-api new controller **** */

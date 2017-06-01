@@ -123,6 +123,21 @@ endif;
 			}else return false;
 			// alex_debug(1,1,"grs",$grs_notimeline);
 		}
+
+		/* **** as21 **** */
+		global $profile_template;
+		// $profile_groups = BP_XProfile_Group::get( array( 'fetch_fields' => true	) );
+		// alex_debug(0,1,'',$profile_groups);
+		// alex_debug(0,1,'',$profile_template->groups[0]);
+
+		/* **** as21 it is necessary to change the sequence of an output of fields and the correct html markup of the responsive blocks **** */
+		$gr_name_basic_info = $profile_template->groups[0];
+		$gr_name_details = $profile_template->groups[1];
+		$profile_template->groups[0] = $gr_name_details;
+		$profile_template->groups[1] = $gr_name_basic_info;
+		// alex_debug(0,1,'',$profile_template->groups[0]);
+
+
 	?>
 
 	<?php  $i=0; $bi=0;$det=0; while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
@@ -169,6 +184,7 @@ endif;
 							</div>
 							<?php elseif($prof_name == "basic info"):?>
 								<?php if($bi < 1):?>
+									<div id="circle-dount-chart"></div>
 									<div class="wrap_field-avail">
 									<table class=" field-avail">
 									<tr<?php bp_field_css_class(); ?>>
