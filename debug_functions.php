@@ -578,18 +578,20 @@ function as21_get_job_listing(){
 }
 
 
-// add_action("wp_footer","as21_get_all_jobs_by_group_id");
+add_action("wp_footer","as21_get_all_jobs_by_group_id");
 
 function as21_get_all_jobs_by_group_id(){
 
-	echo "========================777=========";
-	if( (bool)$_GET['dev'] == true ) {
-		global $wpdb;
-		$group_id = 14;
-		$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
-		deb_last_query();
-		var_dump($ids);
-	}
+	// echo "========================777=========";
+	// if( (bool)$_GET['dev'] == true ) {
+	// 	global $wpdb;
+	// 	$group_id = 14;
+	// 	$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
+	// 	deb_last_query();
+	// 	var_dump($ids);
+	// }
+
+	var_dump(Kleo::get_config('menu_icon_default'));
 }
 
 /************** logging of user clicks to help fix bugs ***********/
@@ -745,3 +747,16 @@ function as21_x(){
 */
 
 /* **** as21 json-api new controller **** */
+
+// labels for top nav (groups,members) parts is buddyapp-child/page-parts/header-top.php override top nav
+add_filter( 'nav_menu_link_attributes', 'as21_1',1 );
+function as21_1($atts){
+
+if( strtolower( $atts['title']) != 'jobs') { 
+		$atts['data-title']=$atts['title']; 
+		$atts['class'] = 'as21-link-label';
+		unset($atts['title']); 
+  }
+  return $atts;
+}
+

@@ -14,6 +14,20 @@ License URI: license.txt
 * Please add your custom styles below
 */
 
+/*header .menu-item a{position: relative;}*/
+header .menu-item .as21-link-label:hover:after{
+    position: absolute;
+    background: #fff;
+    color: #000;
+     content: attr(data-title); 
+    /*content: 'dddd';*/
+    bottom: -16px;
+    z-index: 9999;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    line-height: 1;
+}
+
 /*alex code*/
 .fb-info img{ height: 32px;  margin-top: 10px;}
 .groups-soc-links img{ margin-right: 6px;}
