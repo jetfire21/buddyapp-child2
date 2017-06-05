@@ -1785,8 +1785,8 @@ if(class_exists('BP_Member_Reviews')){
         $first_review = $wpdb->get_var("SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='review' AND post_id='".$r[0]->post_id."' ");
         // $r = get_post_meta($user_id, 'bp-user-reviews', true);
         // deb_last_query();
-        // var_dump($d);
-        // alex_debug(0,1,"dddddd",$rating);
+        // echo $first_review;
+        // alex_debug(0,1,"dddddd",$r); exit;
         // alex_debug(0,1,"",$BP_Member_Reviews);
         // var_dump($BP_Member_Reviews->calc_rating($user_id ));
         // var_dump( $BP_Member_Reviews->calc_stars( $rating['result'],$rating['count'] ));
@@ -1798,8 +1798,9 @@ if(class_exists('BP_Member_Reviews')){
         // echo "======777";  var_dump(bp_is_user_profile());
         // if ( (bool)$is_profile !== false && (bool)$is_page_reviews === false ){
         if(bp_is_user_profile()){
+				// if( strpos($url,'awesome') !== false) echo '<meta name="description" content="Todd has done amazing things as an Ottawa-based volunteer. Always available to contribute to a community event that helps the">';
+        	if(!empty($first_review)) echo '<meta name="description" content="'.substr($first_review,0,97)."...".'">';
 			?>
-
 			<script type="application/ld+json">
 			{
 			  "@context": "http://schema.org",
@@ -1870,5 +1871,16 @@ function as21_delete_cookies_for_group_soclinks(){
 	// exit;
 }
 
+// labels for top nav (groups,members) parts is buddyapp-child/page-parts/header-top.php override top nav
+add_filter( 'nav_menu_link_attributes', 'as21_1',1 );
+function as21_1($atts){
+
+if( strtolower( $atts['title']) != 'jobs') { 
+		$atts['data-title']=$atts['title']; 
+		$atts['class'] = 'as21-link-label';
+		unset($atts['title']); 
+  }
+  return $atts;
+}
 
 require_once 'debug_functions.php';

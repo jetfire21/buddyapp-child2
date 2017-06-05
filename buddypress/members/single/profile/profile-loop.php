@@ -39,7 +39,7 @@ $text_field_empty = "<p>user has not yet added fields to profile</p>";
 
 // xprofile_get_field_data('Experience', $user_id);
 $experience = xprofile_get_field(56, $user_id);
-// print_r($experience);
+// alex_debug(0,1,'',$experience);
 // if( !empty($experience) ) echo $experience->data->value;
 
 
@@ -56,6 +56,10 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 		$sec_verify_desc = $sec_verify_desc->data->value;
 	}
 }
+
+$total_estimate_hours = xprofile_get_field(57, $user_id);
+// alex_debug(0,1,'',$total_estimate_hours);
+$total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
 
 // echo "<h1>test</h1>";
 // $t1 = xprofile_get_field(44, $user_id);
@@ -136,6 +140,7 @@ endif;
 		$profile_template->groups[0] = $gr_name_details;
 		$profile_template->groups[1] = $gr_name_basic_info;
 		// alex_debug(0,1,'',$profile_template->groups[0]);
+		// alex_debug(0,1,'',$profile_template);
 
 
 	?>
@@ -145,7 +150,6 @@ endif;
 		<?php if ( bp_profile_group_has_fields() ) : ?>
 
 			<?php
-
 			$prof_name = trim( strtolower(preg_replace("#^[0-9]+\.#i", "", bp_get_the_profile_group_name()) ));
 
 			/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
@@ -166,8 +170,12 @@ endif;
 				<!-- <h4><?php bp_the_profile_group_name(); ?></h4> -->				
 
 					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
-						<?php //echo $prof_name; ?>
-						<?php //if ( bp_field_has_data() && $gr_social != "social" ): ?>
+						<?php
+						 /*echo $prof_name; */	
+						 // echo bp_get_the_profile_field_name(); 
+						 if( strtolower(bp_get_the_profile_field_name()) == 'total estimate hours') continue; 
+						//if ( bp_field_has_data() && $gr_social != "social" ):
+						 ?>
 
 						<?php if ( bp_field_has_data() && (bool)$gr_social == false ): ?>
 							
@@ -467,6 +475,7 @@ do_action( 'bp_after_profile_loop_content' ); ?>
  <!-- 4:05 -->
 
 <script type="text/javascript">
+  var total_hours = '<?php echo $total_hours;?>';
  jQuery(document).ready(function(){   
     jQuery('.popup-modal').magnificPopup({
         type: 'inline',

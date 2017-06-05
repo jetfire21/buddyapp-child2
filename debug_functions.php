@@ -747,16 +747,3 @@ function as21_x(){
 */
 
 /* **** as21 json-api new controller **** */
-
-// labels for top nav (groups,members) parts is buddyapp-child/page-parts/header-top.php override top nav
-add_filter( 'nav_menu_link_attributes', 'as21_1',1 );
-function as21_1($atts){
-
-if( strtolower( $atts['title']) != 'jobs') { 
-		$atts['data-title']=$atts['title']; 
-		$atts['class'] = 'as21-link-label';
-		unset($atts['title']); 
-  }
-  return $atts;
-}
-
