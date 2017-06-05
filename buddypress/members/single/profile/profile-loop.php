@@ -59,7 +59,7 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 
 $total_estimate_hours = xprofile_get_field(57, $user_id);
 // alex_debug(0,1,'',$total_estimate_hours);
-$total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
+$experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
 
 // echo "<h1>test</h1>";
 // $t1 = xprofile_get_field(44, $user_id);
@@ -328,7 +328,7 @@ endif;
 		$offset = 0;
 		$count_timeline = 5;
 		$fields = $wpdb->get_results( $wpdb->prepare(
-			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid,comment_count
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
@@ -338,6 +338,9 @@ endif;
 		) );
 
 		$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
+		// $total_hours_every_t = $wpdb->get_col($wpdb->prepare("SELECT comment_count FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",$quest_id,"alex_timeline"));
+		$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",$quest_id,"alex_timeline"));
+		// alex_debug(0,1,'ddd',$total_hours_every_t);
 		// deb_last_query();
 
 		?>
@@ -431,6 +434,8 @@ endif;
 					              	  <?php endif;?>
 					              	  <?php if($group->id):?> <div id="alex_gr_id_select"><?php echo $group->id;?></div><?php endif;?>
 					              	  <span class="alex_item_id"><?php echo $field->ID;?></span>
+					              	  <!-- as21 new -->
+					              	  <span class="vol_hours"><?php echo $field->comment_count;?></span>
 					                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
 					                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
 					                  <a href="#" class="btn btn-info">
@@ -473,9 +478,9 @@ endif;
 do_action( 'bp_after_profile_loop_content' ); ?>
 
  <!-- 4:05 -->
-
+<?php echo "TOTAL HOURS (experience_total_hours+total_hours_every_entry)=".$experience_total_hours.'+'.$total_hours_every_entry;?>
 <script type="text/javascript">
-  var total_hours = '<?php echo $total_hours;?>';
+  var total_hours = '<?php echo $experience_total_hours+$total_hours_every_entry;?>';
  jQuery(document).ready(function(){   
     jQuery('.popup-modal').magnificPopup({
         type: 'inline',

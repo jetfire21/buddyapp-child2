@@ -1012,8 +1012,9 @@ function alex_edit_timeline() {
 	$content = sanitize_text_field($_POST['content']);
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
+	$vol_hours = (int)($_POST['vol_hours']);
 	if( preg_match('#none#i', strtolower($class)) ) $class = "";
-	// alex_debug(0,1,"",$_POST); exit;
+	// alex_debug(0,1,"rrr",$_POST); exit;
 	// echo $class."--"; exit;
 
 	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
@@ -1021,9 +1022,9 @@ function alex_edit_timeline() {
 	if($id > 0){
 		global $wpdb;
 		$wpdb->update( $wpdb->posts,
-			array( 'post_date' => $sort_date, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id ),
+			array( 'post_date' => $sort_date, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id,'comment_count'=>$vol_hours ),
 			array( 'ID' => $id ),
-			array( '%s','%s', '%s', '%s', '%s','%d' ),
+			array( '%s','%s', '%s', '%s', '%s','%d','%d' ),
 			array( '%d' )
 		);
 	}

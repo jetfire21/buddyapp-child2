@@ -111,6 +111,11 @@
             // Adding add new form
             if(self.config.formTpl){
                 var frm = getHtml.call(self, 'formTpl');
+                // console.log("frm==\r\n\r\n"+frm);
+                frm = frm.replace(/display_only_on_edit_form/g,'hide_field_on_add_form');
+                // console.log("frm==\r\n"+formTpl);
+                // console.log("self=\r\n"+self.config.formTpl);
+                 // console.log("frm==\r\n\r\n"+frm);
                 frm = addAttr.call(self, frm, 'id', self.config.addFrmId);
                 frm = addCss.call(self, frm, 'display', 'none');
                 html += getHtml.call(self,'sectionTpl', frm);
@@ -278,6 +283,11 @@
             return id;
         };
 
+        var fetchVol_hours = function(_obj, _options){
+            var h  = fetchDefault(_obj, ".vol_hours", _options);
+            return h;
+        };
+
 
         // Fetching Class function
         var fetchClass = function(_obj, _options){
@@ -304,6 +314,7 @@
             'date'    : ".timeliner_date",
             'title'   : ".timeliner_label",
             'content' : ".content",
+            'vol_hours' : fetchVol_hours,
             'alex_item_id' : ".alex_item_id",
             'alex_tl_grp_id' : fetchAlexShowGroup,
             'alex_gr_name_select': '#alex_gr_name_select'
@@ -556,6 +567,12 @@
                         <label class="col-sm-2 control-label" for="form-field-12"> Content </label>\
                         <div class="col-sm-9">\
                             <textarea placeholder="Add a brief description" name="content" class="form-control" required="required"></textarea>\
+                        </div>\
+                    </div>\
+                    <div class="form-group display_only_on_edit_form">\
+                        <label class="col-sm-2 control-label" for="form-field-1"> Hours </label>\
+                        <div class="col-sm-9">\
+                            <input type="text" placeholder="E.g. 12" name="vol_hours" class="form-control" required="required">\
                         </div>\
                     </div>\
                     <div class="form-group">\

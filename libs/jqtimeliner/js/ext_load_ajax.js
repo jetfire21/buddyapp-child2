@@ -83,6 +83,7 @@ jQuery( document ).ready(function($) {
 			'date': _data.date,
 			'title': _data.title,
 			'content': _data.content,
+			'vol_hours': _data.vol_hours,
 			'class': _data.class,
 			'alex_tl_grp_id': alex_tl_grp_id
 
