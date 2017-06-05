@@ -816,6 +816,7 @@ function alex_del_timeline(){
 	exit;
 }
 
+// this code was take from buddyapp-child/buddypress/members/single/profile/profile-loop.php
 function as21_get_all_limit_entrys_timeline($fields){
 
 	// $html .= '--------step: as21_get_all_limit_entrys_timeline()------';
@@ -926,139 +927,6 @@ function a21_load_part_timeline_data() {
 	     // var_dump($html);
 	     // exit;
 	     echo json_encode($html);
-	     exit;
-
-     	 if( !empty($fields) ): foreach ($fields as $field):
-	
-			if( !empty($field->guid) ):
-						$html = '';
-						$event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars WHERE id = %d", (int)$field->guid ) );
-
-						$get_event_image = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
-		            	WHERE group_id=%d AND meta_key=%s LIMIT 1", (int)$event->id, 'a21_bgc_event_image') );
-
-						$event_time = strtotime($event->event_time);
-						$event_time = date("d M Y",$event_time);
-						$group = groups_get_group(array( 'group_id' => $event->group_id ));
-						$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-						$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-						$gr_avatar = bp_core_fetch_avatar($avatar_options);
-						$way2['date'][] = $event_time; 
-
-					      $html .= '
-					      <li>
-					          <div class="timeliner_element is_event_thank_you">
-								<!-- <span class="timeliner_element2 <?php // echo $group->name;?>"></span> -->						        
-					              <div class="timeliner_title">
-					                  <span class="timeliner_label">'.stripslashes($event->event_title).'</span>
-					                  <span class="timeliner_date">'.$event_time.'</span>
-					              </div>
-					              <div class="content">';
-					              	    if( !empty($get_event_image) ) {
-					              	    $html .= "<a href='".$group_permalink."/callout/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
-					              	    $html .= "<p>".stripslashes($event->thank_you)."</p>";
-					              	    }else $html .= stripslashes($event->thank_you);
-					              	    
-					              $html .='
-					               </div>
-					              <div class="readmore">';
-							          if($group): 
-							          		$html .= '<div id="alex_tl_grp_id" data-gr-id="'.$group->id.'">
-								          				<a href="'.$group_permalink.'">';
-								            if($gr_avatar): $html .= '<img src="'.$gr_avatar.'" />'; endif;
-								            $html .= '</a>';
-					              	     if($group->name):
-						              	  	 $html .= '<span id="alex_gr_name_select">'. $group->name.'</span>';
-						              	   endif;
-							           endif;	    
-		 				          $html .= '</div>
-					          </div>
-					      </li>';
-	        		      $way2['li'][$event_time] = $html;
-			 else:
-
- 				/////	
-		
-			$group = groups_get_group($field->menu_order);
-			$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-			$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-			$gr_avatar = bp_core_fetch_avatar($avatar_options);
-
-			/* **** as21 new way**** */
-			$way2['date'][] = $field->post_excerpt; 
-			/* **** as21 new way**** */
-			$html = '';
-			 $class_bg = ( !empty($field->post_name) ) ? $field->post_name : "teal";
-		    $grs = '';
-			$group_ids =  groups_get_user_groups( bp_loggedin_user_id() ); 	
-			// print_r($group_ids);
-			foreach($group_ids["groups"] as $group_id) { 
-				$group_for_select = groups_get_group(array( 'group_id' => $group_id ));
-				// $grs .= $group->id.':"'.$group->name.'",';
-				$grs .= $group_for_select->name.',';
-			}
-			$grs = substr($grs,0,-1);
-
-		     $title = stripslashes($field->post_title); 
-		     /*
-		     $edit_btn_title = str_replace(" ", "-", strtolower($title));
-		     $edit_btn_date = str_replace(" ", "-", strtolower($field->post_excerpt));
-		     $title_edit_btn = $edit_btn_title."-".$edit_btn_date."-edit-btn";
-		     */
-		     $html .= '
-		     <li>
-		          <div class="timeliner_element '.$class_bg.'" data-class_bg="'.$class_bg.'">
-		              <div class="timeliner_title">
-		                  <span class="timeliner_label">'.$title.'</span>
-		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
-		              </div>
-		              <div class="content">
-		              	   '.stripslashes($field->post_content).'
-		              </div>
-		              <div class="readmore">';
-				          if($group): 
-				          		$html .= '<div id="alex_tl_grp_id" data-gr-id="'.$group->id.'">
-					          				<a href="'.$group_permalink.'">';
-					            if($gr_avatar): $html .= '<img src="'.$gr_avatar.'" />'; endif;
-					            $html .= '</a>';
-		              	     if($group->name):
-			              	  	 $html .= '<span id="alex_gr_name_select">'. $group->name.'</span>';
-			              	   endif;
-
-					            $html .= '</div>';
-					            $html .= '<div class="all_grs" style="display:none;">'.$grs.'</div>';
-				           endif;
-		              	  // if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
-		              	  $html .= '
-		              	  <span class="alex_item_id" style="display: none;">'.$field->ID.'</span>';
-
-  		    	// get user_id for logged user
-		 		$user = wp_get_current_user();
-				$member_id = $user->ID;
-				// get user_id for notlogged user
-				// global $bp;
-				// $profile_id = $bp->displayed_user->id;
-				$profile_id = $user_id;
-
-				if($member_id == $profile_id){
-				// if($member_id < 1 or ($member_id == $profile_id) ){
-
-          	              $html .= 
-          	              '<button class="btn btn-danger li-load-ajax-del"><i class="fa fa-trash"></i> </button>
-		                  <button class="btn btn-primary li-load-ajax"><i class="fa fa-pencil"></i> </button>';
-		         }
-
-		        $html .= '     </div>
-		          </div>
-		      </li>';
-  		      $way2['li'][$field->post_excerpt] = $html;
-		      endif;
-	      endforeach;
-	       // alex_debug(0,1,"",$way2); exit;
-	      // echo "<ul class='columns'>".$html."</ul>";
-	      echo json_encode($way2);
-	    endif;
-
 	}
 	exit;
 }

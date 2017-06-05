@@ -478,7 +478,7 @@ endif;
 do_action( 'bp_after_profile_loop_content' ); ?>
 
  <!-- 4:05 -->
-<?php echo "TOTAL HOURS (experience_total_hours+total_hours_every_entry)=".$experience_total_hours.'+'.$total_hours_every_entry;?>
+<?php //echo "TOTAL HOURS (experience_total_hours+total_hours_every_entry)=".$experience_total_hours.'+'.$total_hours_every_entry;?>
 <script type="text/javascript">
   var total_hours = '<?php echo $experience_total_hours+$total_hours_every_entry;?>';
  jQuery(document).ready(function(){   
