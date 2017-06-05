@@ -472,7 +472,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 .bp-user #content .main{ float: left; width: calc(100% - 250px); }
 #buddypress .profile .bp-widget {margin-bottom:15px;}
 /*.global-timeliner {display: none;}*/
-.global-timeliner .alex_btn_add_new, #timeliner .hide_field_on_add_form {display: none;}
+.global-timeliner .alex_btn_add_new ,#timeliner .hide_field_on_add_form {display: none;}
 #timeliner .alex_btn_add_new button{ background: #cddc39; border:0; }
  #timeliner .alex_btn_add_new button:hover{ background: #b2c022; }
  #timeliner span{ margin-bottom: 0 !important; display: inline; }

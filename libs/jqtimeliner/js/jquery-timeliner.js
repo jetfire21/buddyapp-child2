@@ -572,7 +572,7 @@
                     <div class="form-group display_only_on_edit_form">\
                         <label class="col-sm-2 control-label" for="form-field-1"> Hours </label>\
                         <div class="col-sm-9">\
-                            <input type="text" placeholder="E.g. 12" name="vol_hours" class="form-control" required="required">\
+                            <input type="text" placeholder="E.g. 12" name="vol_hours" class="form-control">\
                         </div>\
                     </div>\
                     <div class="form-group">\

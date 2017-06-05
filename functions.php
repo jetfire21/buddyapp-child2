@@ -816,6 +816,87 @@ function alex_del_timeline(){
 	exit;
 }
 
+function as21_get_all_limit_entrys_timeline($fields){
+
+	// $html .= '--------step: as21_get_all_limit_entrys_timeline()------';
+  	if( !empty($fields) ): foreach ($fields as $field):
+  		global $wpdb;
+		if( !empty($field->guid) ):
+			$event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars WHERE id = %d", (int)$field->guid ) );
+
+			$get_event_image = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
+        	WHERE group_id=%d AND meta_key=%s LIMIT 1", (int)$event->id, 'a21_bgc_event_image') );
+
+			$event_time = strtotime($event->event_time);
+			$event_time = date("d M Y",$event_time);
+			$group = groups_get_group(array( 'group_id' => $event->group_id ));
+			$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+			$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+			$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+
+		      $html .= '<li>
+		          <div class="timeliner_element is_event_thank_you">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($event->event_title).'</span>
+		                  <span class="timeliner_date">'.$event_time.'</span>
+		              </div>
+		              <div class="content">';
+		              	    if( !empty($get_event_image) ) {
+		              	    $html .= "<a href='".$group_permalink."/callout/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
+		              	    $html .= "<p>".stripslashes($event->thank_you)."</p>";
+		              	    }else $html .= stripslashes($event->thank_you);
+		              	    
+		       $html .='</div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>.'; endif;
+			               if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+			               if($group->name): $html .= '<div id="alex_gr_name_select">'.$group->name.'</div>'; endif;
+			  $html .= '</div>
+		          </div>
+		      </li>';
+
+		else:
+
+			$group = groups_get_group($field->menu_order);
+			$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+			$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+			$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+		    $html .= '
+		    	<li>
+		          <div class="timeliner_element ';
+		           $html .= (!empty($field->post_name)) ? $field->post_name : "teal";
+		          $html .= '">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($field->post_title).'</span>
+		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
+		              </div>
+		              <div class="content">'.stripslashes($field->post_content).'</div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>'; endif;
+		              	  if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+		              	  if($group->name):  $html .= '<div id="alex_gr_name_select">'.$group->name.'</div>'; endif;
+		              	  if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
+		              	  $html .= '<span class="alex_item_id">'.$field->ID.'</span>
+		              	  <span class="vol_hours">'.$field->comment_count.'</span>
+		                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+		                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+		                  <a href="#" class="btn btn-info">
+		                      Read More <i class="fa fa-arrow-circle-right"></i>
+		                  </a>
+		              </div>
+		          </div>
+		      </li>';
+  		 endif;
+  endforeach;
+  	return $html;
+  else:
+  	return $html = false;
+  endif;
+  // do_action("a21_bgc_message_thankyou");  
+}
+
 add_action('wp_ajax_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
 add_action('wp_ajax_nopriv_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
 
@@ -831,7 +912,7 @@ function a21_load_part_timeline_data() {
 		$count_timeline = 5;
 
 		$fields = $wpdb->get_results( $wpdb->prepare(
-			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid,comment_count
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
@@ -839,7 +920,14 @@ function a21_load_part_timeline_data() {
 			$user_id,
 			"alex_timeline"
 		) );
-	     	 
+	     
+	     /* **** as21 new**** */
+	     $html = as21_get_all_limit_entrys_timeline($fields);
+	     // var_dump($html);
+	     // exit;
+	     echo json_encode($html);
+	     exit;
+
      	 if( !empty($fields) ): foreach ($fields as $field):
 	
 			if( !empty($field->guid) ):
