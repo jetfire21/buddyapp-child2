@@ -578,7 +578,7 @@ function as21_get_job_listing(){
 }
 
 
-add_action("wp_footer","as21_get_all_jobs_by_group_id");
+// add_action("wp_footer","as21_get_all_jobs_by_group_id");
 
 function as21_get_all_jobs_by_group_id(){
 

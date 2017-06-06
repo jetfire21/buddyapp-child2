@@ -11,6 +11,7 @@ function a21_get_groups_post_job_field_select( $field, $key ) {
 
     global $wpdb;
     $groups = groups_get_groups();
+    $html .= '<option value="None">None</option>';
     foreach ($groups['groups'] as $gr) {
         if($gr->id):
             $html .= '<option value="'.$gr->id.'"';
