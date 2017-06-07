@@ -599,7 +599,9 @@ function as21_get_all_jobs_by_group_id(){
 // $usag = '31-05-2017 12:13:55==88.198.54.49==/causes/help-santa-toy-parade/callout/2007/10/26/====Mozilla/5.0 (compatible; MJ12bot/v1.4.7; http://mj12bot.com/)==';
 // if( strpos($usag, "mj12bot") !== fasle ) echo "====999 mj12bot";
 // var_dump(strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot"));
-if( strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "YandexBot") === false ){
+// Googlebot
+// if( strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "YandexBot") === false ){
+if( strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "YandexBot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "OpenLinkProfiler.org/bot") === false  && strpos($_SERVER['HTTP_USER_AGENT'], "Googlebot") === false && strpos($_SERVER['HTTP_USER_AGENT'], "bingbot") === false  && strpos($_SERVER['HTTP_USER_AGENT'], "adsbot") === false){
 
 	add_action("wp_footer","as21_find_where_bug_was");
 	function as21_find_where_bug_was(){
@@ -747,3 +749,59 @@ function as21_x(){
 */
 
 /* **** as21 json-api new controller **** */
+
+
+
+
+
+// add_action('submit_job_form_start','as21_ddd1');
+// add_action('init','as21_ddd1');
+function as21_ddd1(){
+// echo $_SERVER['REQUEST_URI'];
+		// setcookie("as21_job_post_date", '',time()-1000, COOKIEPATH, COOKIE_DOMAIN,is_ssl());
+		echo "job start form";
+}
+
+
+// 'handler'  => array( $this, 'preview_handler' ),
+/*
+add_filter( 'submit_job_steps','as21_2',1);
+function as21_2($arr){
+	alex_debug(1,1,'costructor',$arr['preview']['handler']);
+	// $arr['preview']['handler'][0] = 'AS21_WP';
+	$arr['preview']['handler'][1] = 'as21_preview_handler';
+	alex_debug(1,1,'costructor',$arr['preview']['handler']);
+	// echo 'as21_2 ==============';
+	// exit;
+	return $arr;
+}
+*/
+
+// echo " ".current_time('mysql');
+// echo " ".current_time('mysql',1);
+// echo " ".current_time('timestamp');
+
+
+
+// add_action("wp_footer",'as21_ccc');
+function as21_ccc(){
+
+	echo "debug777====";
+	// global $wp_filter;
+	// alex_debug(0,1,'',$wp_filter['submit_job_form_save_job_data']);
+	// alex_debug(0,1,'',$wp_filter['job_manager_update_job_data']);
+	// alex_debug(0,1,'',$wp_filter['job_manager_job_submitted']);
+	// alex_debug(0,1,'',$wp_filter['wp_head']);
+	// list_hooked_functions('job_manager_job_submitted');
+
+	var_dump($GLOBALS['job_manager']);
+	global $job_manager;
+		$as21_job_data = 'eeeeeeee';
+	$job_preview['as21'] = $as21_job_data;
+	$job_manager->as21 = $as21_job_data;
+
+	echo "<hr>";
+	var_dump($job_manager);
+	alex_debug(0,1,'',$job_manager);
+}
+

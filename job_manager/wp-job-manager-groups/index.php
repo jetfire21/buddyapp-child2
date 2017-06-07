@@ -303,5 +303,86 @@ function a21_q($message, $search_values){
     return $message;
 }
 
-// 
+
+/* *****addtiton 'Posted Date' field on page post-a-job****** */
+
+function a21_register_session(){
+    if( !session_id() )session_start();
+}
+add_action('init','a21_register_session');
+
+// add_filter( 'submit_job_form_save_job_data', $job_data, $post_title, $post_content, $status, $values );
+add_filter( 'submit_job_form_save_job_data', 'as21_job1',5 );
+function as21_job1($job_data, $post_title, $post_content, $status, $values){
+
+
+  // global $as21_job_data, $job_preview, $post;
+  // global $job_manager;
+  // echo "<hr>";
+  // $as21_job_data = 'eeeeeeee';
+  // alex_debug(0,1,'$_SESSION',$_SESSION);
+
+
+  // echo '----function as21_job1-----<hr>';
+  // alex_debug(1,1,'job_data',$job_data);
+  // alex_debug(1,1,'post submit_job_form_save_job_data',$_POST);
+
+  // alex_debug(1,1,'post',$job_data);
+  // $job_data['post_date'] = '2017-06-21 00:00:00';
+  if( !empty($_POST['as21_job_posted_date']) ){
+    $job_data['post_date'] = sanitize_text_field($_POST['as21_job_posted_date']);
+    $job_data['post_date'] = date("Y-m-d",strtotime($job_data['post_date']))." ".date("H:i:s");
+    $job_data['post_date_gmt'] = $job_data['post_date'];
+    // echo 'post date='.$job_data['post_date'];
+    $_SESSION['as21_job_post_date'] = $job_data['post_date'];
+  }
+  // alex_debug(0,1,'$_SESSION',$_SESSION);
+
+  // alex_debug(0,1,'job_data',$job_data);
+  // var_dump($values);
+  // var_dump($status);
+  // exit;
+  return $job_data;
+}
+
+add_action('job_manager_job_submitted','as21_123');
+function as21_123($job_id){
+
+  // global $as21_job_data, $job_preview, $post;
+  // global $job_manager;
+  // echo "<hr>";
+  // var_dump($job_manager);
+
+
+  // echo '----function as21_123-----<hr>';
+
+  // alex_debug(1,1,'post job_manager_job_submitted',$_POST);
+  // alex_debug(0,1,'$job_preview',$job_preview);
+  // alex_debug(0,1,'$post',$post);
+  // alex_debug(0,1,'$as21_job_data',$as21_job_data);
+  // alex_debug(0,1,'session',$_COOKIE);
+  // alex_debug(0,1,'$_SESSION',$_SESSION);
+  // var_dump($as21_job_data);
+  // var_dump($job_id);
+  
+  if( !empty($_SESSION['as21_job_post_date']) ) {
+    global $wpdb;
+    $wpdb->update(
+      $wpdb->posts,
+      array( 'post_date' => $_SESSION['as21_job_post_date'],'post_date_gmt' => $_SESSION['as21_job_post_date'] ),
+      array( 'ID' => (int)$job_id ),
+      array('%s','%s'),
+        array('%d')
+    );
+    unset($_SESSION['as21_job_post_date']);
+  }
+
+  // deb_last_query();
+  // unset($_COOKIE["as21_job_post_date"]);
+  // setcookie("as21_job_post_date", '',time()-1000, COOKIEPATH, COOKIE_DOMAIN,is_ssl());
+  // alex_debug(0,1,'$_SESSION',$_SESSION);
+
+}
+
+/* *****addtiton 'Posted Date' field on page post-a-job****** */
 
