@@ -305,7 +305,7 @@ function a21_q($message, $search_values){
 
 
 /* *****addtiton 'Posted Date' field on page post-a-job****** */
-
+// for work need in wp dashboard to add new field 'as21_job_posted_date' as date-picker
 function a21_register_session(){
     if( !session_id() )session_start();
 }
@@ -364,7 +364,7 @@ function as21_123($job_id){
   // alex_debug(0,1,'$_SESSION',$_SESSION);
   // var_dump($as21_job_data);
   // var_dump($job_id);
-  
+
   if( !empty($_SESSION['as21_job_post_date']) ) {
     global $wpdb;
     $wpdb->update(

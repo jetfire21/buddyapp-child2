@@ -728,7 +728,9 @@ if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tag
 // if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
 if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
 
-// override function path.../plugins/wp-job-manager/wp-job-manager-functions.php - it is necessary for work the filter by keyword
+/* override function path.../plugins/wp-job-manager/wp-job-manager-functions.php - it is necessary for work the filter by keyword
+this need comment for wp-job-manager with ver 1.26.0*/
+/*
 function get_job_listings_keyword_search( $args ) {
 
 	global $wpdb, $job_manager_keyword;
@@ -740,6 +742,7 @@ function get_job_listings_keyword_search( $args ) {
 	$args['where'] .= " AND ( " . implode( ' OR ', $conditions ) . " ) ";
 	return $args;
 }
+*/
 
 add_action("wp_footer", "alex_custom_scripts",100);
 
