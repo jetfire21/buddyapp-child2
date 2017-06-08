@@ -2,7 +2,7 @@
 
 function a21_get_groups_post_job_field_select( $field, $key ) {
 
-   // echo "The field is {$field} and the key is {$key}";
+   // echo "The field is  and the key is ";
    // print_r($field);
   // echo "===debug a21=== url script: a21_get_groups_frontend_selectbox ";
 
@@ -217,8 +217,8 @@ function a21_add_event_job_post_in_group_stream($job_id){
 
 // add_filter("job_manager_get_listings_result","a21_d",100,2);
 // function a21_d($result, $jobs){
-add_filter("job_manager_get_listings_result","a21_d");
-function a21_d($result){
+add_filter("job_manager_get_listings_result","as21_jm_get_current_group");
+function as21_jm_get_current_group($result){
 // function a21_d($result, $jobs){
 
   // alex_debug(0,1," ",$jobs);
@@ -262,8 +262,8 @@ function a21_d($result){
    return $result;
 }
 
-add_filter( 'job_manager_get_listings_custom_filter_text',"a21_q",100,2 );
-function a21_q($message, $search_values){
+add_filter( 'job_manager_get_listings_custom_filter_text',"as21_jm_output_current_group",100,2 );
+function as21_jm_output_current_group($message, $search_values){
 
     // var_dump($jobs);
 
@@ -305,15 +305,16 @@ function a21_q($message, $search_values){
 
 
 /* *****addtiton 'Posted Date' field on page post-a-job****** */
+
 // for work need in wp dashboard to add new field 'as21_job_posted_date' as date-picker
-function a21_register_session(){
+function a21_register_session_for_job_posted_date(){
     if( !session_id() )session_start();
 }
-add_action('init','a21_register_session');
+add_action('init','a21_register_session_for_job_posted_date');
 
 // add_filter( 'submit_job_form_save_job_data', $job_data, $post_title, $post_content, $status, $values );
-add_filter( 'submit_job_form_save_job_data', 'as21_job1',5 );
-function as21_job1($job_data, $post_title, $post_content, $status, $values){
+add_filter( 'submit_job_form_save_job_data', 'as21_jm_save_posted_date',5 );
+function as21_jm_save_posted_date($job_data, $post_title, $post_content, $status, $values){
 
 
   // global $as21_job_data, $job_preview, $post;
@@ -329,8 +330,8 @@ function as21_job1($job_data, $post_title, $post_content, $status, $values){
 
   // alex_debug(1,1,'post',$job_data);
   // $job_data['post_date'] = '2017-06-21 00:00:00';
-  if( !empty($_POST['as21_job_posted_date']) ){
-    $job_data['post_date'] = sanitize_text_field($_POST['as21_job_posted_date']);
+  if( !empty($_POST['job_as21_posted_date']) ){
+    $job_data['post_date'] = sanitize_text_field($_POST['job_as21_posted_date']);
     $job_data['post_date'] = date("Y-m-d",strtotime($job_data['post_date']))." ".date("H:i:s");
     $job_data['post_date_gmt'] = $job_data['post_date'];
     // echo 'post date='.$job_data['post_date'];
@@ -345,8 +346,8 @@ function as21_job1($job_data, $post_title, $post_content, $status, $values){
   return $job_data;
 }
 
-add_action('job_manager_job_submitted','as21_123');
-function as21_123($job_id){
+add_action('job_manager_job_submitted','as21_jm_update_posted_date');
+function as21_jm_update_posted_date($job_id){
 
   // global $as21_job_data, $job_preview, $post;
   // global $job_manager;

@@ -728,21 +728,6 @@ if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tag
 // if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
 if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
 
-/* override function path.../plugins/wp-job-manager/wp-job-manager-functions.php - it is necessary for work the filter by keyword
-this need comment for wp-job-manager with ver 1.26.0*/
-/*
-function get_job_listings_keyword_search( $args ) {
-
-	global $wpdb, $job_manager_keyword;
-	$conditions   = array();
-	$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-	$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
-	$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
-	$conditions[] = "{$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-	$args['where'] .= " AND ( " . implode( ' OR ', $conditions ) . " ) ";
-	return $args;
-}
-*/
 
 add_action("wp_footer", "alex_custom_scripts",100);
 
