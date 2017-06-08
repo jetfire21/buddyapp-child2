@@ -647,6 +647,7 @@ if( strpos($_SERVER['HTTP_USER_AGENT'], "mj12bot") === false && strpos($_SERVER[
 			// echo "===read===";
 			$file = file($name); // Считываем весь файл в массив 
 			// var_dump($ip);
+
 			for($i = 0; $i < sizeof($file); $i++)
 			{
 				// if($i == $num_stroka) unset($file[$i]); 
@@ -806,3 +807,106 @@ function as21_ccc(){
 	// alex_debug(0,1,'',$job_manager);
 }
 
+/* **** as21 count_jobs_in_group **** */
+add_action('wp_footer','as21_count111');
+function as21_count111(){
+	as21_read_as_array();
+}
+
+function as21_read_as_array(){
+
+	function as21_output_space($length_start = 4, $real_str){
+
+		$length_real_str = strlen($real_str);
+		if($length_real_str < $length_start) {
+			$length_add_str = $length_start - $length_real_str;
+			$add_char = '';
+			for($i=0; $i<$length_add_str;$i++){ $add_char .= " "; }
+			return $add_char;
+		}
+	}
+
+	echo "=== DEBUG: as21_read_as_array===<br>";
+	echo $filename = $_SERVER['DOCUMENT_ROOT'].'/count_jobs_in_group.txt';
+	// echo $filename = 'http://'.$_SERVER['HTTP_HOST'].'/count_jobs_in_group.txt';
+	echo "<br>\r\n";
+	echo dirname(__FILE__);
+	echo "<br>\r\n";
+	// exit;
+	var_dump(file_exists($filename));
+	// exit;
+
+	// $fp = @fopen($filename, 'r'); 
+
+	// // Add each line to an array
+	// if ($fp) {
+	//    $array = explode("\n", fread($fp, filesize($filename)));
+	// }
+	// var_dump($array);
+
+	if( file_exists($filename)) {
+
+		// echo $filename = 'http://'.$_SERVER['HTTP_HOST'].'/count_jobs_in_group.txt';
+
+		$file = file($filename,FILE_IGNORE_NEW_LINES); // Считываем весь файл в массив 
+		// $file = file_get_contents($filename); 
+		// $file = fopen($filename, "r"); 
+		// alex_debug(1,1,'',$file);
+
+		var_dump($file);
+		// $file = implode(PHP_EOL, $file[0]);
+		$file = explode("\r", $file[0]);
+		var_dump($file);
+				alex_debug(1,1,'',$file);
+
+		foreach ($file as $k=>$line) {
+			$separator = explode("|", $line);
+			// print_r($separator);
+			$separator[4] = (int)$separator[2]+(int)$separator[3];
+			// print_r($separator);
+			// exit;
+			$file[$k] = implode("|", $separator);
+		}
+		// $fp = fopen($filename, "w"); 
+		// $test = fwrite($fp, $text); 
+		// fclose($fp); 
+
+		// print_r($file);
+		alex_debug(1,1,'',$file);
+		// foreach ($file as $k =>$v) {
+		// 	echo $k.' - '.$v.'<br>';
+		// }
+
+		exit;
+		// alex_debug(1,1,'',$bp);
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		// alex_debug(0,1,'',$groups);
+
+		foreach ($groups['groups'] as $group) {
+			$length_gr_id = as21_output_space(5, $group->id);
+			$length_gr = as21_output_space(45, $group->name);
+			$length_jobs_count = as21_output_space(5, as21_get_jobs_count_current_group($group->id));
+
+			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr." | ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."    | | \r"; 
+		}
+		$fp = fopen($filename, "w"); 
+		$test = fwrite($fp, $text); 
+		fclose($fp); 
+
+
+
+	}
+
+	// deb_last_query();
+	/*
+	for($i = 0; $i < sizeof($file); $i++)
+	{
+		// if($i == $num_stroka) unset($file[$i]); 
+		// echo $file[$i]."<br>";
+		if($ip == trim($file[$i])) { $is_ip = true; break; }
+		else{$is_ip = false;}
+		// var_dump($file[$i]);
+	}
+	*/
+	
+}
