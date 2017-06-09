@@ -1635,10 +1635,12 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 				// var_dump($ids);
 				$jobs_count_gr = (count($ids)>0) ? count($ids) : 0 ;
 				*/
+				$as21_dcp = (!empty(as21_jobs_get_display_count_plus_txt() )) ? (int)as21_jobs_get_display_count_plus_txt() : 0;
+				$jobs_total_count_gr = $as21_dcp + (int)as21_get_jobs_count_current_group();
 				$args = array(
 					'slug' => 'a21-jobs',
 					// 'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',
-					'name' => 'Jobs <span>'.as21_get_jobs_count_current_group().'</span>',
+					'name' => 'Jobs <span>'.$jobs_total_count_gr.'</span>',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );

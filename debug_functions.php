@@ -815,98 +815,91 @@ function as21_count111(){
 
 function as21_read_as_array(){
 
-	function as21_output_space($length_start = 4, $real_str){
-
-		$length_real_str = strlen($real_str);
-		if($length_real_str < $length_start) {
-			$length_add_str = $length_start - $length_real_str;
-			$add_char = '';
-			for($i=0; $i<$length_add_str;$i++){ $add_char .= " "; }
-			return $add_char;
-		}
-	}
-
-	echo "=== DEBUG: as21_read_as_array===<br>";
-	echo $filename = $_SERVER['DOCUMENT_ROOT'].'/count_jobs_in_group.txt';
+	echo "=== DEBUG: as21_read_as_array== <br>";
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	// ?jobs_count_calc=yes
+	// echo date("Y-m-d H:i:s",filemtime($filename) );
 	// echo $filename = 'http://'.$_SERVER['HTTP_HOST'].'/count_jobs_in_group.txt';
-	echo "<br>\r\n";
-	echo dirname(__FILE__);
-	echo "<br>\r\n";
 	// exit;
-	var_dump(file_exists($filename));
-	// exit;
-
-	// $fp = @fopen($filename, 'r'); 
-
-	// // Add each line to an array
-	// if ($fp) {
-	//    $array = explode("\n", fread($fp, filesize($filename)));
-	// }
-	// var_dump($array);
 
 	if( file_exists($filename)) {
 
-		// echo $filename = 'http://'.$_SERVER['HTTP_HOST'].'/count_jobs_in_group.txt';
+		$file = file($filename); 
 
-		$file = file($filename,FILE_IGNORE_NEW_LINES); // Считываем весь файл в массив 
-		// $file = file_get_contents($filename); 
-		// $file = fopen($filename, "r"); 
-		// alex_debug(1,1,'',$file);
+		/* **** as21 get info from file and addition dcp to initial jobs count **** */
 
-		var_dump($file);
-		// $file = implode(PHP_EOL, $file[0]);
 		$file = explode("\r", $file[0]);
-		var_dump($file);
-				alex_debug(1,1,'',$file);
+		// var_dump($file);
+		// alex_debug(1,1,'',$file);
+		$dipsplay_count_plus = explode("|", $file[0]);
+		$dipsplay_count_plus = $dipsplay_count_plus[1];
 
 		foreach ($file as $k=>$line) {
-			$separator = explode("|", $line);
-			// print_r($separator);
-			$separator[4] = (int)$separator[2]+(int)$separator[3];
-			// print_r($separator);
-			// exit;
-			$file[$k] = implode("|", $separator);
+			if($k == 0 or $k == 1) continue;
+			if(strpos($line, '|') !== false){
+				$separator = explode("|", $line);
+				// print_r($separator);
+				$separator[3] = (int)$separator[2]+(int)$dipsplay_count_plus;
+				$separator[3] = " ".$separator[3];
+				// print_r($separator);
+				// exit;
+				$file[$k] = implode("|", $separator);
+			}
 		}
-		// $fp = fopen($filename, "w"); 
-		// $test = fwrite($fp, $text); 
-		// fclose($fp); 
 
 		// print_r($file);
-		alex_debug(1,1,'',$file);
-		// foreach ($file as $k =>$v) {
-		// 	echo $k.' - '.$v.'<br>';
-		// }
+		// alex_debug(1,1,'after calc',$file);
 
-		exit;
-		// alex_debug(1,1,'',$bp);
+		$file_to_str = implode("\r", $file);
+		// var_dump($file_to_str);
+		as21_write_file_jobs_count($filename,$file_to_str);
+
+		// exit;
+
+		/* *** get all groups and write in file **** */
 		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
 		// alex_debug(0,1,'',$groups);
+		$text = "Displayed Count Plus | \r";
+		$text .= "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
 
 		foreach ($groups['groups'] as $group) {
 			$length_gr_id = as21_output_space(5, $group->id);
-			$length_gr = as21_output_space(45, $group->name);
-			$length_jobs_count = as21_output_space(5, as21_get_jobs_count_current_group($group->id));
-
-			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr." | ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."    | | \r"; 
+			$length_gr = as21_output_space(55, $group->name);
+			$length_jobs_count = as21_output_space(14, as21_get_jobs_count_current_group($group->id));
+			
+			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr."| ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."| \r"; 
 		}
-		$fp = fopen($filename, "w"); 
-		$test = fwrite($fp, $text); 
-		fclose($fp); 
-
-
+		// as21_write_file_jobs_count($filename,$text);
 
 	}
-
-	// deb_last_query();
-	/*
-	for($i = 0; $i < sizeof($file); $i++)
-	{
-		// if($i == $num_stroka) unset($file[$i]); 
-		// echo $file[$i]."<br>";
-		if($ip == trim($file[$i])) { $is_ip = true; break; }
-		else{$is_ip = false;}
-		// var_dump($file[$i]);
-	}
-	*/
 	
+}
+
+function as21_output_space($length_start = 4, $real_str){
+
+	$length_real_str = strlen($real_str);
+	if($length_real_str < $length_start) {
+		$length_add_str = $length_start - $length_real_str;
+		$add_char = '';
+		for($i=0; $i<$length_add_str;$i++){ $add_char .= " "; }
+		return $add_char;
+	}
+}
+
+function as21_write_file_jobs_count($filename,$text){
+	$fp = fopen($filename, "w"); 
+	$test = fwrite($fp, $text); 
+	fclose($fp); 
+}
+
+function as21_jobs_get_display_count_plus_txt(){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		$file = file($filename); 
+		$file = explode("\r", $file[0]);
+		$dipsplay_count_plus = explode("|", $file[0]);
+		return $dipsplay_count_plus = $dipsplay_count_plus[1];
+	}
+
 }
