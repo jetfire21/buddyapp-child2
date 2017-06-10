@@ -810,12 +810,12 @@ function as21_ccc(){
 /* **** as21 count_jobs_in_group **** */
 add_action('wp_footer','as21_count111');
 function as21_count111(){
-	as21_read_as_array();
+	// as21_read_as_array();
+	 // as21_jm_write_file_all_groups();
 }
 
-function as21_read_as_array(){
+function as21_jm_wrire_file_calc_total_count(){
 
-	echo "=== DEBUG: as21_read_as_array== <br>";
 	$filename = AS21_PATH_JOBS_COUNT_TXT;
 	// ?jobs_count_calc=yes
 	// echo date("Y-m-d H:i:s",filemtime($filename) );
@@ -854,23 +854,6 @@ function as21_read_as_array(){
 		// var_dump($file_to_str);
 		as21_write_file_jobs_count($filename,$file_to_str);
 
-		// exit;
-
-		/* *** get all groups and write in file **** */
-		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
-		// alex_debug(0,1,'',$groups);
-		$text = "Displayed Count Plus | \r";
-		$text .= "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
-
-		foreach ($groups['groups'] as $group) {
-			$length_gr_id = as21_output_space(5, $group->id);
-			$length_gr = as21_output_space(55, $group->name);
-			$length_jobs_count = as21_output_space(14, as21_get_jobs_count_current_group($group->id));
-			
-			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr."| ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."| \r"; 
-		}
-		// as21_write_file_jobs_count($filename,$text);
-
 	}
 	
 }
@@ -888,8 +871,10 @@ function as21_output_space($length_start = 4, $real_str){
 
 function as21_write_file_jobs_count($filename,$text){
 	$fp = fopen($filename, "w"); 
-	$test = fwrite($fp, $text); 
+	$write = fwrite($fp, $text); 
+	// var_dump($write);
 	fclose($fp); 
+	// echo "\r\n as21_write_file_jobs_count";
 }
 
 function as21_jobs_get_display_count_plus_txt(){
@@ -900,6 +885,31 @@ function as21_jobs_get_display_count_plus_txt(){
 		$file = explode("\r", $file[0]);
 		$dipsplay_count_plus = explode("|", $file[0]);
 		return $dipsplay_count_plus = $dipsplay_count_plus[1];
+	}
+
+}
+
+function as21_jm_write_file_all_groups($dcp = false){
+
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		/* *** get all groups and write in file **** */
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		// alex_debug(0,1,'',$groups);
+		if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
+		else $text = "Displayed Count Plus | \r";
+		$text .= "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
+
+		foreach ($groups['groups'] as $group) {
+			$length_gr_id = as21_output_space(5, $group->id);
+			$length_gr = as21_output_space(55, $group->name);
+			$length_jobs_count = as21_output_space(14, as21_get_jobs_count_current_group($group->id));
+			
+			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr."| ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."| \r"; 
+		}
+		as21_write_file_jobs_count($filename,$text);
+		// echo "\r\n end work as21_jm_write_file_all_groups! ".$text;
 	}
 
 }
