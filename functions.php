@@ -1612,6 +1612,102 @@ function a21_kleo_frontend_files2(){
 	// wp_enqueue_script("jquery-ui-slider",array("jquery"));
 }
 
+/* **** as21  extension for wp-job-manager **** */
+
+function as21_output_space($length_start = 4, $real_str){
+
+	$length_real_str = strlen($real_str);
+	if($length_real_str < $length_start) {
+		$length_add_str = $length_start - $length_real_str;
+		$add_char = '';
+		for($i=0; $i<$length_add_str;$i++){ $add_char .= " "; }
+		return $add_char;
+	}
+}
+
+function as21_wjm_write_file_jobs_count($filename,$text){
+	$fp = fopen($filename, "w"); 
+	$write = fwrite($fp, $text); 
+	// var_dump($write);
+	fclose($fp); 
+	// echo "\r\n as21_wjm_write_file_jobs_count";
+}
+
+function as21_wjm_get_display_count_plus_by_group_id($group_id){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		$file = file($filename); 
+		$file = explode("\r", $file[0]);
+		// $dipsplay_count_plus = explode("|", $file[0]);
+		// alex_debug(0,1,'file',$file);
+		foreach ($file as $k => $v) {
+			$line = explode("|", $v); 
+			$f_group_id = $line[0];
+			$dcp = $line[3];
+			// alex_debug(0,1,'',$line);
+			if($f_group_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
+		}
+		return $dcp;
+		// echo "--------".$dcp;
+		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
+		// echo 'as21_jobs_get_display_count_plus_txt ';
+	}
+
+}
+
+function as21_wjm_get_all_display_count_plus(){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		$file = file($filename); 
+		$file = explode("\r", $file[0]);
+		// $dipsplay_count_plus = explode("|", $file[0]);
+		// alex_debug(0,1,'file',$file);
+		foreach ($file as $k => $v) {
+			if($k == 0) continue;
+			$line = explode("|", $v); 
+			$dcps[trim($line[0])] = $line[3];
+			// alex_debug(0,1,'',$line);
+		}
+		// alex_debug(0,1,'',$dcps);
+		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
+		// echo 'as21_jobs_get_display_count_plus_txt ';
+		return $dcps;
+	}
+
+}
+
+function as21_wjm_write_file_all_groups($dcp = false){
+
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		/* *** get all groups and write in file **** */
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		// alex_debug(0,1,'',$groups);
+		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
+		// else $text = "Displayed Count Plus | \r";
+		$text .= "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
+		if($dcp) $dcps = as21_wjm_get_all_display_count_plus();
+		$i = 1;
+		// echo count($groups['groups']);
+		foreach ($groups['groups'] as $group) {
+			$length_gr_id = as21_output_space(5, $group->id);
+			$length_gr = as21_output_space(55, $group->name);
+			$length_jobs_count = as21_output_space(14, as21_get_jobs_count_current_group($group->id));
+			
+			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr."| ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."|"; 
+			if($dcp && isset($dcps[$group->id]) ) $text .= $dcps[$group->id];
+			if( count($groups['groups']) != $i) $text .=  "\r";
+			$i++;
+		}
+		as21_wjm_write_file_jobs_count($filename,$text);
+		// echo "\r\n DEBUG: end work as21_wjm_write_file_all_groups! ".$text;
+	}
+
+}
+
 function as21_get_jobs_count_current_group($group_id = false){
 
 	global $bp,$wpdb;
@@ -1628,15 +1724,13 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 	class a21_job_nav_tab_in_group extends BP_Group_Extension {
 	
 			function __construct() {
-				/*
+				
 				global $bp,$wpdb;
 				$group_id = (int)$bp->groups->current_group->id;
-				$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
-				// var_dump($ids);
-				$jobs_count_gr = (count($ids)>0) ? count($ids) : 0 ;
-				*/
-				$as21_dcp = (!empty(as21_jobs_get_display_count_plus_txt() )) ? (int)as21_jobs_get_display_count_plus_txt() : 0;
-				$jobs_total_count_gr = $as21_dcp + (int)as21_get_jobs_count_current_group();
+				$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
+				// var_dump($jobs_total_count_gr);
+				if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group();
+				// var_dump($jobs_total_count_gr);
 				$args = array(
 					'slug' => 'a21-jobs',
 					// 'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',
@@ -1651,6 +1745,7 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 		
 endif;
 
+/* **** as21  extension for wp-job-manager **** */
 
 add_action("bp_group_options_nav",'as21_add_group_new_nav_link');
 function as21_add_group_new_nav_link(){

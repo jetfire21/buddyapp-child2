@@ -328,7 +328,7 @@ function as21_jm_save_posted_date($job_data, $post_title, $post_content, $status
   // alex_debug(1,1,'POST',$_POST);
 
   /* **** as21 new !!!!!!!!! **** все работает,но в этом месте dcp не успевает обновиться! */
-  // if($_POST['job_group_a21']>0) { /* echo 'new job for some group,count +1'; */ as21_jm_write_file_all_groups(true); }
+  // if($_POST['job_group_a21']>0) { /* echo 'new job for some group,count +1'; */ as21_wjm_write_file_all_groups(true); }
 
   // alex_debug(1,1,'job_data',$job_data);
   // alex_debug(1,1,'post submit_job_form_save_job_data',$_POST);
@@ -364,7 +364,6 @@ function as21_jm_update_posted_date($job_id){
 
   // alex_debug(1,1,'post job_manager_job_submitted',$_POST);
   // alex_debug(0,1,'$job_preview',$job_preview);
-  // alex_debug(0,1,'$post',$post);
   // alex_debug(0,1,'$as21_job_data',$as21_job_data);
   // alex_debug(0,1,'session',$_COOKIE);
   // alex_debug(0,1,'$_SESSION',$_SESSION);
@@ -383,23 +382,24 @@ function as21_jm_update_posted_date($job_id){
     unset($_SESSION['as21_job_post_date']);
   }
 
-    /* **** as21 new !!!!!!!!! **** все работает,но в этом месте dcp не успевает обновиться! */
-  as21_jm_write_file_all_groups(true);
-  as21_jm_wrire_file_calc_total_count();
-
   // deb_last_query();
   // unset($_COOKIE["as21_job_post_date"]);
   // setcookie("as21_job_post_date", '',time()-1000, COOKIEPATH, COOKIE_DOMAIN,is_ssl());
   // alex_debug(0,1,'$_SESSION',$_SESSION);
 
+   as21_wjm_write_file_all_groups(true);
+
 }
 
 /* *****addtiton 'Posted Date' field on page post-a-job****** */
 
-// new
-add_action( 'groups_group_create_complete',"as21_alex21" );
-function as21_alex21(){
-  as21_jm_write_file_all_groups(true);
-  as21_jm_wrire_file_calc_total_count();
-  // echo 'as21_alex21======='; exit;
+add_action( 'groups_group_create_complete',"as21_jm_write_file_after_group_create" );
+function as21_jm_write_file_after_group_create(){
+   as21_wjm_write_file_all_groups(true);
+}
+
+add_action('submit_job_form_end','as21_aaa');
+function as21_aaa(){
+     // alex_debug(1,1,'post job_manager_job_submitted',$_POST);
+    if( $_POST['job_manager_form'] == 'edit-job' )    as21_wjm_write_file_all_groups(true);
 }
