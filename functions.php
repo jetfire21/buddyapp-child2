@@ -1640,16 +1640,17 @@ function as21_wjm_get_display_count_plus_by_group_id($group_id){
 		$file = file($filename); 
 		$file = explode("\r", $file[0]);
 		// $dipsplay_count_plus = explode("|", $file[0]);
-		// alex_debug(0,1,'file',$file);
+		// if($_GET['dev']==1) alex_debug(0,1,'file',$file);
 		foreach ($file as $k => $v) {
+			if($k == 0) continue;
 			$line = explode("|", $v); 
 			$f_group_id = $line[0];
 			$dcp = $line[3];
-			// alex_debug(0,1,'',$line);
+			// if($_GET['dev']==1)  alex_debug(0,1,'',$line);
 			if($f_group_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
 		}
+		// if($_GET['dev']==1) echo "a77--------".$dcp;
 		return $dcp;
-		// echo "--------".$dcp;
 		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
 		// echo 'as21_jobs_get_display_count_plus_txt ';
 	}
@@ -1688,7 +1689,7 @@ function as21_wjm_write_file_all_groups($dcp = false){
 		// alex_debug(0,1,'',$groups);
 		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
 		// else $text = "Displayed Count Plus | \r";
-		$text .= "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
+		$text = "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
 		if($dcp) $dcps = as21_wjm_get_all_display_count_plus();
 		$i = 1;
 		// echo count($groups['groups']);
@@ -1728,9 +1729,9 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 				global $bp,$wpdb;
 				$group_id = (int)$bp->groups->current_group->id;
 				$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
-				// var_dump($jobs_total_count_gr);
+				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
 				if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group();
-				// var_dump($jobs_total_count_gr);
+				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
 				$args = array(
 					'slug' => 'a21-jobs',
 					// 'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',

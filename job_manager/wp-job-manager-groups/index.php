@@ -331,16 +331,19 @@ function as21_jm_save_posted_date($job_data, $post_title, $post_content, $status
   // if($_POST['job_group_a21']>0) { /* echo 'new job for some group,count +1'; */ as21_wjm_write_file_all_groups(true); }
 
   // alex_debug(1,1,'job_data',$job_data);
+  // deb_last_query();
   // alex_debug(1,1,'post submit_job_form_save_job_data',$_POST);
 
   // alex_debug(1,1,'post',$job_data);
   // $job_data['post_date'] = '2017-06-21 00:00:00';
-  if( !empty($_POST['job_as21_posted_date']) ){
-    $job_data['post_date'] = sanitize_text_field($_POST['job_as21_posted_date']);
-    $job_data['post_date'] = date("Y-m-d",strtotime($job_data['post_date']))." ".date("H:i:s");
-    $job_data['post_date_gmt'] = $job_data['post_date'];
+  if( !empty($_POST['job_as21_expired_date']) ){
+    // $job_data['post_date'] = sanitize_text_field($_POST['job_as21_expired_date']);
+    // $job_data['post_date'] = date("Y-m-d",strtotime($job_data['post_date']));
+    // $expire_date = date("Y-m-d",strtotime($expire_date));
+    // ." ".date("H:i:s");
     // echo 'post date='.$job_data['post_date'];
-    $_SESSION['as21_job_post_date'] = $job_data['post_date'];
+    $expire_date = sanitize_text_field($_POST['job_as21_expired_date']);
+    $_SESSION['job_as21_expired_date'] = date("Y-m-d",strtotime($expire_date));
   }
   // alex_debug(0,1,'$_SESSION',$_SESSION);
 
@@ -354,15 +357,15 @@ function as21_jm_save_posted_date($job_data, $post_title, $post_content, $status
 add_action('job_manager_job_submitted','as21_jm_update_posted_date');
 function as21_jm_update_posted_date($job_id){
 
+  // echo '<h3>----as21_jm_update_posted_date-----</h3><hr>';
+
   // global $as21_job_data, $job_preview, $post;
   // global $job_manager;
   // echo "<hr>";
   // var_dump($job_manager);
 
-
-  // echo '----function as21_123-----<hr>';
-
-  // alex_debug(1,1,'post job_manager_job_submitted',$_POST);
+  // alex_debug(1,1,'post ',$_POST);
+  // exit;
   // alex_debug(0,1,'$job_preview',$job_preview);
   // alex_debug(0,1,'$as21_job_data',$as21_job_data);
   // alex_debug(0,1,'session',$_COOKIE);
@@ -370,21 +373,28 @@ function as21_jm_update_posted_date($job_id){
   // var_dump($as21_job_data);
   // var_dump($job_id);
 
-  if( !empty($_SESSION['as21_job_post_date']) ) {
-    global $wpdb;
-    $wpdb->update(
-      $wpdb->posts,
-      array( 'post_date' => $_SESSION['as21_job_post_date'],'post_date_gmt' => $_SESSION['as21_job_post_date'] ),
-      array( 'ID' => (int)$job_id ),
-      array('%s','%s'),
-        array('%d')
-    );
-    unset($_SESSION['as21_job_post_date']);
+  if( !empty($_SESSION['job_as21_expired_date']) ) {
+      global $wpdb;
+      /*$wpdb->update(
+        $wpdb->posts,
+        array( 'post_date' => $_SESSION['job_as21_expired_date'],'post_date_gmt' => $_SESSION['job_as21_expired_date'] ),
+        array( 'ID' => (int)$job_id ),
+        array('%s','%s'),
+          array('%d')
+      );*/
+      $wpdb->update(
+        $wpdb->postmeta,
+        array( 'meta_value' => $_SESSION['job_as21_expired_date']),
+        array( 'post_id' => (int)$job_id, 'meta_key' => '_job_expires'),
+        array('%s'),
+        array('%d','%s')
+      );
+      unset($_SESSION['job_as21_expired_date']);
   }
 
   // deb_last_query();
-  // unset($_COOKIE["as21_job_post_date"]);
-  // setcookie("as21_job_post_date", '',time()-1000, COOKIEPATH, COOKIE_DOMAIN,is_ssl());
+  // unset($_COOKIE["job_as21_expired_date"]);
+  // setcookie("job_as21_expired_date", '',time()-1000, COOKIEPATH, COOKIE_DOMAIN,is_ssl());
   // alex_debug(0,1,'$_SESSION',$_SESSION);
 
    as21_wjm_write_file_all_groups(true);
@@ -398,8 +408,37 @@ function as21_jm_write_file_after_group_create(){
    as21_wjm_write_file_all_groups(true);
 }
 
-add_action('submit_job_form_end','as21_aaa');
-function as21_aaa(){
+add_action('submit_job_form_end','as21_wjm_actions_after_submit_form');
+function as21_wjm_actions_after_submit_form(){
+
      // alex_debug(1,1,'post job_manager_job_submitted',$_POST);
+     // var_dump($job_fields);
+     if( !empty($_POST['job_as21_expired_date']) ) {
+        // echo '------not empty '.$_POST['job_as21_expired_date'];
+        $expire_date = sanitize_text_field($_POST['job_as21_expired_date']);
+        $expire_date = date("Y-m-d",strtotime($expire_date));
+
+        global $wpdb;
+        $wpdb->update(
+          $wpdb->postmeta,
+          array( 'meta_value' => $expire_date),
+          array( 'post_id' => (int)$_POST['job_id'], 'meta_key' => '_job_expires'),
+          array('%s'),
+          array('%d','%s')
+        );
+    }
+
+    // echo "===Debug submit_job_form_job_fields_start=======".$job_id;
+
+    // var_dump( $job_fields['job_as21_posted_date']['value']);
+    // if( empty($job_fields['job_as21_posted_date']['value']) ) 
+
+
+    // alex_debug(1,1,'',$job_fields['job_as21_posted_date']);
+    // var_dump($job_manager);
+
+        // deb_last_query();
+
     if( $_POST['job_manager_form'] == 'edit-job' )    as21_wjm_write_file_all_groups(true);
 }
+

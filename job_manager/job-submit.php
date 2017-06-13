@@ -25,23 +25,21 @@ global $job_manager;
 	<?php if ( job_manager_user_can_post_job() || job_manager_user_can_edit_job( $job_id ) ) : ?>
 
 		<!-- Job Information Fields -->
-		<?php do_action( 'submit_job_form_job_fields_start' ); ?>
-		
-		<?php
-		// echo "===Debug submit_job_form_job_fields_start=======".$job_id;
+		<?php 
+		do_action( 'submit_job_form_job_fields_start' );
 
-		// var_dump( $job_fields['job_as21_posted_date']['value']);
-		// if( empty($job_fields['job_as21_posted_date']['value']) ) 
-		if( isset($job_fields['job_as21_posted_date']['value']) && $job_fields['job_as21_posted_date']['value'] == '' ) {
-			global $wpdb;
-			$get_post_date = $wpdb->get_var( $wpdb->prepare( "SELECT post_date FROM " . $wpdb->posts . " WHERE ID=%d", (int)$job_id) );
-			// deb_last_query();
-			$job_fields['job_as21_posted_date']['value'] = date("F d, Y",strtotime($get_post_date));		
-		}
-		// alex_debug(1,1,'',$job_fields);
-		// alex_debug(1,1,'',$job_fields['job_as21_posted_date']);
-		// var_dump($job_manager);
+		// alex_debug(1,1,'jf',$job_fields);
+
+	    if( isset($job_fields['job_as21_expired_date']['value']) && $job_fields['job_as21_expired_date']['value'] == ''  ) {
+	    	echo 'if value empty';
+	        global $wpdb;
+	        $get_post_date = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->postmeta . " WHERE post_id=%d AND meta_key=%s", (int)$job_id,'_job_expires') );
+	        // deb_last_query();
+	        $job_fields['job_as21_expired_date']['value'] = date("F d, Y",strtotime($get_post_date));    
+	    }
+	    // alex_debug(1,1,'post',$_POST);
 		?>
+		
 		<?php foreach ( $job_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
 				<label for="<?php echo esc_attr( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>

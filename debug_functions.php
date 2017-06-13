@@ -808,11 +808,54 @@ function as21_ccc(){
 }
 
 /* **** as21 count_jobs_in_group **** */
-add_action('wp_footer','as21_count111');
+// add_action('wp_footer','as21_count111');
 function as21_count111(){
-	// as21_jm_write_file_all_groups(true);
+	// as21_wjm_write_file_all_groups();
 	// as21_jobs_get_display_count_plus_by_group_id(38);
 	// as21_jm_get_all_display_count_plus();
+
+		// wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+		// wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs777' );
+
+		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs777' );
+		wp_schedule_event( time(), 'daily', 'job_manager_check_for_expired_jobs777' );
+		add_action('job_manager_check_for_expired_jobs777', 'do_this_hourly');
+		function do_this_hourly() {
+			echo "lala============";
+		}
+
+		global $wpdb;
+
+		// Change status to expired
+		$job_ids = $wpdb->get_col( $wpdb->prepare( "
+			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
+			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
+			WHERE postmeta.meta_key = '_job_expires'
+			AND postmeta.meta_value > 0
+			AND postmeta.meta_value < %s
+			AND posts.post_status = 'publish'
+			AND posts.post_type = 'job_listing'
+		", date( 'Y-m-d', current_time( 'timestamp' ) ) ) );
+
+		/* **** as21 **** */
+		echo "a777================";
+		var_dump($job_ids);
+		deb_last_query();
+		// exit;
+
+
+		if ( $job_ids ) {
+			foreach ( $job_ids as $job_id ) {
+				$job_data       = array();
+				$job_data['ID'] = $job_id;
+				$job_data['post_status'] = 'expired';
+				wp_update_post( $job_data );
+				deb_last_query();
+			}
+		}
+		// exit;
+
+
 }
 
 
