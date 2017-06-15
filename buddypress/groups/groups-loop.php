@@ -3,7 +3,7 @@
 /**
  * BuddyPress - Groups Loop
  *
- * Querystring is set via AJAX in _inc/ajax.php - bp_legacy_theme_object_filter() as21 will work on search results e.g: site.com/i-am/?s=test
+ * Querystring is set via AJAX in _inc/ajax.php - bp_legacy_theme_object_filter()
  *
  * @package BuddyPress
  * @subpackage bp-legacy
@@ -20,14 +20,7 @@
  */
 do_action( 'bp_before_groups_loop' ); ?>
 
-<?php
-$search_string = esc_html($_GET['s']);
- // if (  bp_has_groups(bp_ajax_querystring( 'groups' )."&search_terms=".$search_string."&update_admin_cache=true&per_page=50" )  ) :
-// echo 'grs_q='.$grs_query = bp_has_groups( bp_ajax_querystring( 'groups' )."&search_terms=".$search_string."&update_admin_cache=true&per_page=3" );
- // if (bp_has_groups( bp_ajax_querystring( 'groups' )."&search_terms=".$search_string."&update_admin_cache=true&per_page=3" )) :
- if (bp_has_groups( bp_ajax_querystring( 'groups' )."&search_terms=".$search_string."&per_page=50" )) :
-  ?>
-		<h5 class="text_between_memb_and_gr">Or did you mean <?php echo ucfirst(bp_get_groups_root_slug());?> such as:</h5>
+<?php if ( bp_has_groups( bp_ajax_querystring( 'groups' ) ) ) : ?>
 
 	<div id="pag-top" class="pagination" xmlns="http://www.w3.org/1999/html">
 
@@ -53,6 +46,7 @@ $search_string = esc_html($_GET['s']);
 	 * @since BuddyPress (1.1.0)
 	 */
 	do_action( 'bp_before_directory_groups_list' ); ?>
+
 	<ul id="groups-list" class="item-list">
 
 	<?php while ( bp_groups() ) : bp_the_group(); ?>
@@ -96,11 +90,12 @@ $search_string = esc_html($_GET['s']);
 
 				</div>
 				<div class="meta">
-					<?php bp_group_type(); ?> / <?php bp_group_member_count(); ?>
+					<?php bp_group_type(); ?> / <?php bp_group_member_count(); ?> 
 				</div>
-				<div class="meta">
+		    	<div class="meta">
 					Volunteer Jobs: <?php echo as21_wjm_get_manually_jobs_count_by_group_id( bp_get_group_id() );?>
 				</div>
+
 			</div>
 
 

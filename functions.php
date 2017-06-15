@@ -1684,7 +1684,7 @@ function as21_wjm_write_file_all_groups($dcp = false){
 	$filename = AS21_PATH_JOBS_COUNT_TXT;
 	if( file_exists($filename)) {
 
-		/* *** get all groups and write in file **** */
+		/* *** get all public (not hidden) groups and write in file **** */
 		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
 		// alex_debug(0,1,'',$groups);
 		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
@@ -1720,22 +1720,34 @@ function as21_get_jobs_count_current_group($group_id = false){
 	return $jobs_count_gr;
 }
 
+// work on page site.com/i-am/?s=ottawa and page site.com/causes/
+function as21_wjm_get_manually_jobs_count_by_group_id($group_id = false){
+	global $bp,$wpdb;
+	$group_id = (!$group_id) ? (int)$bp->groups->current_group->id : $group_id;
+	$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
+	// if($_GET['dev']==1) { var_dump($jobs_total_count_gr); echo "gr_id= ".$group_id."; "; }
+	if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group($group_id);
+	// echo bp_get_group_id();
+	return $jobs_total_count_gr;
+}
+
 
 if ( class_exists( 'BP_Group_Extension' ) ) :
 	class a21_job_nav_tab_in_group extends BP_Group_Extension {
 	
 			function __construct() {
-				
+				/*
 				global $bp,$wpdb;
 				$group_id = (int)$bp->groups->current_group->id;
 				$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
 				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
 				if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group();
 				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
+				*/
 				$args = array(
 					'slug' => 'a21-jobs',
 					// 'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',
-					'name' => 'Jobs <span>'.$jobs_total_count_gr.'</span>',
+					'name' => 'Jobs <span>'.as21_wjm_get_manually_jobs_count_by_group_id().'</span>',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );

@@ -952,3 +952,7 @@ function as21_jm_wrire_file_calc_total_count_each_group(){
 
 */
 
+// add_action('wp_footer','as21_temp_1');
+function as21_temp_1(){
+	as21_wjm_write_file_all_groups();
+}
