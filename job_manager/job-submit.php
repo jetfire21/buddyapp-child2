@@ -31,7 +31,7 @@ global $job_manager;
 		// alex_debug(1,1,'jf',$job_fields);
 
 	    if( isset($job_fields['job_as21_expired_date']['value']) && $job_fields['job_as21_expired_date']['value'] == ''  ) {
-	    	echo 'if value empty';
+	    	// echo 'if value empty';
 	        global $wpdb;
 	        $get_post_date = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->postmeta . " WHERE post_id=%d AND meta_key=%s", (int)$job_id,'_job_expires') );
 	        // deb_last_query();

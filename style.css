@@ -621,7 +621,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 @media only screen and (min-width: 768px){
   .register .alex-simple-form .kleo-login-wrap {
     width:50%;
- }
+  }
 }
 
 /* *****for login form on register page******* */
@@ -653,6 +653,10 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 /* **** modal popup for to show description security verified field ****** */
 .text_between_memb_and_gr{margin-bottom: 5px;}
 #header-cover-image{ background-size: cover !important; }
+
+.header-icons>li .icon-buddyapp-groups+span,
+.header-icons>li .icon-assignment+span,
+.header-icons>li .icon-buddyapp-members+span{opacity: 1 !important;}
 
 
 /* ******* PAGE VOLUNTEER********* */

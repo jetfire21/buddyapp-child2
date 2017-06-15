@@ -57,9 +57,6 @@ if($verify_user[0] == 'YES' && is_user_logged_in() ){
 	}
 }
 
-$total_estimate_hours = xprofile_get_field(57, $user_id);
-// alex_debug(0,1,'',$total_estimate_hours);
-$experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
 
 // echo "<h1>test</h1>";
 // $t1 = xprofile_get_field(44, $user_id);
@@ -339,7 +336,6 @@ endif;
 
 		$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
 		// $total_hours_every_t = $wpdb->get_col($wpdb->prepare("SELECT comment_count FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",$quest_id,"alex_timeline"));
-		$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",$quest_id,"alex_timeline"));
 		// alex_debug(0,1,'ddd',$total_hours_every_t);
 		// deb_last_query();
 
@@ -480,7 +476,8 @@ do_action( 'bp_after_profile_loop_content' ); ?>
  <!-- 4:05 -->
 <?php //echo "TOTAL HOURS (experience_total_hours+total_hours_every_entry)=".$experience_total_hours.'+'.$total_hours_every_entry;?>
 <script type="text/javascript">
-  var total_hours = '<?php echo $experience_total_hours+$total_hours_every_entry;?>';
+  // var total_hours = '<?php echo $experience_total_hours+$total_hours_every_entry;?>';
+  var total_hours = '<?php echo as21_get_total_volunteer_hours_count_member();?>';
  jQuery(document).ready(function(){   
     jQuery('.popup-modal').magnificPopup({
         type: 'inline',

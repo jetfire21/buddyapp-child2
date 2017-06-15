@@ -1812,6 +1812,7 @@ if(class_exists('BP_Member_Reviews')){
         $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
 		?>
 		<div class="bp-users-reviews-stars">
+			<a href="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>reviews/">
 		    <span   content="<?php echo $rating['result']; ?>"></span>
 		    <span  content="100"></span>
 		    <span content="<?php echo $rating['count']; ?>"></span>
@@ -1826,6 +1827,7 @@ if(class_exists('BP_Member_Reviews')){
 		    <div class="active" style="width:<?php echo $rating['result']; ?>%">
 		        <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
 		    </div>
+		    </a>
 		</div>
 
 		<?
@@ -1939,5 +1941,21 @@ if( strtolower( $atts['title']) != 'jobs') {
   }
   return $atts;
 }
+
+function as21_get_total_volunteer_hours_count_member($user_id = false){
+	global $bp,$wpdb;
+	$quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
+	$total_estimate_hours = xprofile_get_field(57, $quest_id);
+	// alex_debug(0,1,'',$total_estimate_hours);
+	$experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
+	$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",(int)$quest_id,"alex_timeline"));
+	return $total_hours = $experience_total_hours+$total_hours_every_entry;
+}
+
+add_action('bp_directory_members_actions','as21_aaa');
+function as21_aaa(){
+	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
+}
+
 
 require_once 'debug_functions.php';
