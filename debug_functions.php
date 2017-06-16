@@ -954,5 +954,15 @@ function as21_jm_wrire_file_calc_total_count_each_group(){
 
 // add_action('wp_footer','as21_temp_1');
 function as21_temp_1(){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	$text = 'testing write any text; ';
 	as21_wjm_write_file_all_groups();
+	// as21_wjm_write_file_jobs_count($filename,$text);
+	if($_GET['dev']==1){
+		echo "============as21_wjm_write_file_jobs_count | ";
+		alex_debug(0,1,'',stat($filename));
+		echo substr(sprintf('%o', fileperms($filename)), -4); echo "<br>";
+		// on hostings permissions increase e.g 666->777
+		var_dump( chmod($filename, 0777) );
+	}
 }

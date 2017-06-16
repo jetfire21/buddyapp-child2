@@ -1625,7 +1625,10 @@ function as21_output_space($length_start = 4, $real_str){
 	}
 }
 
+// permissin should be is least 666 for write
 function as21_wjm_write_file_jobs_count($filename,$text){
+
+	chmod($filename, 0777);
 	$fp = fopen($filename, "w"); 
 	$write = fwrite($fp, $text); 
 	// var_dump($write);
@@ -1637,10 +1640,15 @@ function as21_wjm_get_display_count_plus_by_group_id($group_id){
 	$filename = AS21_PATH_JOBS_COUNT_TXT;
 	if( file_exists($filename)) {
 
+		// on hosting immediately convert valid array
 		$file = file($filename); 
-		$file = explode("\r", $file[0]);
-		// $dipsplay_count_plus = explode("|", $file[0]);
-		// if($_GET['dev']==1) alex_debug(0,1,'file',$file);
+		// if($_GET['dev']==1) { alex_debug(0,1,'file',$file);}
+		
+		 /* //need for correctly work on localhost
+		 $file = explode("\r", $file[0]); */
+		 if( !isset($file[1]) ) $file = explode("\r", $file[0]);
+
+		// if($_GET['dev']==1) { alex_debug(0,1,'file2',$file);}
 		foreach ($file as $k => $v) {
 			if($k == 0) continue;
 			$line = explode("|", $v); 
@@ -1649,7 +1657,7 @@ function as21_wjm_get_display_count_plus_by_group_id($group_id){
 			// if($_GET['dev']==1)  alex_debug(0,1,'',$line);
 			if($f_group_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
 		}
-		// if($_GET['dev']==1) echo "a77--------".$dcp;
+		// if($_GET['dev']==1) { alex_debug(0,1,'file3',$file); echo "; dcp--------".$dcp; }
 		return $dcp;
 		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
 		// echo 'as21_jobs_get_display_count_plus_txt ';
@@ -1661,17 +1669,23 @@ function as21_wjm_get_all_display_count_plus(){
 	$filename = AS21_PATH_JOBS_COUNT_TXT;
 	if( file_exists($filename)) {
 
+		// [0] - one string,sometime valid array
+		// $file = file($filename,FILE_IGNORE_NEW_LINES); 
 		$file = file($filename); 
-		$file = explode("\r", $file[0]);
+		// if file[0] as string
+		if( !isset($file[1]) ) $file = explode("\r", $file[0]);
+
 		// $dipsplay_count_plus = explode("|", $file[0]);
 		// alex_debug(0,1,'file',$file);
+		// if($_GET['dev']==1) { alex_debug(0,1,'file2',$file);}
+
 		foreach ($file as $k => $v) {
 			if($k == 0) continue;
 			$line = explode("|", $v); 
 			$dcps[trim($line[0])] = $line[3];
 			// alex_debug(0,1,'',$line);
 		}
-		// alex_debug(0,1,'',$dcps);
+		// if($_GET['dev']==1) { alex_debug(0,1,'dcps',$dcps); exit;}
 		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
 		// echo 'as21_jobs_get_display_count_plus_txt ';
 		return $dcps;
@@ -1703,6 +1717,7 @@ function as21_wjm_write_file_all_groups($dcp = false){
 			if( count($groups['groups']) != $i) $text .=  "\r";
 			$i++;
 		}
+		// if($_GET['dev']==1) { alex_debug(0,1,'dcps',$dcps); echo $text; exit('---------alfjlkdf----'); }
 		as21_wjm_write_file_jobs_count($filename,$text);
 		// echo "\r\n DEBUG: end work as21_wjm_write_file_all_groups! ".$text;
 	}

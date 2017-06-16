@@ -439,6 +439,10 @@ function as21_wjm_actions_after_submit_form(){
 
         // deb_last_query();
 
-    if( $_POST['job_manager_form'] == 'edit-job' )    as21_wjm_write_file_all_groups(true);
+    if( $_POST['job_manager_form'] == 'edit-job' )   {
+       as21_wjm_write_file_all_groups(true); 
+        // if($_GET['dev']==1)   {echo 'this is temprory for debug!'; exit; } 
+   }
+   
 }
 
