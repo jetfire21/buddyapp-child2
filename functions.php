@@ -1475,7 +1475,13 @@ add_action("bp_before_member_header",'get_cover_image_from_fbuser');
 function get_cover_image_from_fbuser(){
 
 	// $cover_url = get_cover_image_from_db();
-	$cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
+	global $bp;
+	$user_id = $bp->displayed_user->id;
+	// kleo_bp_get_member_cover_attr($user_id); echo 'as21_777 ------------'; var_dump($cover_image);
+	if(kleo_bp_get_member_cover_attr($user_id) == 'class="item-cover"') $cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
+	// else echo kleo_bp_get_member_cover_attr();
+
+	// $cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
 	// var_dump($cover_url);
 	if( !empty($cover_url) && $cover_url != 'class="item-cover"' ){
 	?>

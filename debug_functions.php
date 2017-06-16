@@ -246,6 +246,23 @@ function wp_get_name_page_template(){
 	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
 	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
 	alex_debug(1,1,0,$_SERVER);
+	alex_debug(1,1,0,$template);
+	echo get_current_template( true ); 
+
+	$included_files = get_included_files();
+// $stylesheet_dir = str_replace( '\\', '/', get_stylesheet_directory() );
+// $template_dir   = str_replace( '\\', '/', get_template_directory() );
+
+// foreach ( $included_files as $key => $path ) {
+
+//     $path   = str_replace( '\\', '/', $path );
+
+//     if ( false === strpos( $path, $stylesheet_dir ) && false === strpos( $path, $template_dir ) )
+//         unset( $included_files[$key] );
+// }
+
+var_dump( $included_files );
+echo 'dddd';
 exit;
 	// global $wpdb;
 	// $table = $wpdb->prefix."bp_groups";
@@ -264,7 +281,6 @@ exit;
 
 
 }
-
 
 
 
@@ -505,7 +521,7 @@ function as21_get_info_group_calendar(){
 	}
 }
 
-// add_action("wp_footer","as21_out_data_if_fb_login");
+add_action("wp_footer","as21_out_data_if_fb_login");
 
 function as21_out_data_if_fb_login(){
 	// get all facebook user
