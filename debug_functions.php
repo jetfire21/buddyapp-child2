@@ -521,7 +521,7 @@ function as21_get_info_group_calendar(){
 	}
 }
 
-add_action("wp_footer","as21_out_data_if_fb_login");
+// add_action("wp_footer","as21_out_data_if_fb_login");
 
 function as21_out_data_if_fb_login(){
 	// get all facebook user

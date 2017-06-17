@@ -36,9 +36,11 @@ add_action( 'job_manager_field_actionhook_job_group_a21', 'a21_get_groups_post_j
 
 // hook place - /plugins/wp-job-manager/templates/content-single-job_listing.php
 // add_action("single_job_listing_start","a21_get_job_data_group");
-add_action("single_job_listing_meta_end","a21_details_get_job_data_group_");
+add_action("single_job_listing_meta_end","a21_details_get_job_data_group");
 
-function a21_details_get_job_data_group_(){
+/*
+// output link on group in job details
+function a21_details_get_job_data_group(){
 
     // echo "JMFE a21_get_job_data_group ";
     $gr_id =  (int)get_job_field("job_group_a21");
@@ -54,6 +56,7 @@ function a21_details_get_job_data_group_(){
       echo $html;
   }
 }
+*/
 
 function a21_wpjm_hide_dismiss( $current_screen ) {
   

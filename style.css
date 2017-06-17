@@ -710,6 +710,15 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 #submit-job-form{padding-top:30px;}
 .job_filters input[type="submit"]{border-radius: 4px;}
 .job-manager-error, .job-manager-info, .job-manager-message { margin:30px 0 0 0 !important; }
+.as21-company-custom-field { padding: 0 !important; }
+.as21-company-custom-field li{display: inline;}
+.as21-company-custom-field .group-logo-left-text{margin-right: 15px !important;}
+.as21-company-custom-field .group-logo img, .as21-company-custom-field #alex_groups_user{float:none !important; position: static;}
+.as21-company-custom-field .group-logo img { width: auto !important; }
+/*.as21-company-custom-field .group-logo img{ position: static;}*/
+.company .main-logo {float: left;}
+.company .as21-block-empty { display: block; }
+
 
 /* fixing styles for date-picker Posted date field */
 #ui-datepicker-div{ z-index: 9999; }
