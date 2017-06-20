@@ -50,6 +50,8 @@ if ( sq_option( 'menu_dropdown', 'hover', true ) == 'hover' )  {
                     </li>
                     <li id="menu-item-9956" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9956 current_page_item">
                     <a data-title="Causes" class="as21-link-label" href="http://<?php echo $_SERVER['HTTP_HOST'];?>/<?php echo $bp->groups->root_slug;?>/"><i class="icon-buddyapp-groups" ></i> <span>Causes</span></a></li>
+                    <li id="menu-item-10625" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10625 current_page_item">
+                    <a data-title="Jobs" class="as21-link-label" href="http://<?php echo $_SERVER['HTTP_HOST'];?>/jobs/"><i class="icon-assignment" ></i> <span>Jobs</span></a></li>
                 </ul>
 
             </div>

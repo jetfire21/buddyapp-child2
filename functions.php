@@ -1328,7 +1328,7 @@ function alex_kleo_bp_group_title() {
 <?php
 }
 
-/* for work with bp group revies on header group */
+/* for work with bp group revies on header group -110 */
 
 
 add_action('wp_footer',"group_pages_scroll_to_anchor",999);
@@ -1340,7 +1340,7 @@ function group_pages_scroll_to_anchor(){
 		?>
 		<script type="text/javascript">
 	    jQuery(document).ready(function() {
-	    	var scroll = (jQuery('#item-nav').offset().top)-110;
+	    	var scroll = (jQuery('#item-nav').offset().top)-410;
 	    	// jQuery(document.body).scrollTop(scroll);
 		    	jQuery(document.body).scrollTop(scroll);
 	    	  	// window.scrollTo(0,1000);
@@ -1988,7 +1988,7 @@ function as21_get_total_volunteer_hours_count_member($user_id = false){
 
 add_action('bp_directory_members_actions','as21_aaa');
 function as21_aaa(){
-	echo '<div class="meta">'.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).' Hours</div>';
+	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
 }
 
 
