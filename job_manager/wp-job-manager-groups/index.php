@@ -234,7 +234,17 @@ function as21_jm_get_current_group($result){
 
   // var_dump($_GET['id']);
    // echo "===debug a21=== url script: job_manager_get_listings_result===";
-   //  alex_debug(0,1,"",$result);
+  // alex_debug(0,1,'get',$_GET);
+  //   if((bool)$_GET['dev'] == true) { 
+  /*
+      foreach ($result as $k => $v) {
+        $text .= $k." - ".$v."\r";
+      }
+      as21_wjm_write_file_jobs_count($_SERVER['DOCUMENT_ROOT'].'/jobs_error.txt',$text);
+  */
+      // alex_debug(0,1,"result",$result);    alex_debug(0,1,"POST",$_POST); exit;
+   // }
+
 /*
    if( $jobs->query['meta_key'] == "_job_group_a21" && !$result['found_jobs']) {
          // $result['html'] = $result['html'].$result['showing_links'];

@@ -982,3 +982,21 @@ function as21_temp_1(){
 		var_dump( chmod($filename, 0777) );
 	}
 }
+
+add_action('wp_footer','as21_display_width_window');
+function as21_display_width_window(){
+	if((bool)$_GET['dev'] == true){
+	?>
+	<script type="text/javascript">
+	    var w = window.innerWidth;
+	    var html = "Width window: "+w+"px"
+	    console.log(html);
+	    var node = document.createTextNode(html);
+	    // var para = document.createElement("p");
+		// para.appendChild(node);
+		var element = document.getElementById("main-container");
+		element.appendChild(node);
+	</script>
+	<?php
+	}
+}

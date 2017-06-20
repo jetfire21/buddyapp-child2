@@ -726,7 +726,8 @@ if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tag
 
 // /themes/buddyapp-child/job_manager/wp-job-manager-map/class-wp-job-manager.php
 // if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
-if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
+if($_GET['dev'] != 1) if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
+
 
 
 add_action("wp_footer", "alex_custom_scripts",100);
@@ -1987,7 +1988,7 @@ function as21_get_total_volunteer_hours_count_member($user_id = false){
 
 add_action('bp_directory_members_actions','as21_aaa');
 function as21_aaa(){
-	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
+	echo '<div class="meta">'.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).' Hours</div>';
 }
 
 
