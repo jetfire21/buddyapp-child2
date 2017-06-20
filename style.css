@@ -552,9 +552,10 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 #buddypress .profile table tr { background: #ccc;}
 #buddypress .profile table td p { font-size: 20px !important; text-align: center;}
 /*#buddypress .profile table.field-avail{border: 3px solid #ccc; width:80%;}*/
-.wrap_field-avail{ position: relative; display: table; width: 77%;}
+.wrap_field-avail{ position: relative; display: table; /*width: 77%;*/ width: 72%; float: right;}
+.bp-widget .inner-basic-info { float:right; }
 #buddypress .profile table.field-avail{border:0 !important; background: transparent;  }
-.profile #circle-dount-chart{ width: 22%; height: 120px; float: left; margin-top:-15px;}
+.profile #circle-dount-chart{ /*width: 22%; */ width: 100px; height: 120px; float: left; margin-top:-15px;}
 #buddypress .profile table.field-avail a{color: #656565 !important; font-size: 15px !important;}
 #buddypress .profile table.field-avail td.data{border: 3px solid #ccc; background: #fff; padding: 0; vertical-align: top;}
 #buddypress .profile table.field-avail td.data p{ line-height: 1; padding-top: 10px;}
@@ -579,7 +580,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 #buddypress .profile table.mission tr td, #buddypress .profile table.mission{ border:none; }
 /*#buddypress .profile .bp-widget.info, #buddypress .profile .bp-widget.details{ width:50%; }*/
 #buddypress  .profile .bp-widget.details{ width:40%; }
-#buddypress .profile .bp-widget.info{ float:right; width: 60%;}
+#buddypress .profile .bp-widget.info{ float:right; width: 60%; width: 50%;}
 #buddypress .profile .bp-widget.details *{padding: 0; margin:0; color: #000;}
 #buddypress .profile .bp-widget.details a,#buddypress .profile .bp-widget.details p{font-size: 18px; line-height: 1.4;}
 #buddypress .profile .bp-widget.details h2 a{ 
@@ -720,6 +721,7 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .company .as21-block-empty { display: block; }
 .chosen-container-active.chosen-with-drop .chosen-single, .job_filters .search_categories{ background: #fff; }
 
+button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 
 /* fixing styles for date-picker Posted date field */
 #ui-datepicker-div{ z-index: 9999; }
@@ -743,8 +745,9 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 @media only screen and (max-width: 1300px){
     #buddypress .profile .bp-widget.basic.info {clear: both; float: none; width: 100%;}
      #buddypress .profile .bp-widget.details{width: 100%;}
-     #buddypress .profile .wrap_field-avail { /*width: 267px;*/ width: 290px; }
+     #buddypress .profile .wrap_field-avail { /*width: 267px;*/ /*width: 290px;*/ width: 276px;}
      .profile #circle-dount-chart{ width: 120px; }
+     .bp-widget .inner-basic-info,.wrap_field-avail { float:none; }
 }
 
 @media only screen and (max-width: 460px){

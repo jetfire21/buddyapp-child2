@@ -37,13 +37,15 @@ $user_id = $bp->displayed_user->id;
 $verify_user = xprofile_get_field_data('Active security check', $user_id);
 $text_field_empty = "<p>user has not yet added fields to profile</p>";
 
+// var_dump($verify_user);
 // xprofile_get_field_data('Experience', $user_id);
 $experience = xprofile_get_field(56, $user_id);
 // alex_debug(0,1,'',$experience);
 // if( !empty($experience) ) echo $experience->data->value;
 
 
-if($verify_user[0] == 'YES' && is_user_logged_in() ){
+// if($verify_user[0] == 'YES' && is_user_logged_in() ){
+if($verify_user == 'YES' && is_user_logged_in() ){
 
 	$sec_verify_desc = xprofile_get_field_data('Description', $user_id);
 	if( empty($sec_verify_desc) ){
@@ -189,6 +191,7 @@ endif;
 							</div>
 							<?php elseif($prof_name == "basic info"):?>
 								<?php if($bi < 1):?>
+									<div class="inner-basic-info">
 									<div id="circle-dount-chart"></div>
 									<div class="wrap_field-avail">
 									<table class=" field-avail">
@@ -216,7 +219,7 @@ endif;
 									<td class="verify">
 									<?php
 
-									if($verify_user[0] == 'YES') {
+									if($verify_user == 'YES') {
 										if(is_user_logged_in() ) {
 											$popup_s = "<a href='#security_desc' class='popup-modal'>";
 											$popup_e = "</a>";
@@ -233,6 +236,7 @@ endif;
 									</table>
 									<!-- <span>Security Check Verified</span> -->
 									<span class="sec_mouseover"><?php echo $sec_mouseover;?></span>
+									</div>
 									</div>
 									<script type="text/javascript">
 									jQuery(document).ready(function() { 
