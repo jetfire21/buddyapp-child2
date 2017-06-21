@@ -347,10 +347,10 @@
 	// $(".profile").on("click","#a21_experience_add_new_row",function(){
 	$("#a21_experience_add_new_row").on("click",function(){
 
-		console.log("click experience add row");
+		// console.log("click experience add row");
 		var rows = $("#as21_experience_volunteer .a21_dinam_row").length;
 		// rows = rows.length+1;
-		console.log("------count rows-----"+rows);
+		// console.log("------count rows-----"+rows);
 
 		var html ='<tr class="a21_dinam_row">\
 						<td><input type="text" name="as21_new_experiences['+rows+'][title]" placeholder="Eg. This is an example item to add"></td>\
@@ -371,7 +371,7 @@
 		$(this).closest('tr').remove();
 		if(id == '') return false;
 
-		var confirmation = confirm("Are sure delete?");
+		var confirmation = confirm("Are you sure want to delete it?");
 		console.log(confirmation);
 
 		if( confirmation === true){
@@ -386,8 +386,8 @@
 				data:data, 
 				type:'POST', 
 				success:function(data){
-					console.log("----from WP AJAX data---");
-					console.log(data);
+					// console.log("----from WP AJAX data---");
+					// console.log(data);
 					if( data ) { 
 					} else { console.log("data send with errors!");}
 				}
