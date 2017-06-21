@@ -723,6 +723,16 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 
 button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 
+#a21_experience_add_new_row{ display: table; cursor: pointer; margin-bottom: 20px; }
+.profile #as21_experience_volunteer{margin-bottom: 10px;}
+#buddypress .profile #as21_experience_volunteer tr {background: #fff !important;}
+#buddypress #as21_experience_volunteer input[type="text"]{ width: 100%;  margin-bottom: 0;  border: 0; }
+#as21_experience_volunteer th:nth-child(2){width: 60px;}
+#as21_experience_volunteer th:nth-child(3){width: 30px;}
+#as21_experience_volunteer tr td:nth-child(3){font-size: 20px;}
+#as21_list_experiences {list-style: disc !important; margin-left: 20px !important;}
+
+
 /* fixing styles for date-picker Posted date field */
 #ui-datepicker-div{ z-index: 9999; }
 #ui-datepicker-div table:not(#wp-calendar) tr td{ padding: 0; }

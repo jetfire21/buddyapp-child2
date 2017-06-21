@@ -266,11 +266,11 @@ endif;
 									 <?php
 									  if( strtolower(bp_get_the_profile_field_name()) == "experience"){ 
 									  	// with text formatting
-									 	if( !empty($experience) ) echo stripslashes( wpautop($experience->data->value ));
+									 	// if( !empty($experience) ) echo stripslashes( wpautop($experience->data->value ));
 									 	// bp_the_profile_field_value();
 									 }
 									  else { bp_the_profile_field_value(); }
-									   ?>								 	
+									   ?>									   							 	
 								 </div>			
 							<?php else:?>
 								<div class="data"><?php bp_the_profile_field_value(); ?></div>
@@ -313,8 +313,20 @@ endif;
 		$has_experience = xprofile_get_field_data('Experience', $user_id);
 
 		if($has_interests == "")  echo '<div class="bp-widget"><span class="field-name">Interests'.$edit_link_exp.'</span>'.$text_field_empty.'</div>';
-		if($has_experience == "")  echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
-			
+		// if($has_experience == "")  echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
+		// echo "development mode exper";
+		 $all_exper = as21_get_all_experience_from_page_edit_profile();
+		 if( !empty($all_exper) ){
+			 $html = '<ul id="as21_list_experiences">';
+			 foreach ($all_exper as $exper) {
+			 	$html .= '<li>'.$exper->post_title.'</li>';
+			 }
+			 $html .= '</ul>';
+			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$html."</div>";
+		}else{
+			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
+		}
+
 	    if( !empty( groups_user()) ) echo groups_user($edit_link);
 
 		global $wpdb;

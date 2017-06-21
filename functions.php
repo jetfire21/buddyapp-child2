@@ -705,7 +705,7 @@ function a21_get_wpjm_for_page_preview(){
 
 add_action('wp_enqueue_scripts','as21_include_custom_js_css');
 function as21_include_custom_js_css(){
-	if( bp_is_user_profile() ){
+	if( bp_is_user_profile() && strpos($_SERVER['REQUEST_URI'],'edit') === false  ){
 		 wp_enqueue_script('circle-donut-chart',get_stylesheet_directory_uri().'/libs/circle-dount-chart/circleDonutChart.js',array('jquery'),'',true);
 		 wp_enqueue_script('common-profile',get_stylesheet_directory_uri().'/js/common-profile.js',array('circle-donut-chart'),'',true);
 	}
@@ -1979,17 +1979,100 @@ if( strtolower( $atts['title']) != 'jobs') {
 function as21_get_total_volunteer_hours_count_member($user_id = false){
 	global $bp,$wpdb;
 	$quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
-	$total_estimate_hours = xprofile_get_field(57, $quest_id);
+	// $total_estimate_hours = xprofile_get_field(57, $quest_id);
 	// alex_debug(0,1,'',$total_estimate_hours);
-	$experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
+	// $experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
+	$experience_total_hours = $wpdb->get_var($wpdb->prepare("SELECT SUM(menu_order) FROM {$wpdb->posts} WHERE post_author = %d  AND post_type = %s ",(int)$quest_id,"experience_volunteer"));
+	// var_dump($experience_total_hours);exit;
+	$experience_total_hours = (!empty($experience_total_hours)) ? $experience_total_hours : 0 ;
 	$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",(int)$quest_id,"alex_timeline"));
 	return $total_hours = $experience_total_hours+$total_hours_every_entry;
 }
 
-add_action('bp_directory_members_actions','as21_aaa');
-function as21_aaa(){
+add_action('bp_directory_members_actions','as21_get_total_hours_for_member_cards');
+function as21_get_total_hours_for_member_cards(){
 	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
 }
 
+// Profile Fields tab 4.Experience : total estimate hours and Experience deleted form dashboard
+add_action( 'xprofile_profile_field_data_updated','a21_profile_edit_save_changes_experience');
+function a21_profile_edit_save_changes_experience(){
+	// alex_debug(1,1,'post',$_POST);
+	global $bp,$wpdb;
+	$user_id = $bp->displayed_user->id;
+
+	if( !empty($_POST['as21_new_experiences']) ){
+
+		foreach ($_POST['as21_new_experiences'] as $k => $v) {
+			if( !empty( $v['title']) ) $val .= $wpdb->prepare("(%d,%s,%s,%d),",(int)$user_id, sanitize_text_field($v['title']), 'experience_volunteer', (int)$v['hours']);
+		}
+		$val = substr($val, 0,-1);
+		$insert_query = "INSERT INTO $wpdb->posts (post_author, post_title, post_type, menu_order) VALUES {$val}";
+		// echo $insert_query;
+		$wpdb->query($insert_query);
+
+		// deb_last_query();
+	}
+	unset($_POST['as21_new_experiences']);
+
+	if( !empty( $_POST['as21_experiences']) ){
+
+		foreach ($_POST['as21_experiences'] as $k => $v) {
+			$exper_id = (int)$v['exper_id'];
+			if($exper_id>0){
+				$menu_order .= $wpdb->prepare("WHEN %d THEN %s ",$exper_id, (int)$v['hours']);
+				$post_title .= $wpdb->prepare("WHEN %d THEN %s ",$exper_id, sanitize_text_field($v['title']));
+				$post_id .= $exper_id.",";
+			}
+		}
+		// echo "as21_exper =========".$post_author;
+		// exit;
+		if( !empty($post_id) ){
+			$post_id = substr($post_id, 0,-1);
+			// echo $post_title;
+			$update_query = "UPDATE $wpdb->posts SET
+					    post_title = CASE id {$post_title} END,
+					    menu_order = CASE id {$menu_order} END WHERE id IN({$post_id})";
+			// echo $update_query."<hr>";
+		   $wpdb->query($update_query);
+		   // deb_last_query();
+		}
+	}
+	 // exit;
+}
+// post_title | menu_order	| 	post_author | post_tye
+// name_exper |exper_hours |user_id        | experience_volunteer
+// при выводе удалить слэш
+
+add_action('wp_ajax_as21_experience_del', 'as21_experience_del');
+
+function as21_experience_del(){
+	$id = (!empty($_POST['id'])) ? (int)$_POST['id'] : false;
+	echo $id;
+	if($id>0){
+		global $wpdb;
+		$wpdb->delete( $wpdb->posts, array( 'ID' => $id ), array( '%d' ) ); 
+		// deb_last_query();
+	}
+	exit;
+}
+
+function as21_get_all_experience_from_page_edit_profile(){
+	global $bp,$wpdb;
+	$quest_id = $bp->displayed_user->id;
+
+	$fields = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID,post_title,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_author = %d
+		    AND post_type = %s
+		ORDER BY ID",
+		intval( $quest_id ),
+		'experience_volunteer'
+	) );
+	// alex_debug(1,1,'',$fields);
+	// alex_debug(0,1,'post',$_POST);
+	return $fields;
+}
 
 require_once 'debug_functions.php';

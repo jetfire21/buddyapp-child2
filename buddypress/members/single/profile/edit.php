@@ -33,9 +33,34 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 
 		<div class="clear"></div>
 
+		<?php
+		if( strpos( strtolower(bp_get_the_profile_group_name()), "experience") !== false ): ?>
+		<table id="as21_experience_volunteer">
+			<tr><th>Details of experience</th><th class="exper_hours">Hours</th><th></th></tr>
+ 			<?php $all_exper = as21_get_all_experience_from_page_edit_profile();?>
+			<?php if(!empty($all_exper) ):?>
+				<?php $i=0; foreach ($all_exper as $exper): ?>
+	 			<tr class="a21_dinam_row">
+					<td><input type="text" name="as21_experiences[<?php echo $i;?>][title]" value="<?php echo stripslashes($exper->post_title);?>"></td>
+					<td><input type="text" name="as21_experiences[<?php echo $i;?>][hours]" value="<?php echo $exper->menu_order;?>"></td>
+					<td><a href="#" data-id="<?php echo $exper->ID;?>" class="experience_del">x</a></td>
+					<input type="hidden" name="as21_experiences[<?php echo $i;?>][exper_id]" value="<?php echo $exper->ID;?>">
+				</tr>
+				<?php $i++;endforeach;?>
+			<?php else:?>
+				<tr class="a21_dinam_row">\
+					<td><input type="text" name="as21_new_experiences[0][title]" placeholder="Eg. This is an example item to add"></td>
+					<td><input type="text" name="as21_new_experiences[0][hours]">
+					<td><a href="#" data-id="" class="experience_del">x</a></td>
+				</tr>'
+			<?php endif;?>
+		</table>
+		<div id="a21_experience_add_new_row">+ Add New Row</div>
+		<?php endif;?>
+
+
 		<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
-			<?php
-			?>
+
 			<?php if( preg_match("#timeline#i", bp_get_the_profile_group_slug()) ) 
 			{
 

@@ -343,5 +343,58 @@
 		$(this).closest("tr").removeClass().addClass(color);
 	});
 
+
+	// $(".profile").on("click","#a21_experience_add_new_row",function(){
+	$("#a21_experience_add_new_row").on("click",function(){
+
+		console.log("click experience add row");
+		var rows = $("#as21_experience_volunteer .a21_dinam_row").length;
+		// rows = rows.length+1;
+		console.log("------count rows-----"+rows);
+
+		var html ='<tr class="a21_dinam_row">\
+						<td><input type="text" name="as21_new_experiences['+rows+'][title]" placeholder="Eg. This is an example item to add"></td>\
+						<td><input type="text" name="as21_new_experiences['+rows+'][hours]">\
+						<td><a href="#" data-id="" class="experience_del">x</a></td>\
+					</tr>';
+
+		// console.log("html"+html);
+		$("#as21_experience_volunteer").append(html);
+
+	});
+
+	$("#as21_experience_volunteer").on("click",".experience_del",function(){
+		console.log("del experience")
+
+		var id = $(this).data("id");
+		console.log( "id= "+id );
+		$(this).closest('tr').remove();
+		if(id == '') return false;
+
+		var confirmation = confirm("Are sure delete?");
+		console.log(confirmation);
+
+		if( confirmation === true){
+
+			var data = {
+				'action': 'as21_experience_del',
+				'id':id
+			};
+
+			$.ajax({
+				url:KLEO.ajaxurl,
+				data:data, 
+				type:'POST', 
+				success:function(data){
+					console.log("----from WP AJAX data---");
+					console.log(data);
+					if( data ) { 
+					} else { console.log("data send with errors!");}
+				}
+
+			 });
+		}
+	});
+
   });
 })(jQuery);
