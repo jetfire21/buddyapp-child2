@@ -129,11 +129,15 @@ $("#a21_load_part_timeline_data").on("click",function(e){
 		success:function(data){
 			console.log("\r\n################# data from WP AJAX ######\r\n\r\n");
 			// console.log("data="+data);
-			console.log('type data='+typeof data);
+			// console.log('type data='+typeof data);
 			data = JSON.parse(data); 
+			// console.log("data="+data.html);
+			// console.log("manage_timeliner="+data.manage_timeliner);
 
-			if( data ) {
-				timeliner1.add(data).render();
+
+			if( data.html ) {
+				timeliner1.add(data.html).render();
+				 if(data.manage_timeliner === true) $("#timeliner .btn-primary, #timeliner .btn-danger").remove();$("#timeliner .alex_btn_add_new").hide();
 	 			offset += 5;
 				console.log("after ajax offset=" + offset);
 				offset = self.data("offset",offset);

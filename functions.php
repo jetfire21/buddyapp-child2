@@ -766,6 +766,7 @@ function alex_custom_scripts()
 	<script type="text/javascript">
 		jQuery( document ).ready(function($) {
 		    <?php
+		    	/*
 		    	// get user_id for logged user
 		 		$user = wp_get_current_user();
 				$member_id = $user->ID;
@@ -777,6 +778,8 @@ function alex_custom_scripts()
 					echo '$("#timeliner .btn-primary, #timeliner .btn-danger").remove();';
 					echo '$("#timeliner .alex_btn_add_new").hide();';
 				}
+				*/
+				echo as21_user_is_logged_id_manage_timeliner();
 		    ?>
 
 		    <?php if( !is_user_logged_in()):?>
@@ -791,6 +794,21 @@ function alex_custom_scripts()
 	</script>
 	<?php
 	}
+}
+
+function as21_user_is_logged_id_manage_timeliner($echo = true){
+	// get user_id for logged user
+	$user = wp_get_current_user();
+	$member_id = $user->ID;
+	// get user_id for notlogged user
+	global $bp;
+	$profile_id = $bp->displayed_user->id;
+	$js = '';
+	if($member_id < 1 or ($member_id != $profile_id) ){
+		if($echo) $js = '$("#timeliner .btn-primary, #timeliner .btn-danger").remove(); $("#timeliner .alex_btn_add_new").hide();';
+		else $js = true; // for use in js code
+	}
+	return $js;
 }
 
 add_action('wp_ajax_alex_del_timeline', 'alex_del_timeline');
@@ -912,10 +930,11 @@ function a21_load_part_timeline_data() {
 		) );
 	     
 	     /* **** as21 new**** */
-	     $html = as21_get_all_limit_entrys_timeline($fields);
+	     $data['html'] = as21_get_all_limit_entrys_timeline($fields);
 	     // var_dump($html);
 	     // exit;
-	     echo json_encode($html);
+	     $data['manage_timeliner'] = as21_user_is_logged_id_manage_timeliner(false);
+	     echo json_encode($data);
 	}
 	exit;
 }
