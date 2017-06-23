@@ -765,22 +765,7 @@ function alex_custom_scripts()
 	?>
 	<script type="text/javascript">
 		jQuery( document ).ready(function($) {
-		    <?php
-		    	/*
-		    	// get user_id for logged user
-		 		$user = wp_get_current_user();
-				$member_id = $user->ID;
-				// get user_id for notlogged user
-				global $bp;
-				$profile_id = $bp->displayed_user->id;
-
-				if($member_id < 1 or ($member_id != $profile_id) ){
-					echo '$("#timeliner .btn-primary, #timeliner .btn-danger").remove();';
-					echo '$("#timeliner .alex_btn_add_new").hide();';
-				}
-				*/
-				echo as21_user_is_logged_id_manage_timeliner();
-		    ?>
+		    <?php echo as21_user_is_logged_id_manage_timeliner(); ?>
 
 		    <?php if( !is_user_logged_in()):?>
 				 $(document).scroll(function(){ 

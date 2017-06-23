@@ -59,6 +59,11 @@ if($verify_user == 'YES' && is_user_logged_in() ){
 	}
 }
 
+/* **** as21 **** */
+// $a = xprofile_get_field_data('Description', $user_id);
+// $a = xprofile_get_field_data(44, $user_id);
+// echo 'testing------';
+// var_dump($a);
 
 // echo "<h1>test</h1>";
 // $t1 = xprofile_get_field(44, $user_id);
@@ -139,9 +144,7 @@ endif;
 		$profile_template->groups[0] = $gr_name_details;
 		$profile_template->groups[1] = $gr_name_basic_info;
 		// alex_debug(0,1,'',$profile_template->groups[0]);
-		// alex_debug(0,1,'',$profile_template);
-
-
+		// alex_debug(0,1,'',$profile_template->groups);
 	?>
 
 	<?php  $i=0; $bi=0;$det=0; while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
@@ -186,7 +189,7 @@ endif;
  -->
 							<div class="profile-fields mission hentry">
 							<div class="entry-content">
-								<?php echo stripslashes( bp_get_the_profile_field_value() ); ?>
+								<?php echo stripslashes( bp_get_the_profile_field_value() );  ?>
 								</div>
 							</div>
 							<?php elseif($prof_name == "basic info"):?>
@@ -309,8 +312,117 @@ endif;
 
 	<?php
 					
+		/* **** as21 if profile is full empty**** */			
+
+		$has_mission_group = false;
+		$has_security_group = false;
+		$has_details_group = false;
+		foreach ($profile_template->groups as $group) {
+			if( $group->id == 4) { $has_details_group = true; break; }
+		}
+		if(!$has_details_group ) {
+		// if(!$has_details_group && $LALA) {
+			$details_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",10, 4, 0 ) );
+			echo "<div class='bp-widget 1. details details'><span class='field-name not-filled-filed'>".$details_field->name."</span>".$details_field->description."</div>";
+				?>
+				<div class="bp-widget basic info info ">
+								<div class="inner-basic-info">
+									<div id="circle-dount-chart"></div>
+									<div class="wrap_field-avail">
+									<table class=" field-avail">
+									<tr<?php bp_field_css_class(); ?>>
+									<td class="data">
+									<span>Availability</span>
+									<?php
+										// check registration user from facebook login,if ok,then get field default from xProfile
+										/*
+										$v_avail = xprofile_get_field_data('Volunteer Availability');
+										if( empty($v_avail)) {
+											global $wpdb;
+											$table = $wpdb->prefix."bp_xprofile_fields";
+											$option = $wpdb->get_results( $wpdb->prepare(
+												"SELECT name
+												FROM {$table}
+												WHERE group_id = %d
+												    AND parent_id = %d
+												    AND is_default_option = %d",
+												1,2,1
+											) );
+											echo "<p><a href='#'>".$option[0]->name."</a>";
+										}else{	bp_the_profile_field_value(); }
+										*/
+									$vol_availability = xprofile_get_field_data(2, $user_id);
+									// var_dump($vol_availability);
+									// echo "<div class='bp-widget'><span class='field-name'>Availability</span>".$vol_availability."</div>";
+									echo '<p>'.$vol_availability.'</p>';
+
+									?>
+									</td>
+									<td class="verify">
+									<?php
+
+									if($verify_user == 'YES') {
+										if(is_user_logged_in() ) {
+											$popup_s = "<a href='#security_desc' class='popup-modal'>";
+											$popup_e = "</a>";
+										}
+										echo $popup_s."<img src='".get_stylesheet_directory_uri()."/images/user_verified.png' alt='Security check verified'/>".$popup_e;
+										$sec_mouseover = "Security Check Verified";
+									}else{
+									 echo "<img src='".get_stylesheet_directory_uri()."/images/user_not_verified.png' alt='Security check verified'/>";
+									 	$sec_mouseover = "Security Check Non-Verified";
+									}
+									?>
+									</td>
+									</tr>
+									</table>
+									<!-- <span>Security Check Verified</span> -->
+									<span class="sec_mouseover"><?php echo $sec_mouseover;?></span>
+									</div>
+									</div>
+								</div>
+									<script type="text/javascript">
+									jQuery(document).ready(function() { 
+										jQuery( ".field-avail td.verify" ).mouseover(function() { 
+											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"block"});
+										});
+										jQuery( ".field-avail td.verify" ).mouseout(function() { 
+											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"none"});
+										});
+									});
+									</script>
+		<?php
+		}
+
+		// $vol_availability = xprofile_get_field(2, $user_id);
+		// alex_debug(0,1,'',$vol_availability);
+		// echo $vol_availability->data->value;
+
+		foreach ($profile_template->groups as $group) {
+			if( $group->id == 5) { $has_mission_group = true; break; }
+		}
+		foreach ($profile_template->groups as $group) {
+			if( $group->id == 7) { $has_security_group = true; break; }
+		}
+
+		if(!$has_security_group) {
+			// echo '--sec not EXIST---';
+			$security_field = $wpdb->get_var( $wpdb->prepare( "SELECT description FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",44, 7, 0 ) );
+			echo "<div class='bp-widget'><span class='field-name'>Security</span>".$security_field."</div>";
+		}		
+		if(!$has_mission_group) {
+			// echo '--Mission not EXIST---';
+			$mission_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d", 5, 0 ) );
+			// deb_last_query();
+			echo "<div class='bp-widget'><span class='field-name'>".$mission_field->name."</span>".$mission_field->description."</div>";
+		}
+
+		/* **** as21 if profile is full empty**** */			
+
 		$has_interests = xprofile_get_field_data('Interests', $user_id);
 		$has_experience = xprofile_get_field_data('Experience', $user_id);
+		$has_mission = xprofile_get_field_data('Mission', $user_id);
+		// echo "new code----"; var_dump($has_mission);
 
 		if($has_interests == "")  echo '<div class="bp-widget"><span class="field-name">Interests'.$edit_link_exp.'</span>'.$text_field_empty.'</div>';
 		// if($has_experience == "")  echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
