@@ -397,10 +397,7 @@ endif;
 		// $vol_availability = xprofile_get_field(2, $user_id);
 		// alex_debug(0,1,'',$vol_availability);
 		// echo $vol_availability->data->value;
-
-		foreach ($profile_template->groups as $group) {
-			if( $group->id == 5) { $has_mission_group = true; break; }
-		}
+		/*
 		foreach ($profile_template->groups as $group) {
 			if( $group->id == 7) { $has_security_group = true; break; }
 		}
@@ -409,7 +406,12 @@ endif;
 			// echo '--sec not EXIST---';
 			$security_field = $wpdb->get_var( $wpdb->prepare( "SELECT description FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",44, 7, 0 ) );
 			echo "<div class='bp-widget'><span class='field-name'>Security</span>".$security_field."</div>";
-		}		
+		}	
+		*/
+		foreach ($profile_template->groups as $group) {
+			if( $group->id == 5) { $has_mission_group = true; break; }
+		}
+	
 		if(!$has_mission_group) {
 			// echo '--Mission not EXIST---';
 			$mission_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d", 5, 0 ) );
@@ -569,7 +571,16 @@ endif;
 					          </div>
 					      </li>
 		      		<?php endif;
-		      endforeach; endif;?>
+		      endforeach;
+		      else:?>
+			<li>
+			    <div class="timeliner_element bricky">
+			        <div class="timeliner_title"> <span class="timeliner_label"></span><span class="timeliner_date"><?php echo date("d M Y");?></span> </div>
+			        <div class="content">Signing up for DuGoodr</div>
+			        <div class="readmore"></div>
+			    </div>
+			</li>	
+	       <?php endif;?>
 		      <?php // do_action("a21_bgc_message_thankyou");  ?>
 		   </ul> 
 		
