@@ -1000,3 +1000,20 @@ function as21_display_width_window(){
 	<?php
 	}
 }
+
+add_action( 'wp_enqueue_scripts','as21_job_debug',999);
+
+function as21_job_debug(){
+	if( (bool)$_GET['dev'] === true){
+		?>
+		<script type='text/javascript'>
+		/* <![CDATA[ */
+		var job_manager_ajax_filters = {"ajax_url":"\/jm-ajax\/%%endpoint%%\/","is_rtl":"0","i18n_load_prev_listings":"Load previous listings","lang":null};
+		/* ]]> */
+		</script>
+		<?php
+		wp_deregister_script( 'wp-job-manager-ajax-filters' );
+		wp_enqueue_script( 'wp-job-manager-ajax-filters', plugins_url() . '/wp-job-manager/assets/js/ajax-filters-debug.js', '','', true );
+		// wp_enqueue_script( 'wp-job-manager-ajax-filters', plugins_url() . '/wp-job-manager/assets/js/ajax-filters-debug.js', array('jquery-deserialize'),'', true );
+	}
+}

@@ -207,45 +207,51 @@ function alex_edit_group_fields(){
 
 	if( !bp_is_group_creation_step( 'group-details' ) ){
 	    $table_grmeta = $wpdb->prefix."bp_groups_groupmeta";
-		$city = $wpdb->get_results( $wpdb->prepare(
-			"SELECT meta_value
-			FROM {$table_grmeta}
-			WHERE group_id = %d
-			    AND meta_key = %s
-			",
-			intval( $gid ),
-			"city_state"
+		$city = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
+			intval( $gid ),	"city_state"
+		) );
+		$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
+			intval( $gid ),	"job_board_link"
 		) );
 
 		echo '<label class="" for="city_state">City, Province/State</label>';
-		echo '<input id="city_state" name="city_state" type="text" value="' . esc_attr($city[0]->meta_value) . '" />';
-	}
+		echo '<input id="city_state" name="city_state" type="text" value="' . esc_attr($city) . '" />';
 
-	// info about all groups
-	$groups = groups_get_groups();
-	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	// var_dump($a);
-	$fields = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt
-		FROM {$wpdb->posts}
-		WHERE post_parent = %d
-		    AND post_type = %s
-		ORDER BY ID ASC",
-		intval( $gid ),
-		"alex_grsoclink"
-		// "alex_gfilds"
-	) );
-	foreach ($fields as $field) {
-		// var_dump($field);
-		// if(preg_match("#google+#i", $field->post_title) ) 
-		// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
-		if(preg_match("#google#i", $field->post_title)) {
-			$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
-			$field->post_title = str_replace("+", "", $field->post_title);
+		echo '<label class="" for="job_board_link">Add link to your websites Job Board:</label>';
+		echo '<input id="job_board_link" name="job_board_link" type="url" value="' . esc_attr($job_board_link) . '" />';
+	
+
+		// info about all groups
+		$groups = groups_get_groups();
+		$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
+		// var_dump($a);
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT ID, post_title, post_content, post_excerpt
+			FROM {$wpdb->posts}
+			WHERE post_parent = %d
+			    AND post_type = %s
+			ORDER BY ID ASC",
+			intval( $gid ),
+			"alex_grsoclink"
+			// "alex_gfilds"
+		) );
+
+		// as21_system_message();	alex_debug(0,1,'',$fields);
+
+		foreach ($fields as $field) {
+			// var_dump($field);
+
+			// if(preg_match("#google+#i", $field->post_title) ) 
+			// $field->post_title  =  (preg_replace("#google\+#i", "Youtube", $field->post_title) );
+			if(preg_match("#google#i", $field->post_title)) {
+				$field->post_title = preg_replace("#google#i", "Youtube", $field->post_title);
+				$field->post_title = str_replace("+", "", $field->post_title);
+			}
+
+			echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
+			echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
 		}
 
-		echo '<label class="" for="alex-'.$field->ID.'">'.$field->post_title.'</label>';
-		echo '<input id="alex-'.$field->ID.'" name="alex-'.$field->ID.'" type="url" value="' . esc_attr( $field->post_content ) . '" />';
 	}
 }
 
@@ -255,6 +261,7 @@ add_action( 'groups_custom_group_fields_editable', 'alex_edit_group_fields');
 function alex_edit_group_fields_save(){
 
 		global $wpdb;
+		// alex_debug(0,1,'',$_POST);		exit;
 		
 		foreach ( $_POST as $data => $value ) {
 			if ( substr( $data, 0, 5 ) === 'alex-' ) {
@@ -284,58 +291,29 @@ function alex_edit_group_fields_save(){
 			array( 'meta_key' => 'city_state', 'group_id' => $gid),          
 			array('%s'), array('%s','%d')                   
 		);
+
+		$job_board_link = sanitize_text_field($_POST['job_board_link']);
+		$is_job_board_link = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_grmeta WHERE group_id=%d AND meta_key=%s",$gid,'job_board_link'));
+
+		if( is_null($is_job_board_link)) 
+		{	
+			$add_jbl = $wpdb->insert(
+				$table_grmeta,
+				array( 'group_id'=>$gid,'meta_key'=>'job_board_link','meta_value'=>$job_board_link),
+				array( '%d','%s','%s' )
+			);
+		}else{
+			$up_job_board_link = $wpdb->update($table_grmeta,array(
+					'meta_value' => $job_board_link,    
+				),
+				array( 'meta_key' => 'job_board_link', 'group_id' => $gid),          
+				array('%s'), array('%s','%d')                   
+			);
+		}
 }
 
 add_action( 'groups_group_details_edited', 'alex_edit_group_fields_save' );
 
-// without hook,for reused code
-function alex_get_postid_and_fields( $wpdb = false){
-
-	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
-	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
-	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
-	$id = $last_post_id+1;
-	$id_and_fields = array($id,$fields);
-	return $id_and_fields;
-}
-
-function alex_add_soclinks_for_all_groups_db(){
-
-	global $wpdb;
-	$groups = groups_get_groups();
-	$k = 0;
-	foreach ($groups['groups'] as $gr) {
-		// echo $gr->id;s
-		$gid[$k] = $gr->id;
-		$k++;
-	}
-
-	$postid_and_fields = alex_get_postid_and_fields($wpdb);
-	$postid = $postid_and_fields[0]+1;
-	$fields = $postid_and_fields[1];
-
-	$g = 0;
-	$total_group = count($gid);
-	for( $i=0; $i < $total_group; $i++){
-		foreach ($fields as $field_name) {
-			if(preg_match("#google#i", $field_name) === 1) $field_name = $field_name."+";
-			$wpdb->insert(
-				$wpdb->posts,
-				array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gid[$g]),
-				// array( 'ID' => $postid, 'post_title' => $field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gid[$g]),
-				array( '%d','%s','%s','%d' )
-			);
-			$postid++; 
-		} 
-		$g++;
-	}
-	echo "Fields for groups has been successfully imported! Total group: ".$total_group;
-
-}
-
-// IMPORTANT !!! execute only 1 time !!! add all fields social links for groups in data base
-// add_action("wp_head","alex_add_soclinks_for_all_groups_db");
-// add_action( 'bp_before_group_body','alex_add_soclinks_for_all_groups_db');
 
 /* *********** */
 
@@ -352,34 +330,44 @@ function add_soclinks_only_for_one_group_db(){
 	// alex_debug(0,1,"fie",$_COOKIE);
 	// exit;
 
-	foreach ($fields as $field_name) {
+	// echo "=========add_soclinks_only_for_one_group_db=======";
+	// echo $gr_last_id->id;
+	$is_first_soclink = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type=%s AND post_parent=%d AND post_title=%s",'alex_grsoclink',$gr_last_id->id,"Facebook"));
+	// deb_last_query();
+	// var_dump($is_first_soclink);
+	// exit;
 
-		if( !empty($_COOKIE['alex-'.$field_name]) ) {
-			$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
-		}
-		else $post_content = '';
+	if( is_null($is_first_soclink)){
+		foreach ($fields as $field_name) {
 
-		if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
-			 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
-		}
+			if( !empty($_COOKIE['alex-'.$field_name]) ) {
+				$post_content = sanitize_text_field($_COOKIE['alex-'.$field_name]);
+			}
+			else $post_content = '';
 
-		// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
-		
-		// echo $field_name." - ";
+			if( $field_name == "Google+" && !empty($_COOKIE['alex-Youtube']) ){
+				 $post_content = sanitize_text_field($_COOKIE['alex-Youtube']);			
+			}
 
-		// if( !empty($post_content)){
-			$wpdb->insert(
-				$wpdb->posts,
-				array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
-				// array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
-				array( '%d','%s','%s','%d', '%s' )
-			);
-			$postid++; 
-		// }
-			// deb_last_query();
+			// if(preg_match("#google#i", $field_name)) { $field_name = str_replace("+", "", $field_name); $field_name = $field_name."+"; }
+			
+			// echo $field_name." - ";
 
-	} 
+			// if( !empty($post_content)){
+			
+				$wpdb->insert(
+					$wpdb->posts,
+					array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_grsoclink', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
+					// array( 'ID'=>$postid, 'post_title'=>$field_name, 'post_type' => 'alex_gfilds', 'post_parent'=>$gr_last_id->id, 'post_content'=> $post_content),
+					array( '%d','%s','%s','%d', '%s' )
+				);
+				$postid++; 
+			
+			// }
+				// deb_last_query();
 
+		} 
+	}
 	foreach ($fields as $field_name) {
 		// unset($_COOKIE['alex-'.$field_name]);
 		// delete cookie
@@ -408,9 +396,11 @@ function alex_group_create_add_socialinks(){
 
 	global $bp,$wpdb;
 
+	// echo "===group-details=====";
 	// get fields social links
 	$postid_and_fields = alex_get_postid_and_fields($wpdb);
 	$fields = $postid_and_fields[1];
+	// alex_debug(0,1,'',$_COOKIE);
 
 	foreach ($fields as $field) {
 
@@ -425,8 +415,6 @@ function alex_group_create_add_socialinks(){
 				$field = preg_replace("#google#i", "Youtube", $field);
 				$field = str_replace("+", "", $field);
 		}
-
-
 
 		echo '<label class="" for="alex-'.$field.'">'.$field.'</label>';
 		echo '<input id="alex-'.$field.'" name="alex-'.$field.'" type="url" value="'.$user_fill.'" />';
@@ -605,22 +593,6 @@ function my_bp_loop_querystring( $query_string, $object ) {
 }
 add_action( 'bp_legacy_theme_ajax_querystring', 'my_bp_loop_querystring', 100, 2 );
 
-/* вывод системных данных в форматированном виде */
-function alex_debug ( $show_text = false, $is_arr = false, $title = false, $var, $var_dump = false, $sep = "| "){
-
-	// e.g: alex_debug(0, 1, "name_var", $get_tasks_by_event_id, 1);
-	$debug_text = "<br>========Debug MODE==========<br>";
-	if( boolval($show_text) ) echo $debug_text;
-	if( boolval($is_arr) ){
-		echo "<br>".$title."-";
-		echo "<pre>";
-		if($var_dump) var_dump($var); else print_r($var);
-		echo "</pre>";
-	} else echo $title."-".$var;
-	if( is_string($var) ) { if($sep == "l") echo "<hr>"; else echo $sep; }
-}
-/* вывод системных данных в форматированном виде */
-
 
 add_action("wp_head","alex_include_css_js",90);
 
@@ -731,6 +703,15 @@ function a21_get_wpjm_for_page_preview(){
 }
 */
 
+add_action('wp_enqueue_scripts','as21_include_custom_js_css');
+function as21_include_custom_js_css(){
+	if( bp_is_user_profile() && strpos($_SERVER['REQUEST_URI'],'edit') === false  ){
+		 wp_enqueue_script('circle-donut-chart',get_stylesheet_directory_uri().'/libs/circle-dount-chart/circleDonutChart.js',array('jquery'),'',true);
+		 wp_enqueue_script('common-profile',get_stylesheet_directory_uri().'/js/common-profile.js',array('circle-donut-chart'),'',true);
+	}
+	// echo "test777===";var_dump(bp_is_user_profile() );
+}
+
 add_filter('body_class','a21_my_class_names');
 function a21_my_class_names( $classes ) {
 	// добавим класс 'class-name' в массив классов $classes
@@ -745,20 +726,9 @@ if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tag
 
 // /themes/buddyapp-child/job_manager/wp-job-manager-map/class-wp-job-manager.php
 // if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
-if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
+if($_GET['dev'] != 1) if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
 
-// override function path.../plugins/wp-job-manager/wp-job-manager-functions.php - it is necessary for work the filter by keyword
-function get_job_listings_keyword_search( $args ) {
 
-	global $wpdb, $job_manager_keyword;
-	$conditions   = array();
-	$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-	$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
-	$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
-	$conditions[] = "{$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-	$args['where'] .= " AND ( " . implode( ' OR ', $conditions ) . " ) ";
-	return $args;
-}
 
 add_action("wp_footer", "alex_custom_scripts",100);
 
@@ -791,517 +761,11 @@ function alex_custom_scripts()
 	if($profile_view or $profile_view_notdefault){
 		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>';
 		echo '<script type="text/javascript" src="'.get_stylesheet_directory_uri().'/libs/jqtimeliner/js/jquery-timeliner.js"></script>';
+		echo '<script type="text/javascript" src="'.get_stylesheet_directory_uri().'/libs/jqtimeliner/js/ext_load_ajax.js"></script>';
 	?>
 	<script type="text/javascript">
 		jQuery( document ).ready(function($) {
-
-			function alex_onadd(_data){
-
-					console.log("onadd");
-					var alex_tl_grp_id = false;
-				    for (var key in grs) {
-				    	if(grs[key] == _data.alex_gr_name_select) alex_tl_grp_id = key;
-				    }
-					var data = {
-						'action': 'alex_add_timeline',
-						'date': _data.date,
-						'title': _data.title,
-						'content': _data.content,
-						'class': _data.class,
-						'alex_tl_grp_id': alex_tl_grp_id
-						// 'query': true_posts,
-					};
-
-					$.ajax({
-						url:ajaxurl, // обработчик
-						data:data, // данные
-						type:'POST', // тип запроса
-						success:function(data){
-							if( data ) { 
-						      location.reload();
-							} else { console.log("data send with errors!");}
-						}
-
-					 });
-			}
-
-			function alex_ondelete(_data){
-				// $( "#timeliner" ).on( "click", ".readmore .btn-danger", function() {
-
-			   		 if(!confirm("Are you sure to delete ?")) return false;
-					 // console.log("--------delete li !!!!! 1---------------"+$(this).html());
-					// console.log("--------delete li !!!!! 1---------------"+_data.html());
-
-					$( "#timeliner" ).on( "click", ".readmore .btn-danger", function() {
-						// console.log("--------2 delete li !!!!!---------------");
-
-					   var html = $(this).parents("li");
-					  //  console.log(html.html());
-					  // return false;
-					   var id = html.find(".alex_item_id").text();
-					   html.hide();
-
-							var data = {
-							'action': 'alex_del_timeline',
-							'id':id
-						};
-
-						$.ajax({
-							url:ajaxurl, // обработчик
-							data:data, // данные
-							type:'POST', // тип запроса
-							success:function(data){
-								if( data ) { 
-								} else { console.log("data send with errors!");}
-							}
-
-						 });
-						// end ajax
-					});
-			}
-
-			function alex_onedit(_data){
-
-				// console.log("====onedit======");
-			 //    for (var key in _data) {
-			 //    	console.log("key-"+key+"="+_data[key]);
-			 //    }
-				// return false;
-				var alex_tl_grp_id = false;
-			    for (var key in grs) {
-			    	if(grs[key] == _data.alex_gr_name_select) alex_tl_grp_id = key;
-			    }
-
-				var data = {
-					'action': 'alex_edit_timeline',
-					'id': _data.id_alex,
-					'date': _data.date,
-					'title': _data.title,
-					'content': _data.content,
-					'class': _data.class,
-					'alex_tl_grp_id': alex_tl_grp_id
-
-				};
-
-				$.ajax({
-					url:ajaxurl, // обработчик
-					data:data, // данные
-					type:'POST', // тип запроса
-					success:function(data){
-						console.log("ajax response get success!");
-						if( data ) { 
-							console.log(data);
-				      		location.reload();  		
-						} else { console.log("data send with errors!");}
-					}
-
-				 });
-			}
-
-		/* **** as21 ajax load part timeline data **** */
-		$("#a21_load_part_timeline_data").on("click",function(e){
-
-			e.preventDefault();
-			var self = $(this);
-			// var num = parseInt("a4r t 4r43 43a b345b 123 cc gaeg4".replace(/\D+/g,""));
-			// console.log(num);
-			console.log("====a21_load_part_timeline_data=====");
-			var user_id = $(this).attr("data-user-id");
-			var offset = $(this).data("offset");
-			console.log("offset" + offset);
-			console.log(user_id);
-			var data = {
-				'action': 'a21_load_part_timeline_data',
-				'user_id':user_id,
-				'offset':offset
-			};
-
-			$.ajax({
-				url:KLEO.ajaxurl,
-				data:data, 
-				type:'POST', 
-				success:function(data){
-					console.log("\r\n################# from WP AJAX data ######\r\n\r\n");
-					console.log("data="+data);
-					console.log(typeof data);
-					if(data) data = JSON.parse(data); 
-					else $(".activity-list .load-more").hide();
-					console.log("data="+data.date);
-
-					if( data ) { 
-						// $("#timeliner .timeliner").append(data);
-						 // var tl1 = $('#timeliner').timeliner({a21_gets:getScript});
-						 // var tl1 = $('#a21_load_part_timeline_data').timeliner({a21_newItems:data});
-				 			offset += 4;
-							offset = self.data("offset",offset);
-							console.log("offset" + offset);
-							// from 0-jan 11-dec
-					        var months = {Jan:"January", Feb:"February", Mar:"March", Apr:"April", 
-						                    May:"May", Jun:"June", Jul:"July", Aug:"August", Sep:"September",
-						                    Oct:"October", Nov:"November", Dec:"December"};
-
-
-							var date_fd = false, date_bd = false;
-
-							/* **** as21 for create new date separator**** */
-							var obj_short_date_fd = [], obj_short_date_bd = [],new_date_sep=[],del_same_short_date_bd=[];
-
-							$(".date_separator:not(.alex_btn_add_new)").each(function(i,e){
-
-								console.log("\r\n====loop .date_separator span====\r\n");
-								// date_fd = $(this).text(); // January 2017
-								date_fd = $(this).find("span").text(); // January 2017
-								console.log("fd item=" + i +" --- "+ date_fd);
-
-								year_fd = parseInt(date_fd.replace(/\D+/g,"")); // 2017
-								var m_fd = date_fd.substr(0,3); // Sep,Jun...
-								var short_date_fd = m_fd + " "+year_fd;
-								obj_short_date_fd[i] = short_date_fd;
-							});
-
-							// for (var key in data.date){
-
-							// 	console.log("====loop date_bd=====\r\n");
-							// 	console.log("=k="+key+"\r\n");
-							// 	var date_bd = data.date[key];
-							// 	var date_day_bd = parseInt(date_bd.substr(0,2));
-							// 	var obj_short_date_bd[key] = data.date[key].substr(3);
-							// 	console.log( "date_bd: "+date_bd );	
-							// 	console.log( "short_date_bd: "+short_date_bd );	
-							// }
-
-							//  delete double short_month_year from date bd
-							for (var key in data.date){
-								var short_date_bd = data.date[key].substr(3);
-								if(key == 0) del_same_short_date_bd[key] = short_date_bd;	
-								if( key > 0) { 
-									if(short_date_bd == del_same_short_date_bd[key]) break;
-									else del_same_short_date_bd[key] = short_date_bd;
-								 }
-								// console.log("%%% del_same_short_date_bd[key] "+del_same_short_date_bd[key]+" %%%%% short_date_bd "+short_date_bd);
-							}
-
-
-							// console.log("\r\n====="+typeof obj_short_date_fd+"===\r\n");
-
-							for (k_osdf in obj_short_date_fd){
-								// console.log("\r\n====="+k_osdf+"==="+obj_short_date_fd[k_osdf]+"\r\n");
-
-								for (var key in del_same_short_date_bd){
-										var short_date_bd = data.date[key].substr(3);
-										if( short_date_bd != obj_short_date_fd[k_osdf] ) {
-											new_date_sep[key] = short_date_bd;	
-										}
-										// else { new_date_sep[key] = false; break;}		
-										// console.log("%%% new_date_sep[key] "+new_date_sep[key]+"%%%%% short_date_bd"+short_date_bd);
-										// console.log("%%% key "+key+"%%%%% ");
-								}
-							}
-
-							for (var key in new_date_sep){
-								console.log("---new_date_sep[key]----"+new_date_sep[key]);
-								if(new_date_sep[key]) {
-									var year = parseInt(new_date_sep[key].replace(/\D+/g,"")); // 2017
-									var full_month_year = months[new_date_sep[key].substr(0,3)]+" "+year; 
-									var last_date_sep = $(".date_separator:not(.alex_btn_add_new)").last().find("span").text();
-									// console.log("last_date_sep "+last_date_sep);
-									if( last_date_sep != full_month_year) $("#timeliner .timeliner").append('<div class="date_separator"><span>'+full_month_year+'</span></div>');
-								}
-							}
-							// return false;
-
-							/* **** as21 for create new date separator**** */
-
-							// перебираем год,месяц и вставляем в нужное место текущую запись
-
-							// $(".date_separator span").each(function(i,e){
-							$(".date_separator:not(.alex_btn_add_new)").each(function(i,e){
-
-								console.log("\r\n ############# loop .date_separator span ####### \r\n");
-								// date_fd = $(this).text(); // January 2017
-								date_fd = $(this).find("span").text(); // January 2017
-								// console.log("fd item=" + i +" --- "+ date_fd);
-
-								year_fd = parseInt(date_fd.replace(/\D+/g,"")); // 2017
-								var m_fd = date_fd.substr(0,3); // Sep,Jun...
-								var short_date_fd = m_fd + " "+year_fd;
-								// console.log("short_date_fd ="+short_date_fd);
-
-								// for (var m in months){
-								// 		var short_m_fd = months[m].substr(0,3); // sep,jun...
-								// 		console.log("m="+m +"-"+ short_m_fd); 
-								// 		var short_date_fd = short_m_fd +" "+ year_fd;
-								// 		console.log("fd after parse: "+short_date_fd);
-								// 		if(date_bd == short_date_fd) break;
-								// }
-								// for (var k in data.date){
-							   $(this).after("<ul class='columns'></ul>");
-								for (var key in data.date){
-
-									console.log("====loop date_bd=====\r\n");
-									console.log("=k="+key+"\r\n");
-									var date_bd = data.date[key];
-									var date_day_bd = parseInt(date_bd.substr(0,2));
-									var short_date_bd = data.date[key].substr(3);
-									console.log( "date_bd: "+date_bd );	
-									console.log( "short_date_bd: "+short_date_bd );	
-
-									var render_items_li = '';
-									// if date_separator == current date
-
-									if(short_date_fd == short_date_bd ) {
-
-										// $(this).parent().after("<p>new el "+date_bd+"</p>");
-										// var item_li = $(this).parent();
-										var ul_li_items = $(".columns").eq(i+1);
-										// console.log("\r\n===next==="+ul_li_items.html());
-										// var count_li = ul_li_items.find("li").length;
-										var count_li = 4;
-										console.log( "count="+count_li);
-
-									 render_items_li = render_items_li + data.li[date_bd];
-									$(".timeliner .columns").last().append(render_items_li);
-
-										/*
-										if( count_li == 0) { 
-											console.log("\r\n start count_li: NO ITEMS LI=======\r\n");
-											console.log("\r\n ==="+date_bd+"====\r\n");
-											console.log("\r\n ==="+data.li+"====\r\n");
-											console.log("\r\n ==="+data.li[date_bd]+"====\r\n");
-										    $(this).after("<ul class='columns'>"+data.li[date_bd]+"</ul>");
-										    console.log("\r\n end count_li:\r\n");
-										}
-										*/
-
-										/*
-										for(var li=0;li<count_li;li++){
-
-											var li_date_fd = ul_li_items.find("li").eq(li).find(".timeliner_date").text();
-											var li_date_day = parseInt(li_date_fd.substr(0,2));
-											console.log( "li eq====="+ li_date_fd +" day= "+li_date_day+"\r\n");
-
-											// if after date separator have item li_date_day
-											// if( li_date_fd){
-
-												if(date_day_bd > li_date_day) {
-													console.log(" "+date_day_bd +">"+ li_date_day);
-													// ul_li_items.find("li").eq(li).before("<li>"+date_bd+"</li>");
-													// ul_li_items.find("li").eq(li).before("<li>"+date_bd+"</li>");
-													ul_li_items.find("li").eq(li).before(data.li[key]);
-													// break;
-												}
-												if(date_day_bd < li_date_day) {
-													console.log(" "+date_day_bd +"<"+ li_date_day);
-													// ul_li_items.find("li").eq(li).after("<li>"+date_bd+"</li>");
-													ul_li_items.find("li").eq(li).after(data.li[key]);
-													console.log("data.date_bd======"+data.date_bd);
-													console.log("data.date_bd======"+data.li[key]);
-													// break;
-												}
-										    // }else console.log("\r\n NO ITEM LI=======\r\n");
-
-										}
-										*/
-
-										// ul_li_items.each(function(i2,e2){
-										// 	console.log("ul_li_items=" + i2 +" --- "+ e2);
-										// 	console.log( $(this).html());
-										// });
-									}
-
-
-									// else {
-									// 	// $(this).after("<p>new el error</p>");
-									// 	console.log("data.date_bd======"+date_bd);
-									// 	$("#timeliner .timeliner").append('<div class="date_separator"><span>'+date_bd+'</span></div>');
-									// 	// break;
-									// }
-
-								}
-							   // $(this).after("<ul class='columns'>"+render_items_li+"</ul>");
-							// $(".timeliner .columns").last().append(render_items_li);
-
-
-							});
-							return false;
-
-							console.log("\r\n length ");
-							var item = $(".global-timeliner").length;
-							console.log( item );
-							if( item > 0) $(".wrap_timeliner").append("<div class='item-timel-"+item+" global-timeliner'></div>");
-							else $(".wrap_timeliner").append("<div class='item-timel-0 global-timeliner'></div>")
-						  // $('#timeliner .timeliner').timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
-						  $('.item-timel-' + item).timeliner({a21_newItems:data,onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
-					} else { console.log("data send with errors!");}
-				}
-
-			 });
-
-		});
-
-		$("#timeliner").on("click",".li-load-ajax-del", function(){
-
-			// console.log( $(this).html() );
-			// alex_ondelete($(this));
-   		 	if(!confirm("Are you sure to delete ?")) return false;
-			// console.log("--------delete li !!!!! 1---------------"+$(this).html());
-			// console.log("--------delete li !!!!! 1---------------"+_data.html());
-
-			   var html = $(this).parents("li");
-			  //  console.log(html.html());
-			  // return false;
-			   var id = html.find(".alex_item_id").text();
-			   html.hide();
-
-					var data = {
-					'action': 'alex_del_timeline',
-					'id':id
-				};
-
-				$.ajax({
-					url:ajaxurl, // обработчик
-					data:data, // данные
-					type:'POST', // тип запроса
-					success:function(data){
-						if( data ) { 
-						} else { console.log("data send with errors!");}
-					}
-
-				 });
-				// end ajax
-	});
-
-		$("#timeliner").on("click",".li-load-ajax", function(){
-
-			// console.log("come-bd-ajax="+$(this).parent().parent().html());
-			var current_li = $(this).closest("li");
-			var old_li = current_li.html();
-			console.log("come-bd-ajax="+current_li.html());
-			var grs_html = '';
-			var cur_li_date = $.trim( current_li.find(".timeliner_date").text() );
-			var cur_li_title = $.trim( current_li.find(".timeliner_label").text() );
-			var cur_li_content = $.trim( current_li.find(".content").text() );
-			var cur_li_item_id = $.trim( current_li.find(".alex_item_id").text() );
-			var cur_li_all_grs = $.trim( current_li.find(".all_grs").text() );
-			var cur_li_gr_name = $.trim( current_li.find("#alex_gr_name_select").text() );
-			console.log("all_grs="+cur_li_all_grs+"\r\n\r\n");
-			console.log("cur_li_gr_name="+cur_li_gr_name+"\r\n\r\n");
-			var cur_li_all_grs = cur_li_all_grs.split(",");
-			for (k in cur_li_all_grs){
-				console.log("k="+k+"-"+cur_li_all_grs[k]);
-				if(cur_li_gr_name == cur_li_all_grs[k]) gr_selected = 'selected'; else gr_selected = '';
-                 grs_html = grs_html + '<option value="'+cur_li_all_grs[k]+'" '+gr_selected+'>'+cur_li_all_grs[k]+'</option>';
-			}
-			if(!cur_li_all_grs){
-           		grs_html = '<option value="" seleted="selected">None</option>';
-			}
-		    var formTpl = 
-		        '\
-		            <div class="timeliner_element" style="float: none;">\
-		                <form role="form" class="form-horizontal timeline_element" >\
-		                <input type="hidden" name="id" class="form-control" >\
-		                <div class="timeline_title"> &nbsp; </div>\
-		                <div class="content">\
-		                    <div class="form-group">\
-		                        <label class="col-sm-2 control-label" for="form-field-2"> Date </label>\
-		                        <div class="col-sm-9">\
-		                            <input type="text" placeholder="Add Date" name="date" class="form-control datepicker" required="required" data-date-format="dd M yyyy" value="'+cur_li_date+'">\
-		                        </div>\
-		                    </div>\
-		                    <div class="form-group">\
-		                        <label class="col-sm-2 control-label" for="form-field-1"> Title </label>\
-		                        <div class="col-sm-9">\
-		                            <input type="text" placeholder="Event Title" name="title" class="form-control title" required="required" value="'+cur_li_title+'">\
-		                            <input type="hidden" placeholder="Event Title" name="id_alex" class="form-control id_alex" required="required" value="'+cur_li_item_id+'">\
-		                        </div>\
-		                    </div>\
-		                    <div class="form-group">\
-		                        <label class="col-sm-2 control-label" for="form-field-12"> Content </label>\
-		                        <div class="col-sm-9">\
-		                            <textarea placeholder="Add a brief description" name="content" class="form-control textarea-content" required="required">'+cur_li_content+'</textarea>\
-		                        </div>\
-		                    </div>\
-		                    <div class="form-group">\
-		                        <label class="col-sm-2 control-label" for="form-field-12"> Shade </label>\
-		                        <div class="col-sm-9">\
-		                            <select class="form-control" name="class" id="class_bg">\
-		                                <option value="" seleted="selected">None</option>\
-		                                <option value="bricky">Red</option>\
-		                                <option value="green">Green</option>\
-		                                <option value="purple">Purple</option>\
-		                                <option value="teal">Teal</option>\
-		                            </select>\
-		                        </div>\
-		                    </div>\
-		                    <div class="form-group">\
-		                        <label class="col-sm-2 control-label" for="form-field-12"> Group </label>\
-		                        <div class="col-sm-9">\
-		                            <select class="form-control select-group" name="alex_gr_name_select" id="alex_gr_name_select">\
-		                                '+grs_html+
-		                            '</select>\
-		                        </div>\
-		                    </div>\
-		                </div>\
-		                <div class="readmore">\
-		                    <button class="btn" type="reset"><i class="fa fa-times"></i> Cancel</button>\
-		                    <button class="btn btn-primary load-ajax-save-edit" type="submit"><i class="fa fa-save"></i> Save</button>\
-		                </div>\
-		                </form>\
-		            </div>\
-		        ';
-		        current_li.html(formTpl);
-		    	current_li.find('.datepicker').datepicker();
-
-		        // current_li.replaceWith(formTpl);
-		        $("button[type='reset']").click(function(){
-		        	console.log("reset====");
-		    		console.log("come-bd-ajax="+typeof old_li);
-		    		console.log("old_li="+old_li);
-		        	// current_li.html(current_li);
-		        	$(this).closest("li").html(old_li);
-		        });
-
-		});
-
-		$("#timeliner").on("click",".load-ajax-save-edit", function(e){		        
-		        // $(".a21_y").click(function(e){
-		        	e.preventDefault();
-		        	console.log("submit====");
-		        	var cur_form = $(this).closest("li");
-		        	var _data = {};
-		        	_data.id_alex = cur_form.find('.id_alex').val();
-		        	_data.title = cur_form.find('.title').val();
-		        	_data.date = cur_form.find('.datepicker').val();
-		        	_data.content = cur_form.find(".textarea-content").val();
-		        	_data.alex_gr_name_select = cur_form.find("#alex_gr_name_select").val();
-		        	_data.class= cur_form.find("#class_bg").val();
-
-		        	console.log("---frm--"+cur_form.html()+"\r\n\r\n");
-				    for (var key in _data) {
-				    	console.log("key-"+key+"="+_data[key]);
-				    }
-		        	// return false;
-			        alex_onedit(_data);
-			        // alex_onedit1(_data);
-		        });
-		       
-		/* **** as21 ajax load part timeline data **** */
-
-		    var tl = jQuery('#timeliner').timeliner({onAdd:alex_onadd, onDelete:alex_ondelete, onEdit:alex_onedit});
-
-		    <?php
-		    	// get user_id for logged user
-		 		$user = wp_get_current_user();
-				$member_id = $user->ID;
-				// get user_id for notlogged user
-				global $bp;
-				$profile_id = $bp->displayed_user->id;
-
-				if($member_id < 1 or ($member_id != $profile_id) ){
-					echo '$("#timeliner .btn-primary, #timeliner .btn-danger").remove();';
-					echo '$("#timeliner .alex_btn_add_new").hide();';
-				}
-		    ?>
+		    <?php echo as21_user_is_logged_id_manage_timeliner(); ?>
 
 		    <?php if( !is_user_logged_in()):?>
 				 $(document).scroll(function(){ 
@@ -1317,6 +781,21 @@ function alex_custom_scripts()
 	}
 }
 
+function as21_user_is_logged_id_manage_timeliner($echo = true){
+	// get user_id for logged user
+	$user = wp_get_current_user();
+	$member_id = $user->ID;
+	// get user_id for notlogged user
+	global $bp;
+	$profile_id = $bp->displayed_user->id;
+	$js = '';
+	if($member_id < 1 or ($member_id != $profile_id) ){
+		if($echo) $js = '$("#timeliner .btn-primary, #timeliner .btn-danger").remove(); $("#timeliner .alex_btn_add_new").hide();';
+		else $js = true; // for use in js code
+	}
+	return $js;
+}
+
 add_action('wp_ajax_alex_del_timeline', 'alex_del_timeline');
 
 function alex_del_timeline(){
@@ -1327,6 +806,88 @@ function alex_del_timeline(){
 		echo true;
 	}
 	exit;
+}
+
+// this code was take from buddyapp-child/buddypress/members/single/profile/profile-loop.php
+function as21_get_all_limit_entrys_timeline($fields){
+
+	// $html .= '--------step: as21_get_all_limit_entrys_timeline()------';
+  	if( !empty($fields) ): foreach ($fields as $field):
+  		global $wpdb;
+		if( !empty($field->guid) ):
+			$event = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars WHERE id = %d", (int)$field->guid ) );
+
+			$get_event_image = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM " . $wpdb->base_prefix . "bp_groups_groupmeta
+        	WHERE group_id=%d AND meta_key=%s LIMIT 1", (int)$event->id, 'a21_bgc_event_image') );
+
+			$event_time = strtotime($event->event_time);
+			$event_time = date("d M Y",$event_time);
+			$group = groups_get_group(array( 'group_id' => $event->group_id ));
+			$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+			$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+			$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+
+		      $html .= '<li>
+		          <div class="timeliner_element is_event_thank_you">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($event->event_title).'</span>
+		                  <span class="timeliner_date">'.$event_time.'</span>
+		              </div>
+		              <div class="content">';
+		              	    if( !empty($get_event_image) ) {
+		              	    $html .= "<a href='".$group_permalink."/callout/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
+		              	    $html .= "<p>".stripslashes($event->thank_you)."</p>";
+		              	    }else $html .= stripslashes($event->thank_you);
+		              	    
+		       $html .='</div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>.'; endif;
+			               if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+			               if($group->name): $html .= '<div id="alex_gr_name_select">'.$group->name.'</div>'; endif;
+			  $html .= '</div>
+		          </div>
+		      </li>';
+
+		else:
+
+			$group = groups_get_group($field->menu_order);
+			$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
+			$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
+			$gr_avatar = bp_core_fetch_avatar($avatar_options);
+
+		    $html .= '
+		    	<li>
+		          <div class="timeliner_element ';
+		           $html .= (!empty($field->post_name)) ? $field->post_name : "teal";
+		          $html .= '">
+		              <div class="timeliner_title">
+		                  <span class="timeliner_label">'.stripslashes($field->post_title).'</span>
+		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
+		              </div>
+		              <div class="content">'.stripslashes($field->post_content).'</div>
+		              <div class="readmore">';
+		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>'; endif;
+		              	  if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
+		              	  if($group->name):  $html .= '<div id="alex_gr_name_select">'.$group->name.'</div>'; endif;
+		              	  if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
+		              	  $html .= '<span class="alex_item_id">'.$field->ID.'</span>
+		              	  <span class="vol_hours">'.$field->comment_count.'</span>
+		                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
+		                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
+		                  <a href="#" class="btn btn-info">
+		                      Read More <i class="fa fa-arrow-circle-right"></i>
+		                  </a>
+		              </div>
+		          </div>
+		      </li>';
+  		 endif;
+  endforeach;
+  	return $html;
+  else:
+  	return $html = false;
+  endif;
+  // do_action("a21_bgc_message_thankyou");  
 }
 
 add_action('wp_ajax_a21_load_part_timeline_data', 'a21_load_part_timeline_data');
@@ -1341,10 +902,10 @@ function a21_load_part_timeline_data() {
 	if( !empty( $user_id) && !empty( $offset) ){
 
 		global $wpdb;
-		$count_timeline = 4;
+		$count_timeline = 5;
 
 		$fields = $wpdb->get_results( $wpdb->prepare(
-			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
+			"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order,guid,comment_count
 			FROM {$wpdb->posts}
 			WHERE post_parent = %d
 			    AND post_type = %s
@@ -1352,99 +913,13 @@ function a21_load_part_timeline_data() {
 			$user_id,
 			"alex_timeline"
 		) );
-	     	 
-     	 if( !empty($fields) ): foreach ($fields as $field):
-			
-				$group = groups_get_group($field->menu_order);
-				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
-				$avatar_options = array ( 'item_id' => $group->id, 'object' => 'group', 'type' => 'full', 'avatar_dir' => 'group-avatars', 'alt' => 'Group avatar', 'css_id' => 1234, 'class' => 'avatar', 'width' => 50, 'height' => 50, 'html' => false );
-				$gr_avatar = bp_core_fetch_avatar($avatar_options);
-
-			/* **** as21 new way**** */
-			$way2['date'][] = $field->post_excerpt; 
-			/* **** as21 new way**** */
-			$html = '';
-			 $class_bg = ( !empty($field->post_name) ) ? $field->post_name : "teal";
-			 /*
-		     $html .= '
-		     <li>
-		          <div class="timeliner_element '.$color_class.'">
-		              <div class="timeliner_title">
-		                  <span class="timeliner_label">'.stripslashes($field->post_title).'</span>
-		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
-		              </div>
-		              <div class="content">
-		              	   '.stripslashes($field->post_content).'
-		              </div>
-		              <div class="readmore">';
-		              	  if($gr_avatar): $html .= '<div id="alex_gr_avatar">'.$gr_avatar.'</div>'; endif;
-				          if($group_permalink): $html .= '<div id="alex_gr_link">'.$group_permalink.'</div>'; endif;
-			              	   if($group->name):
-			              	  	 $html .= '<div id="alex_gr_name_select">'. $group->name.'</div>';
-			              	   endif;
-		              	  if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
-		              	  $html .= '
-		              	  <span class="alex_item_id">'.$field->ID.'</span>
-		                  <a class="btn btn-primary" href="javascript:void(0);" ><i class="fa fa-pencil fa fa-white"></i></a>
-		                  <a class="btn btn-bricky" href="javascript:void(0);" ><i class="fa fa-trash fa fa-white"></i></a>
-		                  <a href="#" class="btn btn-info">
-		                      Read More <i class="fa fa-arrow-circle-right"></i>
-		                  </a>
-		              </div>
-		          </div>
-		      </li>';
-		      */
-		    $grs = '';
-			$group_ids =  groups_get_user_groups( bp_loggedin_user_id() ); 	
-			// print_r($group_ids);
-			foreach($group_ids["groups"] as $group_id) { 
-				$group_for_select = groups_get_group(array( 'group_id' => $group_id ));
-				// $grs .= $group->id.':"'.$group->name.'",';
-				$grs .= $group_for_select->name.',';
-			}
-			$grs = substr($grs,0,-1);
-
-		     $title = stripslashes($field->post_title); 
-		     $edit_btn_title = str_replace(" ", "-", strtolower($title));
-		     $edit_btn_date = str_replace(" ", "-", strtolower($field->post_excerpt));
-		     $title_edit_btn = $edit_btn_title."-".$edit_btn_date."-edit-btn";
-		     $html .= '
-		     <li>
-		          <div class="timeliner_element '.$class_bg.'" data-class_bg="'.$class_bg.'">
-		              <div class="timeliner_title">
-		                  <span class="timeliner_label">'.$title.'</span>
-		                  <span class="timeliner_date">'.$field->post_excerpt.'</span>
-		              </div>
-		              <div class="content">
-		              	   '.stripslashes($field->post_content).'
-		              </div>
-		              <div class="readmore">';
-				          if($group): 
-				          		$html .= '<div id="alex_tl_grp_id" data-gr-id="'.$group->id.'">
-					          				<a href="'.$group_permalink.'">';
-					            if($gr_avatar): $html .= '<img src="'.$gr_avatar.'" />'; endif;
-					            $html .= '</a>';
-		              	     if($group->name):
-			              	  	 $html .= '<span id="alex_gr_name_select">'. $group->name.'</span>';
-			              	   endif;
-
-					            $html .= '</div>';
-					            $html .= '<div class="all_grs" style="display:none;">'.$grs.'</div>';
-				           endif;
-		              	  // if($group->id): $html .= '<div id="alex_gr_id_select">'.$group->id.'</div>'; endif;
-		              	  $html .= '
-		              	  <span class="alex_item_id" style="display: none;">'.$field->ID.'</span>
-          	              <button class="btn btn-danger li-load-ajax-del"><i class="fa fa-trash"></i> </button>
-		                  <button class="btn btn-primary li-load-ajax" id="'.$title_edit_btn.'"><i class="fa fa-pencil"></i> </button>
-		              </div>
-		          </div>
-		      </li>';
-		      $way2['li'][$field->post_excerpt] = $html;
-	      endforeach;
-	      // echo "<ul class='columns'>".$html."</ul>";
-	      echo json_encode($way2);
-	    endif;
-
+	     
+	     /* **** as21 new**** */
+	     $data['html'] = as21_get_all_limit_entrys_timeline($fields);
+	     // var_dump($html);
+	     // exit;
+	     $data['manage_timeliner'] = as21_user_is_logged_id_manage_timeliner(false);
+	     echo json_encode($data);
 	}
 	exit;
 }
@@ -1486,16 +961,19 @@ function alex_edit_timeline() {
 	$content = sanitize_text_field($_POST['content']);
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
-	// alex_debug(0,1,"",$_POST); exit;
+	$vol_hours = (int)($_POST['vol_hours']);
+	if( preg_match('#none#i', strtolower($class)) ) $class = "";
+	// alex_debug(0,1,"rrr",$_POST); exit;
+	// echo $class."--"; exit;
 
 	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
 
 	if($id > 0){
 		global $wpdb;
 		$wpdb->update( $wpdb->posts,
-			array( 'post_date' => $sort_date, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id ),
+			array( 'post_date' => $sort_date, 'post_title' => $title, 'post_name' => $class , 'post_content'=> $content, 'post_excerpt'=>$date,'menu_order'=>$alex_tl_grp_id,'comment_count'=>$vol_hours ),
 			array( 'ID' => $id ),
-			array( '%s','%s', '%s', '%s', '%s','%d' ),
+			array( '%s','%s', '%s', '%s', '%s','%d','%d' ),
 			array( '%d' )
 		);
 	}
@@ -1854,7 +1332,7 @@ function alex_kleo_bp_group_title() {
 <?php
 }
 
-/* for work with bp group revies on header group */
+/* for work with bp group revies on header group -110 */
 
 
 add_action('wp_footer',"group_pages_scroll_to_anchor",999);
@@ -1866,7 +1344,7 @@ function group_pages_scroll_to_anchor(){
 		?>
 		<script type="text/javascript">
 	    jQuery(document).ready(function() {
-	    	var scroll = (jQuery('#item-nav').offset().top)-110;
+	    	var scroll = (jQuery('#item-nav').offset().top)-410;
 	    	// jQuery(document.body).scrollTop(scroll);
 		    	jQuery(document.body).scrollTop(scroll);
 	    	  	// window.scrollTo(0,1000);
@@ -1967,33 +1445,50 @@ foreach ( $kleo_modules as $module ) {
 /* ********** Load modules ******** */
 
 
-function get_cover_image_from_db(){
+function as21_get_cover_image_from_db_for_fb( $only_image=false ){
 
 	global $wpdb,$bp;
 
-	if( bp_is_members_component() ) $user_id = bp_get_member_user_id();
+	// if( bp_is_members_component() ) $user_id = bp_get_member_user_id();
 	if( bp_is_user() ) $user_id = $bp->displayed_user->id;
+	else $user_id = bp_get_member_user_id();
     // array( 'user_id' => $user_ID, 'meta_key'=>'_afbdata', 'meta_value'=>$ser_fb_data),
+    // var_dump($user_id);
     if( !empty( $user_id) ){
-	$table = $wpdb->prefix."usermeta";
-	$get_fb_data = $wpdb->get_results( $wpdb->prepare(
-		"SELECT meta_value
-		FROM {$table}
-		WHERE user_id = %d
-		    AND meta_key = %s",
-		intval( $user_id ),
-		"_afbdata"
-	) );
-	if( !empty($get_fb_data[0]->meta_value) ) { $cover_url = unserialize($get_fb_data[0]->meta_value); return $cover_url['cover']; }
+		$table = $wpdb->prefix."usermeta";
+		$get_fb_data = $wpdb->get_results( $wpdb->prepare(
+			"SELECT meta_value
+			FROM {$table}
+			WHERE user_id = %d
+			    AND meta_key = %s",
+			intval( $user_id ),
+			"_afbdata"
+		) );
+		if( !empty($get_fb_data[0]->meta_value) ) { 
+			$cover_url = unserialize($get_fb_data[0]->meta_value); 
+			// return $cover_url['cover']; 
+			if( !empty($cover_url['cover']) && $only_image ) return $cover_url['cover']; 
+			if( !empty($cover_url['cover']) ) return 'class="item-cover has-cover" style="background:url('. $cover_url['cover'].') no-repeat center center;background-size:cover;"';
+			else return ' class="item-cover" ';
+		}else return ' class="item-cover" ';
 	}
 }
 
 // add_action("bp_after_member_home_content",'get_cover_image_from_fbuser');
+
 add_action("bp_before_member_header",'get_cover_image_from_fbuser');
 function get_cover_image_from_fbuser(){
 
-	$cover_url = get_cover_image_from_db();
-	if( !empty($cover_url) ){
+	// $cover_url = get_cover_image_from_db();
+	global $bp;
+	$user_id = $bp->displayed_user->id;
+	// kleo_bp_get_member_cover_attr($user_id); echo 'as21_777 ------------'; var_dump($cover_image);
+	if(kleo_bp_get_member_cover_attr($user_id) == 'class="item-cover"') $cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
+	// else echo kleo_bp_get_member_cover_attr();
+
+	// $cover_url = trim(as21_get_cover_image_from_db_for_fb(true));
+	// var_dump($cover_url);
+	if( !empty($cover_url) && $cover_url != 'class="item-cover"' ){
 	?>
 	<script type="text/javascript">
 		var e = document.getElementById("header-cover-image");
@@ -2128,13 +1623,157 @@ function a21_kleo_frontend_files2(){
 	// wp_enqueue_script("jquery-ui-slider",array("jquery"));
 }
 
+/* **** as21  extension for wp-job-manager **** */
+
+function as21_output_space($length_start = 4, $real_str){
+
+	$length_real_str = strlen($real_str);
+	if($length_real_str < $length_start) {
+		$length_add_str = $length_start - $length_real_str;
+		$add_char = '';
+		for($i=0; $i<$length_add_str;$i++){ $add_char .= " "; }
+		return $add_char;
+	}
+}
+
+// permissin should be is least 666 for write
+function as21_wjm_write_file_jobs_count($filename,$text){
+
+	chmod($filename, 0777);
+	$fp = fopen($filename, "w"); 
+	$write = fwrite($fp, $text); 
+	// var_dump($write);
+	fclose($fp); 
+	// echo "\r\n as21_wjm_write_file_jobs_count";
+}
+
+function as21_wjm_get_display_count_plus_by_group_id($group_id){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		// on hosting immediately convert valid array
+		$file = file($filename); 
+		// if($_GET['dev']==1) { alex_debug(0,1,'file',$file);}
+		
+		 /* //need for correctly work on localhost
+		 $file = explode("\r", $file[0]); */
+		 if( !isset($file[1]) ) $file = explode("\r", $file[0]);
+
+		// if($_GET['dev']==1) { alex_debug(0,1,'file2',$file);}
+		foreach ($file as $k => $v) {
+			if($k == 0) continue;
+			$line = explode("|", $v); 
+			$f_group_id = $line[0];
+			$dcp = $line[3];
+			// if($_GET['dev']==1)  alex_debug(0,1,'',$line);
+			if($f_group_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
+		}
+		// if($_GET['dev']==1) { alex_debug(0,1,'file3',$file); echo "; dcp--------".$dcp; }
+		return $dcp;
+		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
+		// echo 'as21_jobs_get_display_count_plus_txt ';
+	}
+
+}
+
+function as21_wjm_get_all_display_count_plus(){
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		// [0] - one string,sometime valid array
+		// $file = file($filename,FILE_IGNORE_NEW_LINES); 
+		$file = file($filename); 
+		// if file[0] as string
+		if( !isset($file[1]) ) $file = explode("\r", $file[0]);
+
+		// $dipsplay_count_plus = explode("|", $file[0]);
+		// alex_debug(0,1,'file',$file);
+		// if($_GET['dev']==1) { alex_debug(0,1,'file2',$file);}
+
+		foreach ($file as $k => $v) {
+			if($k == 0) continue;
+			$line = explode("|", $v); 
+			$dcps[trim($line[0])] = $line[3];
+			// alex_debug(0,1,'',$line);
+		}
+		// if($_GET['dev']==1) { alex_debug(0,1,'dcps',$dcps); exit;}
+		// return $dipsplay_count_plus = $dipsplay_count_plus[1];
+		// echo 'as21_jobs_get_display_count_plus_txt ';
+		return $dcps;
+	}
+
+}
+
+function as21_wjm_write_file_all_groups($dcp = false){
+
+	$filename = AS21_PATH_JOBS_COUNT_TXT;
+	if( file_exists($filename)) {
+
+		/* *** get all public (not hidden) groups and write in file **** */
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		// alex_debug(0,1,'',$groups);
+		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
+		// else $text = "Displayed Count Plus | \r";
+		$text = "id".as21_output_space(5,'id')."| group name".as21_output_space(55,'group name')."| real count".as21_output_space(14,'real count')."| total count \r";
+		if($dcp) $dcps = as21_wjm_get_all_display_count_plus();
+		$i = 1;
+		// echo count($groups['groups']);
+		foreach ($groups['groups'] as $group) {
+			$length_gr_id = as21_output_space(5, $group->id);
+			$length_gr = as21_output_space(55, $group->name);
+			$length_jobs_count = as21_output_space(14, as21_get_jobs_count_current_group($group->id));
+			
+			$text .= $group->id.$length_gr_id.'| '.$group->name.$length_gr."| ".as21_get_jobs_count_current_group($group->id).$length_jobs_count."|"; 
+			if($dcp && isset($dcps[$group->id]) ) $text .= $dcps[$group->id];
+			if( count($groups['groups']) != $i) $text .=  "\r";
+			$i++;
+		}
+		// if($_GET['dev']==1) { alex_debug(0,1,'dcps',$dcps); echo $text; exit('---------alfjlkdf----'); }
+		as21_wjm_write_file_jobs_count($filename,$text);
+		// echo "\r\n DEBUG: end work as21_wjm_write_file_all_groups! ".$text;
+	}
+
+}
+
+function as21_get_jobs_count_current_group($group_id = false){
+
+	global $bp,$wpdb;
+	if(!$group_id) $group_id = (int)$bp->groups->current_group->id;
+	else $group_id = (int)$group_id;
+	$ids = $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_job_group_a21' AND meta_value='$group_id' ");
+	// var_dump($ids);
+	$jobs_count_gr = (count($ids)>0) ? count($ids) : 0 ;
+	return $jobs_count_gr;
+}
+
+// work on page site.com/i-am/?s=ottawa and page site.com/causes/
+function as21_wjm_get_manually_jobs_count_by_group_id($group_id = false){
+	global $bp,$wpdb;
+	$group_id = (!$group_id) ? (int)$bp->groups->current_group->id : $group_id;
+	$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
+	// if($_GET['dev']==1) { var_dump($jobs_total_count_gr); echo "gr_id= ".$group_id."; "; }
+	if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group($group_id);
+	// echo bp_get_group_id();
+	return $jobs_total_count_gr;
+}
+
 
 if ( class_exists( 'BP_Group_Extension' ) ) :
 	class a21_job_nav_tab_in_group extends BP_Group_Extension {
+	
 			function __construct() {
+				/*
+				global $bp,$wpdb;
+				$group_id = (int)$bp->groups->current_group->id;
+				$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
+				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
+				if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group();
+				// if($_GET['dev']==1) var_dump($jobs_total_count_gr);
+				*/
 				$args = array(
 					'slug' => 'a21-jobs',
-	//				'name' => 'Jobs',
+					// 'name' => 'Jobs <span>'.$jobs_count_gr.'</span>',
+					'name' => 'Jobs <span>'.as21_wjm_get_manually_jobs_count_by_group_id().'</span>',
 					'nav_item_position' => 105,
 					);
 				parent::init( $args );
@@ -2144,6 +1783,22 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
 		bp_register_group_extension( 'a21_job_nav_tab_in_group' );
 		
 endif;
+
+/* **** as21  extension for wp-job-manager **** */
+
+add_action("bp_group_options_nav",'as21_add_group_new_nav_link');
+function as21_add_group_new_nav_link(){
+
+	global $bp,$wpdb;
+	$group_id = $bp->groups->current_group->id;
+	// $group = groups_get_group($group_id);
+	$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$wpdb->prefix}bp_groups_groupmeta WHERE group_id = %d AND meta_key = %s",
+		intval( $group_id ),"job_board_link"
+	) );
+
+	if(!empty($job_board_link)) echo '<li id="job-board-groups-li"><a href="'.$job_board_link.'" target="_blank">JobBoard Link</a></li>';
+}
+
 
 if(class_exists("WP_Job_Manager_Field_Editor")) require_once 'job_manager/wp-job-manager-groups/index.php';
 
@@ -2157,9 +1812,9 @@ if(class_exists('BP_Member_Reviews')){
 
 	add_action("bp_profile_header_meta","a21_override_bp_mr_embed_rating");
 
+	/*
 	function a21_override_bp_mr_embed_rating(){
 		global $BP_Member_Reviews, $bp;
-		// echo "a21 new_html========";
 	    $user_id = bp_displayed_user_id();
         $BP_Member_Reviews->calc_rating($user_id);
         $rating = get_user_meta($user_id, 'bp-user-reviews', true);
@@ -2172,7 +1827,8 @@ if(class_exists('BP_Member_Reviews')){
 		    <span itemprop="ratingCount"  content="<?php echo $rating['count']; ?>"></span>
 		    <span itemprop="itemReviewed" content="Person"></span>
 		    <span itemprop="name" content="<?php echo $BP_Member_Reviews->get_username($user_id); ?>"></span>
-		    <span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>
+		    <!--<span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>-->
+		    <span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>reviews/"></span>
 		    <?php // override only due add image property ?>
 		    <span itemprop="image" content="<?php echo $user_avatar; ?>"></span>
 		    <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
@@ -2182,6 +1838,100 @@ if(class_exists('BP_Member_Reviews')){
 		</div>
 		<?
 	}
+	*/
+	
+	function a21_override_bp_mr_embed_rating(){
+		global $BP_Member_Reviews, $bp;
+		// echo "a21 new_html========";
+	    $user_id = bp_displayed_user_id();
+        $BP_Member_Reviews->calc_rating($user_id);
+        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
+       
+        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
+		?>
+		<div class="bp-users-reviews-stars">
+			<a href="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>reviews/">
+		    <span   content="<?php echo $rating['result']; ?>"></span>
+		    <span  content="100"></span>
+		    <span content="<?php echo $rating['count']; ?>"></span>
+		    <span content="Person"></span>
+		    <span content="<?php echo $BP_Member_Reviews->get_username($user_id); ?>"></span>
+		    <!--<span itemprop="url" content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>"></span>-->
+		    <span  content="<?php echo $BP_Member_Reviews->get_user_link($user_id); ?>reviews/"></span>
+		    <?php // override only due add image property ?>
+		    <span content="<?php echo $user_avatar; ?>"></span>
+
+		    <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    <div class="active" style="width:<?php echo $rating['result']; ?>%">
+		        <?php echo $BP_Member_Reviews->print_stars($BP_Member_Reviews->settings['stars']); ?>
+		    </div>
+		    </a>
+		</div>
+
+		<?
+	}
+	
+	add_action("wp_head","as21_add_microdata");
+	function as21_add_microdata(){
+		global $BP_Member_Reviews, $bp,$wpdb;
+	    $user_id = bp_displayed_user_id();
+        $BP_Member_Reviews->calc_rating($user_id);
+        $rating = get_user_meta($user_id, 'bp-user-reviews', true);
+        $user_avatar = bp_core_fetch_avatar( array('item_id'=>$user_id, 'html'=>false));
+        $r = $wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE meta_key='user_id' AND meta_value='{$user_id}' ");
+        $first_review = $wpdb->get_var("SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='review' AND post_id='".$r[0]->post_id."' ");
+        // $r = get_post_meta($user_id, 'bp-user-reviews', true);
+        // deb_last_query();
+        // echo $first_review;
+        // alex_debug(0,1,"dddddd",$r); exit;
+        // alex_debug(0,1,"",$BP_Member_Reviews);
+        // var_dump($BP_Member_Reviews->calc_rating($user_id ));
+        // var_dump( $BP_Member_Reviews->calc_stars( $rating['result'],$rating['count'] ));
+        $rating_5 = ceil( $rating['result']*$BP_Member_Reviews->settings['stars']/100 );
+
+        $url =  $_SERVER['REQUEST_URI'];
+        $is_profile = strpos($url, 'i-am') ;
+        $is_page_reviews = strpos($url, 'reviews');
+        // echo "======777";  var_dump(bp_is_user_profile());
+        // if ( (bool)$is_profile !== false && (bool)$is_page_reviews === false ){
+        if(bp_is_user_profile()){
+				// if( strpos($url,'awesome') !== false) echo '<meta name="description" content="Todd has done amazing things as an Ottawa-based volunteer. Always available to contribute to a community event that helps the">';
+        	if(!empty($first_review)) echo '<meta name="description" content="'.substr($first_review,0,97)."...".'">';
+			?>
+			<script type="application/ld+json">
+			{
+			  "@context": "http://schema.org",
+			  "@type": "AggregateRating",
+			  "name": "<?php echo bp_core_get_user_displayname($user_id);?>",
+			  "ratingCount": <?php echo $rating['count']; ?>,
+			  "image": {
+			  "@type": "ImageObject",
+			  "name": "Image",
+			  "url": "<?php echo $user_avatar; ?>",
+			  "height": "50",
+			  "width": "50"
+			  },
+			  "bestRating": "5",
+			  "ratingValue": "<?php echo $rating_5;?>",
+			  "itemReviewed": {
+			    "@type": "Thing",
+			    "name": "Person"
+			  }
+			}
+			</script>
+		    <!--<script async src="https://cdn.ampproject.org/v0.js"></script>-->
+   		 <?php
+   		}
+	}
+
+}
+
+add_filter('breadcrumb_trail_args', "as21_disable_rich_snippet");
+function as21_disable_rich_snippet($args){
+	$args['rich_snippet']=false;
+	// alex_debug(0,1,"",$args);
+	// exit;
+	return $args;
 }
 
 add_filter('post_class',"a21_css_class");
@@ -2193,314 +1943,140 @@ function a21_css_class($classes){
 	return $classes;
 }
 
+// without hook,for reused code
+function alex_get_postid_and_fields( $wpdb = false){
 
-
-
-/***** TEMP FOR DEBUG *******/
-
-// add_action("wp_footer","as21_temp_func2");
-function as21_temp_func2(){
-
-	if ( !preg_match("#media/$#i", $_SERVER['REQUEST_URI'] ) ) return false;
-	echo "THIS IS MEDIA";
-	echo "==== work as21_temp_func2 ====";
-	 $group = groups_get_group( array( 'group_id' => 2) );
-	 echo $group->name;
-	 alex_debug(0,1,"",$group);
-	// $action = "Signed up to event task";
-	$action ='<a href="http://dugoodr2.dev/i-am/admin/">Admin</a> Signed up to event task<a href="http://dugoodr2.dev/causes/ottawa-mission/">Ottawa Mission</a>';
-	$content = "event link details";
-
-	// INSERT INTO `wp8k_bp_activity` (`id`, `user_id`, `component`, `type`, `action`, `content`, `primary_link`, `item_id`, `secondary_item_id`, `date_recorded`, `hide_sitewide`, `mptt_left`, `mptt_right`, `is_spam`) VALUES (NULL, '1', 'groups', 'joined_group', 'Signed up to event task', '', 'http://dugoodr2.dev/i-am/admin/', '2', '0', '2017-04-27 14:54:15', '0', '0', '0', '0')
-	// component = members,groups
-	// $act_id = bp_activity_add( array(
-	// 								'action' => $action,
-	// 								// 'item_id'=>2,
-	// 								'component' => 'groups',
-	// 								'type'=>'joined_cal_event_task',
-	// 								'content'=>$content,
-	// 								'error_type' => 'wp_error') );
-	var_dump($act_id);
+	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
+	$fields  = array("Website","Facebook","Twitter","Instagram","Google+","Linkedin");
+	// $fields  = array("Website","Facebook","Twitter","Instagram","Youtube","Linkedin");
+	$id = $last_post_id+1;
+	$id_and_fields = array($id,$fields);
+	return $id_and_fields;
 }
 
-/* **** 1-получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
-
-// add_action("wp_footer","as21_temp_func");
-function as21_temp_func(){
-
-	if( current_user_can('administrator') && is_front_page()){
-
-		global $wpdb;
-
-		echo "<h3>for debug:</h3>";
-		$option = "bp_group_calendar_installed";
-		echo " option:: $option=".get_option($option);
-		// if( delete_option( $option ) ) echo "<br>$option - success delete";
-
-		// $tables = $wpdb->get_results("SHOW TABLES FROM dugoodr2");
-		// $tables = $wpdb->get_results("SHOW TABLES FROM dugoodr6_wp956");
-		// echo "count tables=".count($tables);echo "<br>";
-		// alex_debug(0,1,"",$tables);
-
-		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars");
-		alex_debug(0,1,"{$wpdb->prefix}bp_groups_calendars",$results);
-		$results2 = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}bp_groups_bgc_tasks");
-		alex_debug(0,1,"{$wpdb->prefix}bp_groups_bgc_tasks",$results2);
-		$results3 = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}bp_groups_bgc_time");
-		alex_debug(0,1,"{$wpdb->prefix}bp_groups_bgc_time",$results3);
-
-		// $wpdb->query("DROP TABLE {$wpdb->prefix}bp_groups_calendars;");
+add_action( 'groups_group_create_complete',"as21_delete_cookies_for_group_soclinks" );
+function as21_delete_cookies_for_group_soclinks(){
+	// echo "=====8787=====";
+	// not exist google
+	// alex_debug(0,1,'',$_COOKIE);
+	foreach ($_COOKIE as $k => $v) {
+		if( strpos($k,'alex-') !== false) {
+			setcookie( $k, false, time() - 1000, COOKIEPATH, COOKIE_DOMAIN, is_ssl() );
+		}
 	}
-}
-/* **** получение/удаление опции 2-получение списка всех таблиц у базы данных 3-удаление одной таблицы **** */
-
-
-// add_action("wp_footer","wp_get_name_page_template2");
-function wp_get_name_page_template2(){
-
-	// global $wpdb;
-	// $post_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->posts} WHERE post_type='job_listing'");
-	// // print_r($post_ids);
-
-	// foreach ($post_ids as $k=>$v) {
-	// 	$geolocation = $wpdb->get_col($wpdb->prepare("(SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_lat' AND post_id=%d LIMIT 1) UNION (SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='geolocation_long' AND post_id=%d LIMIT 1)",(int)$v,(int)$v));
-	// 	$location .= "{lat: ".$geolocation[0].", lng: ".$geolocation[1]."},";
-	// }
-	// echo $location = substr($location, 0,-1);
-	echo "===debug a21=== url script: ";
-	// var_dump(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI']));
-	// var_dump(is_page("Volunteers"));
-	// var_dump(is_page("volunteers"));
-	// var_dump(is_singular("Volunteers"));
-	// var_dump(is_singular("volunteers"));
-	// var_dump(is_single("single-job_listing"));
-	// var_dump(is_single("single-job_listing.php"));
-	// var_dump(is_single("single-job"));
-	// var_dump(is_singular("single-job_listing"));
-	// var_dump(is_page_template("single-job_listing.php"));
-	// var_dump(is_page_template("single-job_listing"));
-	echo "<hr>";
-	// var_dump(is_singular("post-a-job"));
-	// var_dump(is_single("post-a-job"));
-	// var_dump(is_page("post-a-job"));
-
+	// alex_debug(0,1,'',$_COOKIE);
+	// exit;
 }
 
+// labels for top nav (groups,members) parts is buddyapp-child/page-parts/header-top.php override top nav
+add_filter( 'nav_menu_link_attributes', 'as21_1',1 );
+function as21_1($atts){
 
-// only for debug
-// add_action("wp_footer","as21_groups_action_join_group");
-// this if defined path /buddypress/bp-groups/bp-groups-actions.php
-function as21_groups_action_join_group1() {
+if( strtolower( $atts['title']) != 'jobs') { 
+		$atts['data-title']=$atts['title']; 
+		$atts['class'] = 'as21-link-label';
+		unset($atts['title']); 
+  }
+  return $atts;
+}
 
-	// echo "==as21_groups_action_join_group==";
-	if ( !bp_is_groups_component() ) return false;
+function as21_get_total_volunteer_hours_count_member($user_id = false){
+	global $bp,$wpdb;
+	$quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
+	// $total_estimate_hours = xprofile_get_field(57, $quest_id);
+	// alex_debug(0,1,'',$total_estimate_hours);
+	// $experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
+	$experience_total_hours = $wpdb->get_var($wpdb->prepare("SELECT SUM(menu_order) FROM {$wpdb->posts} WHERE post_author = %d  AND post_type = %s ",(int)$quest_id,"experience_volunteer"));
+	// var_dump($experience_total_hours);exit;
+	$experience_total_hours = (!empty($experience_total_hours)) ? $experience_total_hours : 0 ;
+	$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",(int)$quest_id,"alex_timeline"));
+	return $total_hours = $experience_total_hours+$total_hours_every_entry;
+}
 
-	// // Nonce check.
-	// if ( !check_admin_referer( 'groups_join_group' ) )
-	// 	return false;
+add_action('bp_directory_members_actions','as21_get_total_hours_for_member_cards');
+function as21_get_total_hours_for_member_cards(){
+	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
+}
 
-	$bp = buddypress();
+// Profile Fields tab 4.Experience : total estimate hours and Experience deleted form dashboard
+add_action( 'xprofile_profile_field_data_updated','a21_profile_edit_save_changes_experience');
+function a21_profile_edit_save_changes_experience(){
+	// alex_debug(1,1,'post',$_POST);
+	global $bp,$wpdb;
+	$user_id = $bp->displayed_user->id;
 
-	// checking values
-	// echo "<br> bp_loggedin_user_id=".bp_loggedin_user_id();
-	// echo "<br> bp->groups->current_group->id=".$bp->groups->current_group->id;
-	// var_dump( groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) );
-	// var_dump(groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id) );
-	// var_dump( groups_join_group( $bp->groups->current_group->id ) );
+	if( !empty($_POST['as21_new_experiences']) ){
 
-	// Skip if banned or already a member.
-	if ( !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) && !groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+		foreach ($_POST['as21_new_experiences'] as $k => $v) {
+			if( !empty( $v['title']) ) $val .= $wpdb->prepare("(%d,%s,%s,%d),",(int)$user_id, sanitize_text_field($v['title']), 'experience_volunteer', (int)$v['hours']);
+		}
+		$val = substr($val, 0,-1);
+		$insert_query = "INSERT INTO $wpdb->posts (post_author, post_title, post_type, menu_order) VALUES {$val}";
+		// echo $insert_query;
+		$wpdb->query($insert_query);
 
-		/*// User wants to join a group that is not public.
-		if ( $bp->groups->current_group->status != 'public' ) {
-			if ( !groups_check_user_has_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
-				bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
-				bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		// deb_last_query();
+	}
+	unset($_POST['as21_new_experiences']);
+
+	if( !empty( $_POST['as21_experiences']) ){
+
+		foreach ($_POST['as21_experiences'] as $k => $v) {
+			$exper_id = (int)$v['exper_id'];
+			if($exper_id>0){
+				$menu_order .= $wpdb->prepare("WHEN %d THEN %s ",$exper_id, (int)$v['hours']);
+				$post_title .= $wpdb->prepare("WHEN %d THEN %s ",$exper_id, sanitize_text_field($v['title']));
+				$post_id .= $exper_id.",";
 			}
 		}
-		*/
-
-		/*// User wants to join any group.
-		if ( !groups_join_group( $bp->groups->current_group->id ) )
-			bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
-		else
-			bp_core_add_message( __( 'You joined the group!', 'buddypress' ) );
-		*/
-		// bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
-		groups_join_group( $bp->groups->current_group->id );
+		// echo "as21_exper =========".$post_author;
+		// exit;
+		if( !empty($post_id) ){
+			$post_id = substr($post_id, 0,-1);
+			// echo $post_title;
+			$update_query = "UPDATE $wpdb->posts SET
+					    post_title = CASE id {$post_title} END,
+					    menu_order = CASE id {$menu_order} END WHERE id IN({$post_id})";
+			// echo $update_query."<hr>";
+		   $wpdb->query($update_query);
+		   // deb_last_query();
+		}
 	}
-
+	 // exit;
 }
+// post_title | menu_order	| 	post_author | post_tye
+// name_exper |exper_hours |user_id        | experience_volunteer
+// при выводе удалить слэш
 
+add_action('wp_ajax_as21_experience_del', 'as21_experience_del');
 
-// only for debug
-// add_action("wp_footer","wp_get_name_page_template");
-function wp_get_name_page_template(){
-
-    global $template,$bp;
-	// get user_id for logged user
-	$user = wp_get_current_user();
-	$user_id_islogin = $user->ID;
-	// get user_id for notlogged user
-	global $bp;
-	$user_id_isnotlogin = $bp->displayed_user->id;
-
-	if(!$user_id_islogin){ $user_id_islogin = $user_id_isnotlogin; }
-	$url_s = $_SERVER['REQUEST_URI'];
-	$profile_view_notdefault = preg_match("#^/i-am/".$member_name."/$#i", $url_s);
-
-	echo "has page profile= "; var_dump(bp_has_profile());
-
-    echo "1- ".$template;
-	echo "<br>2- ".$page_template = get_page_template_slug( get_queried_object_id() )." | ";
-	echo "<br>3- ".$_SERVER['PHP_SELF'];
-	echo "<br>4- ".__FILE__;
-	echo "<br>5- ".$_SERVER["SCRIPT_NAME"];
-	echo "<br>6- ".$_SERVER['DOCUMENT_ROOT'];
-	alex_debug(1,1,0,$_SERVER);
-exit;
-	// global $wpdb;
-	// $table = $wpdb->prefix."bp_groups";
-	// “{person_name_link} just added the amazing {job_title_and_link} opportunity in {city} for the cause {insert_cause_logo_title_link}”
-	// $gr_name = $wpdb->get_var( "SELECT name FROM {$wpdb->prefix}bp_groups WHERE id='8' ");
-	// // $action = "just added the amazing ".$get_job[0]->guid." ".$get_job[0]->post_title." <a href='http://dugoodr2.dev/causes/ottawa-food-bank/'>{$gr_name}</a> ";
-	// $action="just added the amazing {job_title_and_link} opportunity in {city} for the cause <a href='http://dugoodr2.dev/causes/ottawa-food-bank/'>{$gr_name}</a>";
-
-	// $args = array( "action"=>$action, "component" => "groups", "type" => "new_event2", "item_id"=> 8,"secondary_item_id"=> 10454,"content"=>"content" );
-	// echo " activ_id= ".$activity_id = bp_activity_add( $args );
-
- //      $group = groups_get_group( array( 'group_id' => 8 ) );
- //      alex_debug(0,1,"",$group);
-
-	// deb_last_query();
-
-
-}
-
-
-
-
-// add_action("wp_footer","a21_memb_reviews");
-function a21_memb_reviews(){
-
-delete_option( 'bp_group_calendar_installed' );
-	// if(class_exists('BP_Member_Reviews')){
-	// 	global $BP_Member_Reviews;
-	// 	alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
-	// 	remove_action('bp_profile_header_meta', array($BP_Member_Reviews, 'embed_rating'));
-	// }
-
-	/***** проверка: есть ли у таблицы колонка (check exist column in table db ******
-
-	global $wpdb;
-	$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-	WHERE table_name = '{$wpdb->prefix}bp_groups_calendars' AND column_name = 'event_slug'"  );
-	alex_debug(1,1,"",$row);
-	// if(!empty($row)) { echo "has value";  ... in no value - add new column in db  }
-	if(empty($row)){
-	   $wpdb->query("ALTER TABLE {$wpdb->prefix}bp_groups_calendars ADD event_slug VARCHAR(200) NOT NULL");
-	   // ALTER TABLE `wp8k_bp_groups_calendars` ADD `event_slug` VARCHAR(200) NOT NULL AFTER `last_edited_stamp`;
-       // $wpdb->query("ALTER TABLE wp_customer_say ADD say_state INT(1) NOT NULL DEFAULT 1");
-	}
-	***** проверка: есть ли у таблицы колонка ******/
-
-	
-	/* **** получение целого столбца (например все id, и изменение/добавление slug к нему ***** *
-	global $wpdb;
-
-	$data = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}bp_groups_calendars`");
-	alex_debug(0,1,"",$data);
-	echo $count_rows = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}bp_groups_calendars`");
-	// получить полностью один столбец (все id)
-
-	$ids = $wpdb->get_col("SELECT id FROM {$wpdb->prefix}bp_groups_calendars");
-	alex_debug(0,1,"",$ids);
-
-	foreach($ids as $id){
-		echo $event_title = $wpdb->get_var( "SELECT event_title FROM {$wpdb->prefix}bp_groups_calendars WHERE id='{$id}'");
-		$event_title = strtolower($event_title);
-		$event_slug = str_replace(" ", "-", $event_title);
-		$query = 
-		$wpdb->update(
-			$wpdb->prefix."bp_groups_calendars",
-			array( 'event_slug' => $event_slug, ),
-			array( 'id' => $id )
-		);
-	}
-	 **** получение целого столбца (например все id, и изменение/добавление slug к нему ***** */
-
-}
-
-
-function deb_last_query(){
-
-	global $wpdb;
-	echo '<hr>';
-	echo "<b>last query:</b> ".$wpdb->last_query."<br>";
-	echo "<b>last result:</b> "; echo "<pre>"; print_r($wpdb->last_result); echo "</pre>";
-	echo "<b>last error:</b> "; echo "<pre>"; print_r($wpdb->last_error); echo "</pre>";
-	echo '<hr>';
-}
-
-// add_action("wp_footer","a21_tmp_query_db");
-
-function a21_tmp_query_db(){
-
-	global $wpdb;
-
-	// Преобразует дату '28 Jan 2017' в '2017-01-28', a mysql работает с форматом 0000-00-00 00:00:00
-	echo date("Y-m-d",strtotime("28 Jan 2017"));
-
-	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
-
-	$date_timeline = $wpdb->get_results( "SELECT ID,post_excerpt FROM ".$wpdb->posts." WHERE post_type='alex_timeline'" );
-	// alex_debug(0,1,"",$date_timeline);
-
-	foreach ($date_timeline as $date) {
-		$parse_date = date("Y-m-d",strtotime($date->post_excerpt));
-		$query = $wpdb->prepare( "UPDATE " . $wpdb->posts."
-		        	SET post_date=%s WHERE post_type=%s AND ID=%d
-		        	",$parse_date, 'alex_timeline',(int)$date->ID);
-		$wpdb->query( $query );
-		deb_last_query();
-	}
-
-	/* **** as21 добавление правильной даты в формате mysql нужное потом для сортировки по этому полю post_date **** */
-
-	
-	$fields = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
-		FROM {$wpdb->posts}
-		WHERE post_parent = %d
-		    AND post_type = %s
-		  ORDER BY post_date DESC LIMIT 0,2", 
-		 // ORDER BY post_date DESC LIMIT 15",
-		1,
-		"alex_timeline"
-	) );
-	alex_debug(0,1,"",$fields);
-
-	$fields2 = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID, post_title, post_content, post_excerpt,post_name,menu_order
-		FROM {$wpdb->posts}
-		WHERE post_parent = %d
-		    AND post_type = %s
-		  ORDER BY post_date DESC LIMIT 2,5", 
-		 // ORDER BY post_date DESC LIMIT 15",
-		1,
-		"alex_timeline"
-	) );
-	alex_debug(0,1,"",$fields2);
-}
-
-// add_action("wp_footer","a21_check_tables");
-
-function a21_check_tables(){
-	if( current_user_can('administrator') && is_front_page()){
+function as21_experience_del(){
+	$id = (!empty($_POST['id'])) ? (int)$_POST['id'] : false;
+	echo $id;
+	if($id>0){
 		global $wpdb;
-		$get_event_images = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM ".$wpdb->base_prefix."bp_groups_groupmeta WHERE meta_key=%s", 'a21_bgc_event_image') );
-		alex_debug(0,1,"",$get_event_images);
-	    $wpdb->delete( $wpdb->base_prefix."bp_groups_groupmeta", array('id'=>138), array('%d') );
-	    deb_last_query();
+		$wpdb->delete( $wpdb->posts, array( 'ID' => $id ), array( '%d' ) ); 
+		// deb_last_query();
 	}
+	exit;
 }
+
+function as21_get_all_experience_from_page_edit_profile(){
+	global $bp,$wpdb;
+	$quest_id = $bp->displayed_user->id;
+
+	$fields = $wpdb->get_results( $wpdb->prepare(
+		"SELECT ID,post_title,menu_order
+		FROM {$wpdb->posts}
+		WHERE post_author = %d
+		    AND post_type = %s
+		ORDER BY ID",
+		intval( $quest_id ),
+		'experience_volunteer'
+	) );
+	// alex_debug(1,1,'',$fields);
+	// alex_debug(0,1,'post',$_POST);
+	return $fields;
+}
+
+require_once 'debug_functions.php';

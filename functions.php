@@ -210,15 +210,15 @@ function alex_edit_group_fields(){
 		$city = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
 			intval( $gid ),	"city_state"
 		) );
-		$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
-			intval( $gid ),	"job_board_link"
-		) );
+		//$job_board_link = $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$table_grmeta} WHERE group_id = %d AND meta_key = %s",
+		//intval( $gid ),	"job_board_link"
+		//) );
 
 		echo '<label class="" for="city_state">City, Province/State</label>';
 		echo '<input id="city_state" name="city_state" type="text" value="' . esc_attr($city) . '" />';
 
-		echo '<label class="" for="job_board_link">Add link to your websites Job Board:</label>';
-		echo '<input id="job_board_link" name="job_board_link" type="url" value="' . esc_attr($job_board_link) . '" />';
+		//echo '<label class="" for="job_board_link">Add link to your websites Job Board:</label>';
+		//echo '<input id="job_board_link" name="job_board_link" type="url" value="' . esc_attr($job_board_link) . '" />';
 	
 
 		// info about all groups
@@ -498,9 +498,9 @@ function alex_search_form( $atts = array(), $content = null ) {
 	<form id="' . $el_id . '" class="' . $el_class . ' second-menu" method="get" ' . ( $search_page == 'no' ? ' onsubmit="return false;"' : '' ) . ' action="' . $action . '" data-context="' . $context  .'">';
 	$output .= '<input id="' . $input_id . '" class="' . $input_class . ' ajax_s" autocomplete="off" type="text" name="' . $input_name . '" onfocus="this.value = \'\';" onblur="if (this.value == \'\') {this.value = \'e.g. Awesome Todd\';}" value="e.g. Awesome Todd">';
 	$output .= '<input type="submit" class="' . $button_class . '" value="Search" />';
-	if ( $ajax_results == 'yes' ) {
-		$output .= '<div class="kleo_ajax_results search-style-' . $form_style . '"></div>';
-	}
+	//if ( $ajax_results == 'yes' ) {
+	//$output .= '<div class="kleo_ajax_results search-style-' . $form_style . '"></div>';
+	//}
 	$output .= $hidden;
 	$output .= '</form>
 	</div>
@@ -836,7 +836,7 @@ function as21_get_all_limit_entrys_timeline($fields){
 		              </div>
 		              <div class="content">';
 		              	    if( !empty($get_event_image) ) {
-		              	    $html .= "<a href='".$group_permalink."/callout/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
+		              	    $html .= "<a href='".$group_permalink."/helpers/".$event->event_slug."' class='event_image' target='_blank'><img src='".$get_event_image."' /></a>";
 		              	    $html .= "<p>".stripslashes($event->thank_you)."</p>";
 		              	    }else $html .= stripslashes($event->thank_you);
 		              	    
@@ -1995,7 +1995,7 @@ function as21_get_total_volunteer_hours_count_member($user_id = false){
 
 add_action('bp_directory_members_actions','as21_get_total_hours_for_member_cards');
 function as21_get_total_hours_for_member_cards(){
-	echo '<div class="meta">Hours / '.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).'</div>';
+	echo '<div class="meta">'.as21_get_total_volunteer_hours_count_member(bp_get_member_user_id() ).' Hours</div>';
 }
 
 // Profile Fields tab 4.Experience : total estimate hours and Experience deleted form dashboard
