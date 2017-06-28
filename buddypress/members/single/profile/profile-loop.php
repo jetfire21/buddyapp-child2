@@ -313,17 +313,17 @@ endif;
 	<?php
 					
 		/* **** as21 if profile is full empty**** */			
-
+		if((bool)$_GET['dev'] == true ) alex_debug(1,1,'',$profile_template->groups);
 		$has_mission_group = false;
 		$has_security_group = false;
 		$has_details_group = false;
 		foreach ($profile_template->groups as $group) {
 			if( $group->id == 4) { $has_details_group = true; break; }
 		}
-		if(!$has_details_group ) {
+		if(!$has_details_group) {
 		// if(!$has_details_group && $LALA) {
 			$details_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",10, 4, 0 ) );
-			echo "<div class='bp-widget 1. details details'><span class='field-name not-filled-filed'>".$details_field->name."</span>".$details_field->description."</div>";
+			echo "<div class='bp-widget 1. details details'><span class='field-name not-filled-filed' id='tooltips-name'>".$details_field->name."</span>".$details_field->description."</div>";
 				?>
 				<div class="bp-widget basic info info ">
 								<div class="inner-basic-info">
@@ -351,10 +351,18 @@ endif;
 											echo "<p><a href='#'>".$option[0]->name."</a>";
 										}else{	bp_the_profile_field_value(); }
 										*/
+									// $vol_availability = xprofile_get_field_data(2, $user_id);
 									$vol_availability = xprofile_get_field_data(2, $user_id);
 									// var_dump($vol_availability);
-									// echo "<div class='bp-widget'><span class='field-name'>Availability</span>".$vol_availability."</div>";
-									echo '<p>'.$vol_availability.'</p>';
+									// echo $user_id;
+									if( empty($vol_availability) ) { 		
+										$default_avail = $wpdb->get_var( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d AND is_default_option = %d", 1, 2,1 ) );
+										echo '<p>'.$default_avail.'</p>';
+									}else{
+										// var_dump($vol_availability);
+										// echo "<div class='bp-widget'><span class='field-name'>Availability</span>".$vol_availability."</div>";
+										echo '<p>'.$vol_availability.'</p>';
+									}
 
 									?>
 									</td>
@@ -416,7 +424,7 @@ endif;
 			// echo '--Mission not EXIST---';
 			$mission_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d", 5, 0 ) );
 			// deb_last_query();
-			echo "<div class='bp-widget'><span class='field-name'>".$mission_field->name."</span>".$mission_field->description."</div>";
+			echo "<div class='bp-widget'><span class='field-name' id='tooltips-mission'>".$mission_field->name."</span>".$mission_field->description."</div>";
 		}
 
 		/* **** as21 if profile is full empty**** */			

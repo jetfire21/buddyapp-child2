@@ -743,7 +743,9 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 
 /* ******* PAGE VOLUNTEER********* */
 
-
+.wp-pointer-buttons a{font-size: 13px !important; opacity: 1 !important; font-weight: normal;}
+.wp-pointer-buttons a:hover,.wp-pointer-buttons a.close:before{opacity: 1 !important;}
+.wp-pointer-buttons a.close:before {top:-2px !important; }
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}
 
