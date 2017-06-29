@@ -292,3 +292,7 @@
 		}
 	});
 })(jQuery);
+
+#page-wrapper {
+    padding-top: 40px;
+}

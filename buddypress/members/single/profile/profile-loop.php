@@ -193,64 +193,11 @@ endif;
 								</div>
 							</div>
 							<?php elseif($prof_name == "basic info"):?>
-								<?php if($bi < 1):?>
-									<div class="inner-basic-info">
-									<div id="circle-dount-chart"></div>
-									<div class="wrap_field-avail">
-									<table class=" field-avail">
-									<tr<?php bp_field_css_class(); ?>>
-									<td class="data">
-									<span>Availability</span>
-									<?php
-										// check registration user from facebook login,if ok,then get field default from xProfile
-										$v_avail = xprofile_get_field_data('Volunteer Availability');
-										if( empty($v_avail)) {
-											global $wpdb;
-											$table = $wpdb->prefix."bp_xprofile_fields";
-											$option = $wpdb->get_results( $wpdb->prepare(
-												"SELECT name
-												FROM {$table}
-												WHERE group_id = %d
-												    AND parent_id = %d
-												    AND is_default_option = %d",
-												1,2,1
-											) );
-											echo "<p><a href='#'>".$option[0]->name."</a>";
-										}else{	bp_the_profile_field_value(); }
-									?>
-									</td>
-									<td class="verify">
-									<?php
+								<?php $full_name = xprofile_get_field_data(10, $user_id);?>
+								<?php if($bi < 1 && !empty($full_name)):?>
 
-									if($verify_user == 'YES') {
-										if(is_user_logged_in() ) {
-											$popup_s = "<a href='#security_desc' class='popup-modal'>";
-											$popup_e = "</a>";
-										}
-										echo $popup_s."<img src='".get_stylesheet_directory_uri()."/images/user_verified.png' alt='Security check verified'/>".$popup_e;
-										$sec_mouseover = "Security Check Verified";
-									}else{
-									 echo "<img src='".get_stylesheet_directory_uri()."/images/user_not_verified.png' alt='Security check verified'/>";
-									 	$sec_mouseover = "Security Check Non-Verified";
-									}
-									?>
-									</td>
-									</tr>
-									</table>
-									<!-- <span>Security Check Verified</span> -->
-									<span class="sec_mouseover"><?php echo $sec_mouseover;?></span>
-									</div>
-									</div>
-									<script type="text/javascript">
-									jQuery(document).ready(function() { 
-										jQuery( ".field-avail td.verify" ).mouseover(function() { 
-											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"block"});
-										});
-										jQuery( ".field-avail td.verify" ).mouseout(function() { 
-											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"none"});
-										});
-									});
-									</script>
+ 									<?php echo a21_display_vol_availibility_sec_check($verify_user); ?>
+
 								<?php endif;?>
 								<?php $bi++; ?>								
 							<?php elseif($prof_name=="details"):?>
@@ -312,7 +259,8 @@ endif;
 
 	<?php
 					
-		/* **** as21 if profile is full empty**** */			
+		/* **** as21 if profile fields is full empty**** */		
+
 		if((bool)$_GET['dev'] == true ) alex_debug(1,1,'',$profile_template->groups);
 		$has_mission_group = false;
 		$has_security_group = false;
@@ -325,81 +273,8 @@ endif;
 			$details_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",10, 4, 0 ) );
 			echo "<div class='bp-widget 1. details details'><span class='field-name not-filled-filed' id='tooltips-name'>".$details_field->name."</span>".$details_field->description."</div>";
 				?>
-				<div class="bp-widget basic info info ">
-								<div class="inner-basic-info">
-									<div id="circle-dount-chart"></div>
-									<div class="wrap_field-avail">
-									<table class=" field-avail">
-									<tr<?php bp_field_css_class(); ?>>
-									<td class="data">
-									<span>Availability</span>
-									<?php
-										// check registration user from facebook login,if ok,then get field default from xProfile
-										/*
-										$v_avail = xprofile_get_field_data('Volunteer Availability');
-										if( empty($v_avail)) {
-											global $wpdb;
-											$table = $wpdb->prefix."bp_xprofile_fields";
-											$option = $wpdb->get_results( $wpdb->prepare(
-												"SELECT name
-												FROM {$table}
-												WHERE group_id = %d
-												    AND parent_id = %d
-												    AND is_default_option = %d",
-												1,2,1
-											) );
-											echo "<p><a href='#'>".$option[0]->name."</a>";
-										}else{	bp_the_profile_field_value(); }
-										*/
-									// $vol_availability = xprofile_get_field_data(2, $user_id);
-									$vol_availability = xprofile_get_field_data(2, $user_id);
-									// var_dump($vol_availability);
-									// echo $user_id;
-									if( empty($vol_availability) ) { 		
-										$default_avail = $wpdb->get_var( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d AND is_default_option = %d", 1, 2,1 ) );
-										echo '<p>'.$default_avail.'</p>';
-									}else{
-										// var_dump($vol_availability);
-										// echo "<div class='bp-widget'><span class='field-name'>Availability</span>".$vol_availability."</div>";
-										echo '<p>'.$vol_availability.'</p>';
-									}
-
-									?>
-									</td>
-									<td class="verify">
-									<?php
-
-									if($verify_user == 'YES') {
-										if(is_user_logged_in() ) {
-											$popup_s = "<a href='#security_desc' class='popup-modal'>";
-											$popup_e = "</a>";
-										}
-										echo $popup_s."<img src='".get_stylesheet_directory_uri()."/images/user_verified.png' alt='Security check verified'/>".$popup_e;
-										$sec_mouseover = "Security Check Verified";
-									}else{
-									 echo "<img src='".get_stylesheet_directory_uri()."/images/user_not_verified.png' alt='Security check verified'/>";
-									 	$sec_mouseover = "Security Check Non-Verified";
-									}
-									?>
-									</td>
-									</tr>
-									</table>
-									<!-- <span>Security Check Verified</span> -->
-									<span class="sec_mouseover"><?php echo $sec_mouseover;?></span>
-									</div>
-									</div>
-								</div>
-									<script type="text/javascript">
-									jQuery(document).ready(function() { 
-										jQuery( ".field-avail td.verify" ).mouseover(function() { 
-											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"block"});
-										});
-										jQuery( ".field-avail td.verify" ).mouseout(function() { 
-											jQuery(".wrap_field-avail .sec_mouseover").css({"display":"none"});
-										});
-									});
-									</script>
-		<?php
+                <div class="bp-widget basic info info "> <?php echo a21_display_vol_availibility_sec_check($verify_user); ?></div>
+                <?php
 		}
 
 		// $vol_availability = xprofile_get_field(2, $user_id);
@@ -427,8 +302,6 @@ endif;
 			echo "<div class='bp-widget'><span class='field-name' id='tooltips-mission'>".$mission_field->name."</span>".$mission_field->description."</div>";
 		}
 
-		/* **** as21 if profile is full empty**** */			
-
 		$has_interests = xprofile_get_field_data('Interests', $user_id);
 		$has_experience = xprofile_get_field_data('Experience', $user_id);
 		$has_mission = xprofile_get_field_data('Mission', $user_id);
@@ -448,6 +321,9 @@ endif;
 		}else{
 			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		}
+
+		/* **** as21 if profile fields is full empty**** */		
+
 
 	    if( !empty( groups_user()) ) echo groups_user($edit_link);
 
@@ -644,3 +520,56 @@ do_action( 'bp_after_profile_loop_content' ); ?>
 	    <a class="mfp-close" href="#">x</a>
 	</div>
 <?php endif;?>
+
+<?php
+function a21_display_vol_availibility_sec_check($verify_user = false){
+        $html ='
+        <div class="inner-basic-info">
+        <div id="circle-dount-chart"></div>
+        <div class="wrap_field-avail">
+        <table class=" field-avail">
+        <tr '.bp_get_field_css_class().' >
+        <td class="data">
+        <span>Availability</span>';
+            // check registration user from facebook login,if ok,then get field default from xProfile
+            $v_avail = xprofile_get_field_data('Volunteer Availability');
+            // $vol_availability = xprofile_get_field_data(2, $user_id);
+            if( empty($v_avail)) {
+                global $wpdb;
+                $default_avail = $wpdb->get_var( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d AND is_default_option = %d", 1, 2,1 ) );
+                $html .= "<p>".$default_avail."</p>";
+            }else{  $html .= '<p>'.$v_avail.'</p>'; }
+       $html .= 
+       '</td>
+        <td class="verify">';
+        if($verify_user == 'YES') {
+            if(is_user_logged_in() ) {
+                $popup_s = "<a href='#security_desc' class='popup-modal'>";
+                $popup_e = "</a>";
+            }
+            $html .= $popup_s."<img src='".get_stylesheet_directory_uri()."/images/user_verified.png' alt='Security check verified'/>".$popup_e;
+            $sec_mouseover = "Security Check Verified";
+        }else{
+         $html .= "<img src='".get_stylesheet_directory_uri()."/images/user_not_verified.png' alt='Security check verified'/>";
+            $sec_mouseover = "Security Check Non-Verified";
+        }
+        $html .= '
+        </td>
+        </tr>
+        </table>
+        <!-- <span>Security Check Verified</span> -->
+        <span class="sec_mouseover">'.$sec_mouseover.'</span>
+        </div>
+        </div>
+        <script type="text/javascript">
+        jQuery(document).ready(function() { 
+            jQuery( ".field-avail td.verify" ).mouseover(function() { 
+                jQuery(".wrap_field-avail .sec_mouseover").css({"display":"block"});
+            });
+            jQuery( ".field-avail td.verify" ).mouseout(function() { 
+                jQuery(".wrap_field-avail .sec_mouseover").css({"display":"none"});
+            });
+        });
+        </script>';
+     return $html;
+} 
