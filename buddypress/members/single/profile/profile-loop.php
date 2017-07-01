@@ -106,7 +106,7 @@ endif;
 <?php if ( bp_has_profile() ) : ?>
 
 	<?php
-		function groups_user($edit_link =''){
+		function groups_user($edit_link ='',$text_field_empty){
 			global $bp;
 			$quest_id = $bp->displayed_user->id;
 			// groups for auth and noauth user
@@ -128,7 +128,14 @@ endif;
 				}
 				$html .="</div>";
 				return $html;
-			}else return false;
+			// }else return false;
+			}else {
+				$html = '<div class="bp-widget groups">
+							<span class="field-name" id="tooltips-groups">Causes</span>
+							'.$text_field_empty.'
+						</div>';
+				return $html;
+			};
 			// alex_debug(1,1,"grs",$grs_notimeline);
 		}
 
@@ -319,13 +326,13 @@ endif;
 			 $html .= '</ul>';
 			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$html."</div>";
 		}else{
-			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
+			 echo "<div class='bp-widget'><span class='field-name' id='tooltips-experiences'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		}
 
 		/* **** as21 if profile fields is full empty**** */		
 
 
-	    if( !empty( groups_user()) ) echo groups_user($edit_link);
+	    if( !empty( groups_user()) ) echo groups_user($edit_link,$text_field_empty);
 
 		global $wpdb;
  		$user = wp_get_current_user();
@@ -573,3 +580,308 @@ function a21_display_vol_availibility_sec_check($verify_user = false){
         </script>';
      return $html;
 } 
+
+
+?>
+
+<?php
+add_action('wp_footer','as21_new',999);
+function as21_new(){
+	$tooltips = array(
+		array(
+		'id'   => 'tooltips-name',
+		'edge' => 'bottom', // align tooltip arrow
+		'text' => '<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>',
+		'zindex' => 998),
+		array(
+		'id'   => 'tooltips-mission',
+		'edge' => 'top',
+		'text' => '<h3>Step2: </h3> <p> Add your mission statement</p>',
+		'zindex' => 997),
+		array(
+		'id'   => 'tooltips-experiences',
+		'edge' => 'top',
+		'text' => '<h3>Step3:</h3><p> Add your experiences</p>',
+		'zindex' => 996),
+		array(
+		'id'   => 'tooltips-socilal-links',
+		'edge' => 'top',
+		'text' => '<h3>Step4:</h3><p> add your social media accounts</p>',
+		'zindex' => 995),
+		array(
+		'id'   => 'tooltips-groups',
+		'edge' => 'top',
+		'text' => '<h3>Step 5:</h3><p> Add causes you support and have joined</p>',
+		'zindex' => 994)
+	  );
+	// as21_r("tooltips-name",'bottom','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>');
+	// as21_r("tooltips-mission",'top','<h3>Step2: </h3> <p> Add your mission statement</p>');
+	// as21_r("tooltips-experiences",'top','<h3>Step3:</h3><p> Add your experiences</p>');
+	// as21_r("tooltips-socilal-links",'top','<h3>Step4:</h3><p> add your social media accounts</p>');
+	// as21_r("tooltips-groups",'top','<h3>Step 5:</h3><p> Add causes you support and have joined</p>');
+
+	// print_r($tooltips);
+	$html = '';
+	foreach ($tooltips as $tip):
+		// print_r($tip);
+		$html .= 
+	'<div id="wp-pointer-'.$tip['id'].'" class="wp-pointer wp-pointer-'.$tip['edge'].'" style="width: 320px; position: absolute; display: none; z-index: '.$tip['zindex'].';"><div class="wp-pointer-content"> '.$tip['text'].'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+	endforeach;
+	echo $html;
+	  ?>
+  <?php
+}
+
+add_action('wp_footer','as21_my_tooltip',999);
+function as21_my_tooltip(){
+
+?>
+
+  <script type="text/javascript">
+jQuery( document ).ready(function() {
+
+		  function as21_r(id,edge){
+	  	  console.log('start------------');
+	  	  var toolt_width = 320;
+	  	  // var zindex = zindex ? zindex : 998;
+	  	  if(edge) edge = edge;
+	  	  else edge = 'top';
+	  	  console.log('edge='+edge);
+	  	  // var manual_offset = 150;
+		  // var el = jQuery("#tooltips-name");
+		  var el = jQuery("#"+id);
+		  el.css({"display":"table"});
+		  // console.log()
+		  console.log(el.length);
+		  var position = el.offset();
+		  console.log(id);
+		  console.log('target width-'+el.width());
+		  console.log('target height-'+el.height());
+		  console.log(position);
+	  	  // var count_tooltips = jQuery(".wp-pointer").length;
+	  	  var count_tooltips = jQuery(".wp-pointer").length ? jQuery(".wp-pointer").length+1 : 1;
+	  	  console.log('count_tooltips='+count_tooltips);
+	  	  var text = text;
+	  	  var tooltip = '';
+	  	  var html = '';
+		// tooltip = jQuery("#wp-pointer-"+id);
+		// console.log('--tooltip height='+tooltip.height());
+		// console.log('--tooltip html='+tooltip.html() );
+		// console.log('full height tooltip name'+jQuery('#wp-pointer-tooltips-name').height());
+
+
+		  if(el.length){
+		  	 console.log("edge tooltip="+edge);
+			  // var html = '<div id="wp-pointer-'+count_tooltips+'" class="wp-pointer wp-pointer-'+edge+'"><div class="wp-pointer-content"> '+text+'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+			  // html = '<div id="wp-pointer-'+id+'" class="wp-pointer wp-pointer-'+edge+'"><div class="wp-pointer-content"> '+text+'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+			  // jQuery("body").append(html);
+			  // jQuery("#content").append(html);
+  		  	  tooltip = jQuery("#wp-pointer-"+id);
+
+  		  	  console.log('id----- ' +id);
+  		  	  console.log('--tooltip height='+tooltip.height());
+  		  	  // console.log('--tooltip height='+tooltip.parent().height());
+  		  	  console.log('--tooltip html='+tooltip.html() );
+  		  	  // console.log('full height tooltip name'+jQuery('#wp-pointer-tooltips-name').height());
+  		  	  // console.log('full height tooltip mission'+jQuery('#wp-pointer-tooltips-mission').height());
+
+  		  	  // var tooltip = jQuery("#wp-pointer-a");
+			  // if(edge == 'left') var pos_left = position.left+el.width()/2;
+			  if(edge == 'left') {
+				// var total_width = toolt_width + manual_offset;
+				var total_width = toolt_width + el.width();
+				console.log('total_width='+total_width);
+
+  	 		     if(jQuery(window).width() < total_width) { pos_left = position.left; pos_top = position.top+el.height(); 
+  	 		     	tooltip.removeClass('wp-pointer-left');
+  	 		     	tooltip.addClass('wp-pointer-top');
+  	 		     	console.log('if window.width < total_width');
+  	 			 }
+  	 		     else{
+  	 		     	tooltip.removeClass('wp-pointer-top');
+  	 		     	tooltip.addClass('wp-pointer-left');
+				  	 // pos_left = position.left+manual_offset;
+				  	 pos_left = position.left+el.width();
+				  	 pos_top = position.top; 
+				  	 // var tooltip_offset = tooltip.offset();
+				  	 // console.log(tooltip_offset);
+   	 		     	console.log('if window.width > total_width');
+  	 		     }
+			  }
+			  else if(edge == 'bottom'){
+			  	// pos_left = position.left; pos_top = position.top-tooltip.height()-el.height();
+			  	pos_left = position.left; pos_top = position.top-tooltip.height();
+			  }
+			  else {
+			  	pos_left = position.left; pos_top = position.top+el.height();
+			  }
+
+			  console.log('pos_left='+pos_left);
+			  console.log('pos_top tooltip ='+pos_top);
+			  tooltip.css({"top":pos_top,"left":pos_left,"display":"block"});
+			  // tooltip.css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block","z-index":zindex});
+			  // jQuery("#wp-pointer-a").css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block"});
+
+			  console.log("window width="+jQuery(window).width());
+			  if(jQuery(window).width()>751) jQuery("#wp-pointer-tooltips-socilal-links").css({"position":"fixed"});
+			  else jQuery("#wp-pointer-tooltips-socilal-links").css({"position":"absolute"}); 
+
+		 }
+	}
+
+	as21_r("tooltips-name",'bottom');
+	as21_r("tooltips-mission",'top');
+	as21_r("tooltips-experiences",'top');
+	as21_r("tooltips-socilal-links",'top');
+	as21_r("tooltips-groups",'top');
+
+	jQuery(window).resize(function(){
+		as21_r("tooltips-name",'bottom');
+		as21_r("tooltips-mission",'top');
+		as21_r("tooltips-experiences",'top');
+		as21_r("tooltips-socilal-links",'top');
+		as21_r("tooltips-groups",'top');
+	 });
+	jQuery("body").on('click','.wp-pointer',function(){
+		console.log('tootip close');
+		jQuery(this).closest(".wp-pointer").remove();
+	});
+
+
+	/*
+   // var html = '<div id="wp-pointer-'+id+'" class="wp-pointer wp-pointer-'+edge+'"><div class="wp-pointer-content"> '+text+'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+
+	  function as21_r(id,edge,text,zindex){
+	  	  console.log('start------------');
+	  	  var toolt_width = 320;
+	  	  var zindex = zindex ? zindex : 998;
+	  	  if(edge) edge = edge;
+	  	  else edge = 'top';
+	  	  console.log('edge='+edge);
+	  	  // var manual_offset = 150;
+		  // var el = jQuery("#tooltips-name");
+		  var el = jQuery("#"+id);
+		  el.css({"display":"table"});
+		  // console.log()
+		  console.log(el.length);
+		  var position = el.offset();
+		  console.log(id);
+		  console.log('target width-'+el.width());
+		  console.log('target height-'+el.height());
+		  console.log(position);
+	  	  // var count_tooltips = jQuery(".wp-pointer").length;
+	  	  var count_tooltips = jQuery(".wp-pointer").length ? jQuery(".wp-pointer").length+1 : 1;
+	  	  console.log('count_tooltips='+count_tooltips);
+	  	  var text = text;
+	  	  var tooltip = '';
+	  	  var html = '';
+		// tooltip = jQuery("#wp-pointer-"+id);
+		// console.log('--tooltip height='+tooltip.height());
+		// console.log('--tooltip html='+tooltip.html() );
+		// console.log('full height tooltip name'+jQuery('#wp-pointer-tooltips-name').height());
+
+
+		  if(el.length){
+		  	 console.log("edge tooltip="+edge);
+			  // var html = '<div id="wp-pointer-'+count_tooltips+'" class="wp-pointer wp-pointer-'+edge+'"><div class="wp-pointer-content"> '+text+'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+			  html = '<div id="wp-pointer-'+id+'" class="wp-pointer wp-pointer-'+edge+'"><div class="wp-pointer-content"> '+text+'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+			  jQuery("body").append(html);
+			  // jQuery("#content").append(html);
+  		  	  tooltip = jQuery("#wp-pointer-"+id);
+
+  		  	  console.log('id----- ' +id);
+  		  	  console.log('--tooltip height='+tooltip.height());
+  		  	  console.log('--tooltip height='+tooltip.parent().height());
+  		  	  console.log('--tooltip html='+tooltip.html() );
+  		  	  console.log('full height tooltip name'+jQuery('#wp-pointer-tooltips-name').height());
+  		  	  console.log('full height tooltip mission'+jQuery('#wp-pointer-tooltips-mission').height());
+
+  		  	  // var tooltip = jQuery("#wp-pointer-a");
+			  // if(edge == 'left') var pos_left = position.left+el.width()/2;
+			  if(edge == 'left') {
+				// var total_width = toolt_width + manual_offset;
+				var total_width = toolt_width + el.width();
+				console.log('total_width='+total_width);
+
+  	 		     if(jQuery(window).width() < total_width) { pos_left = position.left; pos_top = position.top+el.height(); 
+  	 		     	tooltip.removeClass('wp-pointer-left');
+  	 		     	tooltip.addClass('wp-pointer-top');
+  	 		     	console.log('if window.width < total_width');
+  	 			 }
+  	 		     else{
+  	 		     	tooltip.removeClass('wp-pointer-top');
+  	 		     	tooltip.addClass('wp-pointer-left');
+				  	 // pos_left = position.left+manual_offset;
+				  	 pos_left = position.left+el.width();
+				  	 pos_top = position.top; 
+				  	 // var tooltip_offset = tooltip.offset();
+				  	 // console.log(tooltip_offset);
+   	 		     	console.log('if window.width > total_width');
+  	 		     }
+			  }
+			  else if(edge == 'bottom'){
+			  	// pos_left = position.left; pos_top = position.top-tooltip.height()-el.height();
+			  	pos_left = position.left; pos_top = position.top-tooltip.height()-40;
+			  }
+			  else {
+			  	pos_left = position.left; pos_top = position.top+el.height();
+			  }
+			  console.log('pos_left='+pos_left);
+			  console.log('pos_top tooltip ='+pos_top);
+			  tooltip.css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block","z-index":zindex});
+			  // jQuery("#wp-pointer-a").css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block"});
+			  if(jQuery(window).width()>692) jQuery("#wp-pointer-tooltips-socilal-links").css({"position":"fixed"});
+
+		 }
+	}
+	// Step1: Build your Profile (image, background, name, contact details)
+	// as21_r("tooltips-name",'left','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>');
+	// as21_r("tooltips-name",'bottom','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>',998);
+	as21_r("tooltips-name",'bottom','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details) (image, background, name, contact details)(image, background, name, contact details)</p>',998);
+	// as21_r("tooltips-mission",'top','<h3>Step2: </h3> <p> Add your mission statement</p>');
+	as21_r("tooltips-mission",'bottom','<h3>Step2: </h3> <p> Add your mission statement  Add your mission statement  Add your mission statement</p>',997);
+	// as21_r("tooltips-experiences",'top','<h3>Step3:</h3><p> Add your experiences</p>',996);
+	// as21_r("tooltips-socilal-links",'top','<h3>Step4:</h3><p> add your social media accounts</p>',995);
+	// as21_r("tooltips-groups",'top','<h3>Step 5:</h3><p> Add causes you support and have joined</p>',994);
+	jQuery(window).resize(function(){
+  	    var tooltip1 = jQuery("#wp-pointer-tooltips-name");
+  	    var tooltip2 = jQuery("#wp-pointer-tooltips-mission");
+  	    var tooltip3 = jQuery("#wp-pointer-tooltips-experiences");
+  	    var tooltip4 = jQuery("#wp-pointer-tooltips-socilal-links");
+  	    var tooltip5 = jQuery("#wp-pointer-tooltips-groups");
+  	    tooltip1.remove();
+  	    tooltip2.remove();
+  	    tooltip3.remove();
+  	    tooltip4.remove();
+  	    tooltip5.remove();
+		// as21_r("tooltips-name",'left','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>');
+		as21_r("tooltips-name",'bottom','<h3>Step1: </h3> <p> Build your Profile (image, background, name, contact details)</p>');
+		// as21_r("tooltips-mission",'top','<h3>Step2: </h3> <p> Add your mission statement</p>');
+		as21_r("tooltips-mission",'bottom','<h3>Step2: </h3> <p> Add your mission statement</p>');
+		as21_r("tooltips-experiences",'top','<h3>Step3:</h3><p> Add your experiences</p>');
+		as21_r("tooltips-socilal-links",'top','<h3>Step4:</h3><p> add your social media accounts</p>');
+		as21_r("tooltips-groups",'top','<h3>Step 5:</h3><p> Add causes you support and have joined</p>');
+	});
+
+	jQuery("body").on('click','.wp-pointer',function(){
+		console.log('tootip close');
+		jQuery(this).closest(".wp-pointer").hide();
+	});
+	jQuery("body").on('load','.wp-pointer',function(){
+		console.log('===============wp-pointer-'+jQuery(this).height());
+	});
+	console.log('ffffffffff = '+jQuery("#wp-pointer-nodinam").height());
+	console.log('ffffffffff = '+jQuery("#wp-pointer-nodinam2").height());
+	console.log('#wp-pointer-tooltips-name = '+jQuery("#wp-pointer-tooltips-name").height());
+
+	jQuery('body').append('<div class="dinam_elem" style="position:absolute;">This is dinam element<br>This is dinam element</di>');
+	console.log( '.dinam_elem height- '+jQuery(".dinam_elem").height() );
+	*/
+
+	});
+
+// высоту динами подсказки не вычисляет правильно,придется выводить все tooltip статически+
+// при dismiss удальить подсказку из страницы навсегда,ну для этого нужно где то хранить id user,можно например в текст.файле или все таки в базе через ajax
+  </script>
+<?php
+}

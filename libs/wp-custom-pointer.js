@@ -262,6 +262,10 @@
 				return;
 
 			var self = this;
+
+			/* **** as21 **** */
+			console.log("==wp-custom-pointer==== "+ this);
+
 			this.active = false;
 
 			this._trigger( 'close', event, this._handoff() );
@@ -285,6 +289,10 @@
 		},
 
 		_handoff: function( extend ) {
+			/* **** as21 **** */
+			console.log(extend);
+			return false;
+
 			return $.extend({
 				pointer: this.pointer,
 				element: this.element
@@ -293,6 +301,3 @@
 	});
 })(jQuery);
 
-#page-wrapper {
-    padding-top: 40px;
-}

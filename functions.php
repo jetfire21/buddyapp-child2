@@ -42,76 +42,55 @@ function member_social_extend(){
 		$instagram_info = xprofile_get_field_data('Instagram', $dmember_id);
 		$twitter_info = xprofile_get_field_data('Twitter', $dmember_id);
 		$linkedin_info = xprofile_get_field_data('LinkedIn Profile', $dmember_id);
-		echo '<div class="member-social">';
 
-		if ($website_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/website.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $website_info); ?>
-		</span>
-	<?php
-	}
-		if ($fb_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		// $img = '<img src="'.bloginfo('wpurl').'/wp-content/themes/buddyapp-child/images/f.png" />';
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/fb.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $fb_info); ?>
-		</span>
-	<?php
-	}
-		?>
-		<?php
-		if ($google_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/google+.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $google_info);
-		  ?>
-		</span>
-	<?php
-	}
-		?>
-		<?php
-		if ($instagram_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/instagram.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $instagram_info);
-		  ?>
-		</span>
-	<?php
-	}
-	?>
-	<?php
-		if ($twitter_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/twitter.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $twitter_info);
-		  ?>
-		</span>
-	<?php
-	}
-	?>
-	<?php
-		if ($linkedin_info) {
-		?>
-		<span class="fb-info">
-		<?php
-		$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/linkedin.png" />';
-		 echo $res = preg_replace("/>[^<]+/i", " target='blank'>$img", $linkedin_info);
-		  ?>
-		</span>
-	<?php
-	}
-	echo '</div>';
+		if($website_info === false) $has_social .= ''; else $has_social = true;
+		if($fb_info == '<a href="" rel="nofollow"></a>') $has_social .= ''; else $has_social = true;
+		if($google_info == '<a href="" rel="nofollow"></a>') $has_social .= ''; else $has_social = true;
+		if($instagram_info == '<a href="" rel="nofollow"></a>') $has_social .= ''; else $has_social = true;
+		if($twitter_info == '<a href="" rel="nofollow"></a>') $has_social .= ''; else $has_social = true;
+		if($linkedin_info == '<a href="" rel="nofollow"></a>') $has_social .= ''; else $has_social = true;
+		// echo "has_s ";var_dump($has_social);
+
+		$html = false;
+		if (  $website_info) {
+			$html .= '<span class="fb-info">';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/website.png" />';
+			 $html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $website_info);
+			 $html .= '</span>';
+		}
+		if ( $fb_info){
+			$html .= '<span class="fb-info">';
+			// $img = '<img src="'.bloginfo('wpurl').'/wp-content/themes/buddyapp-child/images/f.png" />';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/fb.png" />';
+			 $html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $fb_info);
+			 $html .= '</span>';
+		}
+		if ( $google_info) {
+			$html .= '<span class="fb-info">';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/google+.png" />';
+			 $html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $google_info);
+			 $html .= '</span>';
+		}
+		if ( $instagram_info) {
+			$html .= '<span class="fb-info">';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/instagram.png" />';
+			$html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $instagram_info);
+			$html .= '</span>';
+		}
+		if ( $twitter_info) {
+			$html .= '<span class="fb-info">';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/twitter.png" />';
+			$html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $twitter_info);
+			 $html .= '</span>';
+		}
+		if ( $linkedin_info ){
+			$html .= '<span class="fb-info">';
+			$img = '<img src="http://'.$_SERVER["HTTP_HOST"].'/wp-content/themes/buddyapp-child/images/linkedin.png" />';
+			$html .= preg_replace("/>[^<]+/i", " target='blank'>$img", $linkedin_info);
+			$html .= '</span>';
+		}
+	if( $has_social === true ) echo '<div class="member-social">'.$html.'</div>';
+	else echo '<div class="member-social" id="tooltips-socilal-links" style="width:100px;"></div>';
 }
 add_filter( 'bp_before_member_header_meta', 'member_social_extend' ); 
 
@@ -2079,5 +2058,16 @@ function as21_get_all_experience_from_page_edit_profile(){
 	return $fields;
 }
 
+add_action('wp_enqueue_scripts','a21_tips1',999);
+function a21_tips1(){
+	
+	// if(function_exists('bp_is_active')):
+	if( bp_is_user_profile()) {
+		// wp_enqueue_style( 'toolt', get_stylesheet_directory_uri().'/libs/tooltipify.css');
+		wp_enqueue_style( 'wp-pointer');
+	   // wp_enqueue_script('a21_tooltipify',get_stylesheet_directory_uri().'/libs/jquery-tooltipify.js',array('jquery'));
+	   // /home/jetfire/www/dugoodr2.dev/wp-content/themes/buddyapp-child/libs/jquery-tooltipify.js
+	}
+}
 // require_once 'libs/frontend-profile-tooltips.php';
 require_once 'debug_functions.php';

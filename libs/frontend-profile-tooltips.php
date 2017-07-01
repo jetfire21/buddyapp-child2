@@ -30,11 +30,23 @@ function myHelpPointers()
             )
         ),
         array(
-            'id'       => 'ptooltips2',
+            'id'       => 'ptooltips2_2',
             'screen'   => 'i-am',
             'target'   => '#tooltips-mission',
             'title'    => 'Step2:',
             'content'  => 'Add your mission statement',
+            'position' => array(
+                'edge'  => 'left',
+                'align' => 'left',
+                'zindexitem' => '998'
+            )
+        ),
+        array(
+            'id'       => 'ptooltips3_1',
+            'screen'   => 'i-am',
+            'target'   => '#tooltips-experiences',
+            'title'    => 'Step3:',
+            'content'  => 'Add your experiences',
             'position' => array(
                 'edge'  => 'top',
                 'align' => 'left',
