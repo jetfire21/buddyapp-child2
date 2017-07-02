@@ -2058,16 +2058,37 @@ function as21_get_all_experience_from_page_edit_profile(){
 	return $fields;
 }
 
-add_action('wp_enqueue_scripts','a21_tips1',999);
-function a21_tips1(){
+add_action('wp_enqueue_scripts','a21_include_wp_pointer_css');
+function a21_include_wp_pointer_css(){
 	
-	// if(function_exists('bp_is_active')):
 	if( bp_is_user_profile()) {
-		// wp_enqueue_style( 'toolt', get_stylesheet_directory_uri().'/libs/tooltipify.css');
 		wp_enqueue_style( 'wp-pointer');
+		// wp_enqueue_style( 'toolt', get_stylesheet_directory_uri().'/libs/tooltipify.css');
 	   // wp_enqueue_script('a21_tooltipify',get_stylesheet_directory_uri().'/libs/jquery-tooltipify.js',array('jquery'));
 	   // /home/jetfire/www/dugoodr2.dev/wp-content/themes/buddyapp-child/libs/jquery-tooltipify.js
 	}
 }
+
+add_action('wp_ajax_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
+add_action('wp_ajax_nopriv_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
+function as21_dismiss_tooltip(){
+	// print_r($_POST);
+	// echo '--------php handler wp-ajax';
+	$id_user = (int)$_POST['id_user'];
+	$id_target = $_POST['id_target'] ? sanitize_text_field($_POST['id_target']) : false;
+	if($id_user > 0 && !empty($id_target)){
+		// echo ' id_user+id_target exist!';
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->postmeta,
+			array( 'post_id' => $id_user, 'meta_key' => 'as21_tooltips_profile', 'meta_value'=> $id_target),
+			array( '%d','%s','%s' )
+		);
+		// deb_last_query();
+		// echo 'success';
+	}
+	exit;
+}
 // require_once 'libs/frontend-profile-tooltips.php';
+
 require_once 'debug_functions.php';
