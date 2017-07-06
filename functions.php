@@ -2058,6 +2058,8 @@ function as21_get_all_experience_from_page_edit_profile(){
 	return $fields;
 }
 
+/* **** as21  tooltips for new user on profile page**** */
+
 add_action('wp_enqueue_scripts','a21_include_wp_pointer_css');
 function a21_include_wp_pointer_css(){
 	
@@ -2070,7 +2072,7 @@ function a21_include_wp_pointer_css(){
 }
 
 add_action('wp_ajax_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
-add_action('wp_ajax_nopriv_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
+// add_action('wp_ajax_nopriv_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
 function as21_dismiss_tooltip(){
 	// print_r($_POST);
 	// echo '--------php handler wp-ajax';
@@ -2090,5 +2092,8 @@ function as21_dismiss_tooltip(){
 	exit;
 }
 // require_once 'libs/frontend-profile-tooltips.php';
+
+/* **** as21  tooltips for new user on profile page**** */
+
 
 require_once 'debug_functions.php';

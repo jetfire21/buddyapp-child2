@@ -743,6 +743,7 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 
 /* ******* PAGE VOLUNTEER********* */
 
+.wp-pointer-content {border:0; overflow: hidden;}
 .wp-pointer-buttons a{font-size: 13px !important; opacity: 1 !important; font-weight: normal;}
 .wp-pointer-buttons a:hover,.wp-pointer-buttons a.close:before{opacity: 1 !important;}
 .wp-pointer-buttons a.close:before {top:-2px !important; }
@@ -751,6 +752,23 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 .wp-pointer-content p {margin-bottom: 2px;}
 .wp-pointer-bottom .wp-pointer-arrow-inner {bottom:3px;}
 .wp-pointer-top .wp-pointer-arrow-inner, .wp-pointer-undefined .wp-pointer-arrow-inner{top:3px;}
+.wp-pointer-buttons {float: right;}
+.wp-pointer-buttons .button-primary:hover {     background: #008ec2;  border-color: #006799; }
+.wp-pointer-buttons .button-primary {
+    background: #0085ba;
+    border-color: #0073aa #006799 #006799;
+    -webkit-box-shadow: 0 1px 0 #006799;
+    box-shadow: 0 1px 0 #006799;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+    border-radius: 3px;
+    margin-right: 30px;
+    margin-top:-10px;
+}
+.wp-pointer-buttons button, .wp-pointer-buttons .close{ float:left; }
+.wp-pointer-buttons .close {color: #0085ba;}
+.wp-pointer-buttons{ padding-top: 20px; }
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}

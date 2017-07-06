@@ -596,7 +596,7 @@ function as21_tooltips_for_new_user_profile(){
 	$member_id = $auth_user->ID;
 	// echo ' user_id-'.$user_id; echo ' member_id-'.$member_id;
 
-	if( $user_id == $member_id):
+	// if( $user_id == $member_id):
 
 		// echo ' conditional user_id == member_id first=========';
 		$status_tooltips_db = $wpdb->get_results( $wpdb->prepare(
@@ -640,6 +640,7 @@ function as21_tooltips_for_new_user_profile(){
 
 		// print_r($tooltips);
 		$html = '';
+		$step = 0;
 		foreach ($tooltips as $tip):
 			// print_r($tip);
 			$has_tooltip = false;
@@ -653,11 +654,19 @@ function as21_tooltips_for_new_user_profile(){
 			// var_dump( in_array($tip['id'], $status_tooltips_db) );
 			if($has_tooltip !== true){
 				$tooltip_js[] = $tip;
+				$step_attr = '';
+				if($step != count($tooltips)-1 ) { $step_attr = '<button type="button" data-step="'.$step.'" class="button-primary advads-notices-button-subscribe" data-notice="nl_first_steps">Next</button>';}
 				$html .= 
-				'<div id="wp-pointer-'.$tip['id'].'" class="wp-pointer wp-pointer-'.$tip['edge'].'" style="width: 320px; position: absolute; display: none; z-index: '.$tip['zindex'].';"><div class="wp-pointer-content"> '.$tip['text'].'<div class="wp-pointer-buttons"><a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+				'<div id="wp-pointer-'.$tip['id'].'" class="wp-pointer wp-pointer-'.$tip['edge'].'" style="width: 320px; position: absolute; display: none; z-index: '.$tip['zindex'].';">
+				<div class="wp-pointer-content"> '.$tip['text'].'
+				<div class="wp-pointer-buttons">
+				'.$step_attr.'
+				<a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+				$step++;
 			}
 		endforeach;
 		// print_r($tooltip_js);
+		// echo '===count tooltip_js==='.count($tooltips);
 		$tooltip_js = json_encode($tooltip_js);
 		 ?>
 		  <script type="text/javascript">
@@ -674,7 +683,7 @@ function as21_tooltips_for_new_user_profile(){
 		?>
 		<script type='text/javascript' src='<?php echo get_stylesheet_directory_uri();?>/js/tooltips-profile.js'></script>
 		<?php
-  endif; // check user_id
+  // endif; // check user_id
 }
 
 /* **** as21  tooltips for new user on profile page**** */

@@ -83,12 +83,16 @@ jQuery( document ).ready(function() {
 	}
 
   	// console.log('tooltip_js------'+tooltip_js);
-  	// for(tip in tooltip_js){ 	console.log(tip+' = '+tooltip_js[tip].id);	}  
+  	for(tip in tooltip_js){ 	console.log(tip+' = '+tooltip_js[tip].id);	} 
+  	console.log(tooltip_js.length); 
 
+  	var tooltips_offset = [];
   	for(tip in tooltip_js){
   		as21_tooltip_position(tooltip_js[tip].id,tooltip_js[tip].edge);
+  		// tooltips_offset[tip] = tooltip_js[tip].id;
+  		tooltips_offset[tip] = jQuery("#wp-pointer-"+tooltip_js[tip].id).offset().top;
   	}
-
+  	console.log(tooltips_offset);
 	jQuery(window).resize(function(){
 	  	for(tip in tooltip_js){
 	  		// console.log(tip+' = '+tooltip_js[tip].id);
@@ -102,6 +106,8 @@ jQuery( document ).ready(function() {
 		as21_r("tooltips-name",'bottom');
 	 });
 	*/
+
+	/* dismiss only one tooltip
 	jQuery("body").on('click','.wp-pointer',function(){
 
 		// console.log('tootip close');
@@ -126,6 +132,22 @@ jQuery( document ).ready(function() {
 			}
 		});
 
+	});
+	*/
+
+	jQuery("body").on('click','.wp-pointer button',function(){ 
+
+		jQuery(this).closest(".wp-pointer").remove();
+ 		console.log('scrollTop-'+ jQuery(this).scrollTop() );
+ 		console.log('scrollTop-'+ jQuery(this).html() );
+ 		var step = '';
+ 		if(tooltips_offset) { 
+			step = parseInt(jQuery(this).data("step") ); console.log(step);  	
+	 		if(step != (tooltips_offset.length-1) ) {
+	 			console.log('move to next tip '+(step+1) +' '+tooltips_offset[step+1]);
+	 			jQuery("body").scrollTo(tooltips_offset[step+1]-90);
+	 		}
+ 		}
 	});
 
 });
