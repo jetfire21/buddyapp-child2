@@ -2095,5 +2095,24 @@ function as21_dismiss_tooltip(){
 
 /* **** as21  tooltips for new user on profile page**** */
 
+add_action('wp_ajax_as21_dismiss_all_tooltips', 'as21_dismiss_all_tooltips');
+// add_action('wp_ajax_nopriv_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
+function as21_dismiss_all_tooltips(){
+	$id_user = (int)$_POST['id_user'];
+	if($id_user > 0){
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->postmeta,
+			array( 'post_id' => $id_user, 'meta_key' => 'as21_all_tooltips_profile', 'meta_value'=> 1),
+			array( '%d','%s','%d' )
+		);
+		// deb_last_query();
+	}
+	exit;
+}
+// require_once 'libs/frontend-profile-tooltips.php';
+
+/* **** as21  tooltips for new user on profile page**** */
+
 
 require_once 'debug_functions.php';

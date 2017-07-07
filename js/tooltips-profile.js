@@ -3,6 +3,7 @@ jQuery( document ).ready(function() {
 	 function as21_tooltip_position(id,edge){
 
 	  	  console.log('-------start js tooltip_position ------------');
+	  	 // jQuery("body").scrollTo(0);
 	  	  var toolt_width = 320;
 	  	  // var zindex = zindex ? zindex : 998;
 	  	  if(edge) edge = edge;
@@ -67,8 +68,12 @@ jQuery( document ).ready(function() {
 			  }
 			  else {
 			  	pos_left = position.left; pos_top = position.top+el.height();
+			  	// console.log('pos_top '+pos_top);
+			  	// console.log( jQuery('#item-header-wrap').offset() );
+			  	// console.log( jQuery('#tooltips-socilal-links').position() );
 			  }
 
+			  if( id == 'tooltips-socilal-links') pos_top = 246; // exception,cause element in fixed block
 			  // console.log('pos_left='+pos_left);
 			  // console.log('pos_top tooltip ='+pos_top);
 			  tooltip.css({"top":pos_top,"left":pos_left,"display":"block"});
@@ -83,8 +88,8 @@ jQuery( document ).ready(function() {
 	}
 
   	// console.log('tooltip_js------'+tooltip_js);
-  	for(tip in tooltip_js){ 	console.log(tip+' = '+tooltip_js[tip].id);	} 
-  	console.log(tooltip_js.length); 
+  	// for(tip in tooltip_js){ 	console.log(tip+' = '+tooltip_js[tip].id);	} 
+  	// console.log(tooltip_js.length); 
 
   	var tooltips_offset = [];
   	for(tip in tooltip_js){
@@ -107,7 +112,8 @@ jQuery( document ).ready(function() {
 	 });
 	*/
 
-	/* dismiss only one tooltip
+	/*
+	// dismiss only one tooltip
 	jQuery("body").on('click','.wp-pointer',function(){
 
 		// console.log('tootip close');
@@ -135,16 +141,45 @@ jQuery( document ).ready(function() {
 	});
 	*/
 
-	jQuery("body").on('click','.wp-pointer button',function(){ 
+	// dismiss all tooltips an once
+	jQuery(".wp-pointer .close").click(function(){
 
+		console.log('tootip close');
+		jQuery(".wp-pointer").remove();
+		// var target_id = jQuery(this).closest(".wp-pointer").attr("id");
+		// target_id = target_id.replace('wp-pointer-','');
+		// console.log( 'target_id-'+target_id );
+		// return false;
+
+		var data = { 'action': 'as21_dismiss_all_tooltips','id_user':user_id};
+		// console.log(data.id_user);	console.log('ajaxurl-'+ajaxurl);  console.log(data);
+		// return false;
+		jQuery.ajax({
+			url:ajaxurl, 
+			data:data, 
+			type:'POST', 
+			success:function(data){
+				if( data ) { 
+					// console.log(data); console.log('success ajax'); 
+				}
+				else { console.log("data send with errors!");}
+			}
+		});
+
+	});
+	
+
+	jQuery(".wp-pointer button").click(function(){ 
+		// console.log('----next------');
 		jQuery(this).closest(".wp-pointer").remove();
- 		console.log('scrollTop-'+ jQuery(this).scrollTop() );
- 		console.log('scrollTop-'+ jQuery(this).html() );
+ 		// console.log('scrollTop-'+ jQuery(this).scrollTop() );
+ 		// console.log('scrollTop-'+ jQuery(this).html() );
  		var step = '';
  		if(tooltips_offset) { 
-			step = parseInt(jQuery(this).data("step") ); console.log(step);  	
+			step = parseInt(jQuery(this).data("step") );
+			 // console.log(step);  	
 	 		if(step != (tooltips_offset.length-1) ) {
-	 			console.log('move to next tip '+(step+1) +' '+tooltips_offset[step+1]);
+	 			// console.log('move to next tip '+(step+1) +' '+tooltips_offset[step+1]);
 	 			jQuery("body").scrollTo(tooltips_offset[step+1]-90);
 	 		}
  		}

@@ -598,17 +598,6 @@ function as21_tooltips_for_new_user_profile(){
 
 	// if( $user_id == $member_id):
 
-		// echo ' conditional user_id == member_id first=========';
-		$status_tooltips_db = $wpdb->get_results( $wpdb->prepare(
-			"SELECT *
-			FROM {$wpdb->postmeta}
-			WHERE post_id = %d
-			    AND meta_key = %s
-			ORDER BY meta_value ASC",
-			intval( $user_id ),
-			"as21_tooltips_profile"
-		),'ARRAY_A' );
-
 	    // print_r($status_tooltips_db);
 		$tooltips = array(
 			array(
@@ -638,6 +627,19 @@ function as21_tooltips_for_new_user_profile(){
 			'zindex' => 994)
 		  );
 
+		/* **** as21 get tooltips for case when only one tooltip dismiss ****
+		// echo ' conditional user_id == member_id first=========';
+		$status_tooltips_db = $wpdb->get_results( $wpdb->prepare(
+			"SELECT *
+			FROM {$wpdb->postmeta}
+			WHERE post_id = %d
+			    AND meta_key = %s
+			ORDER BY meta_value ASC",
+			intval( $user_id ),
+			"as21_tooltips_profile"
+		),'ARRAY_A' );
+
+
 		// print_r($tooltips);
 		$html = '';
 		$step = 0;
@@ -665,24 +667,61 @@ function as21_tooltips_for_new_user_profile(){
 				$step++;
 			}
 		endforeach;
-		// print_r($tooltip_js);
-		// echo '===count tooltip_js==='.count($tooltips);
-		$tooltip_js = json_encode($tooltip_js);
-		 ?>
-		  <script type="text/javascript">
-		     var tooltip_js = <?php echo $tooltip_js;?>;
-		     var user_id = <?php echo $user_id;?>
-		 </script>
-		 <?php
-		echo $html;
-	    // echo 'include js form other place';
-		  // add_action('wp_enqueue_scripts','a21_tip1');
-		  // function a21_tip1(){
-		  // 		   wp_enqueue_script('tooltips-profile',__DIR__	."/tooltips-profile.js",array('jquery'),'',true);
-		  // }
-		?>
-		<script type='text/javascript' src='<?php echo get_stylesheet_directory_uri();?>/js/tooltips-profile.js'></script>
+		 **** as21 get tooltips for case when only one tooltip dismiss **** */
+
+		/**** as21 get tooltips for case when all tooltips dismiss ****/
+
+		// echo ' conditional user_id == member_id first=========';
+		$status_tooltips_db = $wpdb->get_var( $wpdb->prepare(
+			"SELECT meta_value
+			FROM {$wpdb->postmeta}
+			WHERE post_id = %d
+			    AND meta_key = %s",
+			intval( $user_id ),
+			"as21_all_tooltips_profile"
+		) );
+		// deb_last_query();
+		// echo 'hide all tooltips'; var_dump($status_tooltips_db);
+
+		// print_r($tooltips);
+		$html = '';
+		$step = 0;
+		if( $status_tooltips_db != '1'):
+			foreach ($tooltips as $tip):
+			   // print_r($tip);
+				$tooltip_js[] = $tip;
+				$step_attr = '';
+				if($step != count($tooltips)-1 ) { $step_attr = '<button type="button" data-step="'.$step.'" class="button-primary advads-notices-button-subscribe" data-notice="nl_first_steps">Next</button>';}
+				$html .= 
+				'<div id="wp-pointer-'.$tip['id'].'" class="wp-pointer wp-pointer-'.$tip['edge'].'" style="width: 320px; position: absolute; display: none; z-index: '.$tip['zindex'].';">
+				<div class="wp-pointer-content"> '.$tip['text'].'
+				<div class="wp-pointer-buttons">
+				'.$step_attr.'
+				<a class="close" href="#">Dismiss</a></div></div><div class="wp-pointer-arrow"><div class="wp-pointer-arrow-inner"></div></div></div>';
+				$step++;
+			endforeach;
+
+		/**** as21 get tooltips for case when all tooltips dismiss ****/
+
+			// print_r($tooltip_js);
+			// echo '===count tooltip_js==='.count($tooltips);
+			$tooltip_js = json_encode($tooltip_js);
+			 ?>
+			  <script type="text/javascript">
+			     var tooltip_js = <?php echo $tooltip_js;?>;
+			     var user_id = <?php echo $user_id;?>
+			 </script>
+			 <?php
+			echo $html;
+		    // echo 'include js form other place';
+			  // add_action('wp_enqueue_scripts','a21_tip1');
+			  // function a21_tip1(){
+			  // 		   wp_enqueue_script('tooltips-profile',__DIR__	."/tooltips-profile.js",array('jquery'),'',true);
+			  // }
+			?>
+			<script type='text/javascript' src='<?php echo get_stylesheet_directory_uri();?>/js/tooltips-profile.js'></script>
 		<?php
+		endif;
   // endif; // check user_id
 }
 
