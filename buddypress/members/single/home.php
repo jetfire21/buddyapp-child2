@@ -54,6 +54,16 @@
 					</ul>
 				</div>
 			</div><!-- #item-nav -->
+
+			<div id="profile-strength">
+<!-- 				<div id="circle" class="c-beginner"></div>
+				<div class="left-status beginner">Beginner</div> -->
+				<div id="circle" class="c-intermediate"></div>
+				<div class="left-status intermediate">Intermediate</div>
+				<!-- <div class="circle"><div class="fill_beginner"></div></div> -->
+				<!-- <pie class="fifty"></pie> -->
+			</div>
+
 		</div><!-- .item-scroll-header -->
     </div><!-- #item-header-wrap -->
 

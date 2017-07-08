@@ -770,6 +770,31 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 .wp-pointer-buttons .close {color: #0085ba;}
 .wp-pointer-buttons{ padding-top: 20px; }
 
+/*.profile-strength{clear: both;}*/
+/*.profile-strength .circle{ height: 60px; width: 60px; border-radius: 30px; border: 4px solid #ccc; }
+.profile-strength .fill_beginner{ height: 30px; background-color: red; }
+*/
+#profile-strength {position: relative;}
+#profile-strength #circle {
+    width: 5em;
+    height: 5em;
+    display: block;
+    border-radius: 50%;
+    /*background-color: #ff7900;*/
+    background-color: #c5ca03;
+    border: 4px solid #ccc;
+    float: left;
+    margin: 1em;
+}
+#profile-strength #circle.c-beginner {
+    background-image: linear-gradient(180deg, #00796b 80%, transparent 50%); /* with ie10 */
+}
+#profile-strength #circle.c-intermediate {
+    background-image: linear-gradient(180deg, #00796b 60%, transparent 50%); /* with ie10 */
+}
+#profile-strength .left-status{ border-bottom: 1px solid #000; text-align: right; width: 120px; position: absolute; }
+/*#profile-strength .beginner{  left: 5.6em; top:3.6em; }*/
+#profile-strength .intermediate{ left:6em; top:2.7em; }
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}
 
