@@ -55,14 +55,72 @@
 				</div>
 			</div><!-- #item-nav -->
 
+			<?php
+			/* **** as21  score for profile items complete **** */
+
+			// global $profile_template;
+			// alex_debug(0,1,'',$profile_template->groups);
+			$score = 0;
+			?>
+			<?php while( bp_profile_groups() ) : bp_the_profile_group(); ?>
+				<?php if ( bp_profile_group_has_fields() ) : ?>
+					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
+						<?php 
+							// echo bp_get_the_profile_field_name()." = ".bp_get_the_profile_field_value()."<br> || \r\n"; 
+							$score++;
+						?>
+					<?php endwhile;?>
+				<?php endif; ?>
+			<?php endwhile;?>
+
+			<?php 
+			global $bp,$wpdb;
+			$quest_id = $bp->displayed_user->id;
+			$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
+			// var_dump($count_all_timelines);
+			if((int)$count_all_timelines > 0) $score++;
+
+			 $all_exper = as21_get_all_experience_from_page_edit_profile();
+			 if( !empty($all_exper) ){
+				 foreach ($all_exper as $exper) {
+				 	// echo 'experience item = '.$exper->post_title.' || ';
+				 	if( !empty($exper->post_title) ) { $score++; break; }
+				 }
+			  }
+			/* 
+			BASIC INFO-2, DETAILS-3, MISSION-1, EXPERIENCE-1, SECURITY-2 | total: 9 xprofile fields
+			SOCIAL-5, EXPERIENCE-1, TIMELINE - 1  | total: 7 custom fields || THEN total - 16 fields
+			Beginner,Intermediate,Advanced,Expert,All-Star // 16:5=3.2
+			*/
+			// echo "\r\n----Total score xprofile fields-".$score."<br>\r\n";
+			?>
+			<h5 class="profile-strength-head">Profile strength</h5>
 			<div id="profile-strength">
-<!-- 				<div id="circle" class="c-beginner"></div>
-				<div class="left-status beginner">Beginner</div> -->
-				<div id="circle" class="c-intermediate"></div>
-				<div class="left-status intermediate">Intermediate</div>
+				<?php if($score <= 3):?>	
+					<div id="circle" class="c-beginner"></div>
+					<div class="left-status beginner">Beginner</div>
+				<?php endif;?>
+				<?php if($score > 3 && $score <=6):?>	
+					<div id="circle" class="c-intermediate"></div>
+					<div class="left-status intermediate">Intermediate</div>
+				<?php endif;?>
+				<?php if($score > 6 && $score <=9):?>	
+					<div id="circle" class="c-advanced"></div>
+					<div class="left-status advanced">Advanced</div>
+				<?php endif;?>
+				<?php if($score > 9 && $score <=13):?>	
+					<div id="circle" class="c-expert"></div>
+					<div class="left-status expert">Expert</div>
+				<?php endif;?>
+				<?php if($score > 13):?>	
+					<div id="circle" class="c-all-star"></div>
+					<div class="left-status all-star">All-Star</div>
+				<?php endif;?>
 				<!-- <div class="circle"><div class="fill_beginner"></div></div> -->
 				<!-- <pie class="fifty"></pie> -->
 			</div>
+
+		<?php /* **** as21  score for profile items complete **** */ ?>
 
 		</div><!-- .item-scroll-header -->
     </div><!-- #item-header-wrap -->

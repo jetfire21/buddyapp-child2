@@ -159,6 +159,9 @@ endif;
 		<?php if ( bp_profile_group_has_fields() ) : ?>
 
 			<?php
+			/* **** as21 **** */
+
+
 			$prof_name = trim( strtolower(preg_replace("#^[0-9]+\.#i", "", bp_get_the_profile_group_name()) ));
 
 			/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
@@ -180,6 +183,8 @@ endif;
 
 					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
 						<?php
+						// $as21_all_fields .= bp_get_the_profile_field_value().' | ';
+						// if( !empty(bp_get_the_profile_field_value()) ) $score++;
 						 /*echo $prof_name; */	
 						 // echo bp_get_the_profile_field_name(); 
 						 if( strtolower(bp_get_the_profile_field_name()) == 'total estimate hours') continue; 
@@ -310,7 +315,7 @@ endif;
 		}
 
 		$has_interests = xprofile_get_field_data('Interests', $user_id);
-		$has_experience = xprofile_get_field_data('Experience', $user_id);
+		// $has_experience = xprofile_get_field_data('Experience', $user_id);
 		$has_mission = xprofile_get_field_data('Mission', $user_id);
 		// echo "new code----"; var_dump($has_mission);
 
@@ -325,6 +330,7 @@ endif;
 			 }
 			 $html .= '</ul>';
 			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$html."</div>";
+			 // $score++;
 		}else{
 			 echo "<div class='bp-widget'><span class='field-name' id='tooltips-experiences'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		}
@@ -356,6 +362,8 @@ endif;
 		) );
 
 		$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
+        
+		// print_r($fields);
 		// $total_hours_every_t = $wpdb->get_col($wpdb->prepare("SELECT comment_count FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",$quest_id,"alex_timeline"));
 		// alex_debug(0,1,'ddd',$total_hours_every_t);
 		// deb_last_query();
