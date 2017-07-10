@@ -604,7 +604,7 @@ function as21_tooltips_for_new_user_profile(){
 	$member_id = $auth_user->ID;
 	// echo ' user_id-'.$user_id; echo ' member_id-'.$member_id;
 
-	// if( $user_id == $member_id):
+	if( $user_id == $member_id):
 
 	    // print_r($status_tooltips_db);
 		$tooltips = array(
@@ -730,7 +730,7 @@ function as21_tooltips_for_new_user_profile(){
 			<script type='text/javascript' src='<?php echo get_stylesheet_directory_uri();?>/js/tooltips-profile.js'></script>
 		<?php
 		endif;
-  // endif; // check user_id
+  endif; // check user_id
 }
 
 /* **** as21  tooltips for new user on profile page**** */

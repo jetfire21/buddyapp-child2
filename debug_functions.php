@@ -1017,3 +1017,19 @@ function as21_job_debug(){
 		// wp_enqueue_script( 'wp-job-manager-ajax-filters', plugins_url() . '/wp-job-manager/assets/js/ajax-filters-debug.js', array('jquery-deserialize'),'', true );
 	}
 }
+
+// add_action('wp_footer','as21_del_noused_xprofile_fields');
+function as21_del_noused_xprofile_fields(){
+	global $wpdb;
+	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 57 ), array('%d') );
+	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 56 ), array('%d') );
+	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 18 ), array('%d') );
+	$get_f = $wpdb->get_results( $wpdb->prepare(
+		"SELECT *
+		FROM {$wpdb->prefix}bp_xprofile_data
+		WHERE field_id = %d
+		ORDER BY id",
+		56
+	) );
+	alex_debug(0,1,'as21_del_noused_xprofile_fields',$get_f);
+}
