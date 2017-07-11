@@ -66,7 +66,7 @@
 			// $twitter_val = xprofile_get_field(56, $user_id); // old nouse fields 56,57,18
 			// alex_debug(0,1,'',$twitter_val);
 			// bp_xprofile_data
-
+		if ( is_user_logged_in() ) {
 			global $bp,$wpdb;
 			$quest_id = $bp->displayed_user->id;
 			$score = 0;
@@ -163,7 +163,7 @@
 				<!-- <pie class="fifty"></pie> -->
 			</div>
 
-		<?php /* **** as21  score for profile items complete **** */ ?>
+    <?php } /* **** as21  score for profile items complete **** */ ?>
 
 		</div><!-- .item-scroll-header -->
     </div><!-- #item-header-wrap -->

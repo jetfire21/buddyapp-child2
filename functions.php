@@ -1626,6 +1626,7 @@ function as21_wjm_write_file_jobs_count($filename,$text){
 	// echo "\r\n as21_wjm_write_file_jobs_count";
 }
 
+// in file .txt only public group
 function as21_wjm_get_display_count_plus_by_group_id($group_id){
 	$filename = AS21_PATH_JOBS_COUNT_TXT;
 	if( file_exists($filename)) {
@@ -1642,10 +1643,11 @@ function as21_wjm_get_display_count_plus_by_group_id($group_id){
 		foreach ($file as $k => $v) {
 			if($k == 0) continue;
 			$line = explode("|", $v); 
-			$f_group_id = $line[0];
+			$cur_gr_id = $line[0];
 			$dcp = $line[3];
 			// if($_GET['dev']==1)  alex_debug(0,1,'',$line);
-			if($f_group_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
+			// echo 'cur_gr-'.$cur_gr_id. ' gr_id-'.$group_id."\r\n";
+			if($cur_gr_id == $group_id) { /* echo $f_group_id.'-'.$dcp."<br>"; */ break; }
 		}
 		// if($_GET['dev']==1) { alex_debug(0,1,'file3',$file); echo "; dcp--------".$dcp; }
 		return $dcp;
@@ -1689,7 +1691,7 @@ function as21_wjm_write_file_all_groups($dcp = false){
 	if( file_exists($filename)) {
 
 		/* *** get all public (not hidden) groups and write in file **** */
-		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical','show_hidden'=>true));
 		// alex_debug(0,1,'',$groups);
 		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
 		// else $text = "Displayed Count Plus | \r";
@@ -1729,6 +1731,7 @@ function as21_get_jobs_count_current_group($group_id = false){
 function as21_wjm_get_manually_jobs_count_by_group_id($group_id = false){
 	global $bp,$wpdb;
 	$group_id = (!$group_id) ? (int)$bp->groups->current_group->id : $group_id;
+	// echo 'inside function gr_id-'.$group_id."<br>";
 	$jobs_total_count_gr = (int)as21_wjm_get_display_count_plus_by_group_id($group_id);
 	// if($_GET['dev']==1) { var_dump($jobs_total_count_gr); echo "gr_id= ".$group_id."; "; }
 	if( empty($jobs_total_count_gr)) $jobs_total_count_gr = as21_get_jobs_count_current_group($group_id);

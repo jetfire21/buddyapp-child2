@@ -1653,6 +1653,7 @@ function as21_wjm_get_display_count_plus_by_group_id($group_id){
 
 		// on hosting immediately convert valid array
 		$file = file($filename); 
+		var_dump($file);
 		// if($_GET['dev']==1) { alex_debug(0,1,'file',$file);}
 		
 		 /* //need for correctly work on localhost
@@ -1710,7 +1711,7 @@ function as21_wjm_write_file_all_groups($dcp = false){
 	if( file_exists($filename)) {
 
 		/* *** get all public (not hidden) groups and write in file **** */
-		$groups = BP_Groups_Group::get(array('type'=>'alphabetical'));
+		$groups = BP_Groups_Group::get(array('type'=>'alphabetical','show_hidden'=>true));
 		// alex_debug(0,1,'',$groups);
 		// if($dcp) { $dcp_val = as21_jobs_get_display_count_plus_txt(); $text = "Displayed Count Plus | ".$dcp_val."\r"; }
 		// else $text = "Displayed Count Plus | \r";

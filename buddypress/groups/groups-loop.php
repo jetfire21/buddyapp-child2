@@ -93,6 +93,7 @@ do_action( 'bp_before_groups_loop' ); ?>
 					<?php bp_group_type(); ?> / <?php bp_group_member_count(); ?> 
 				</div>
 		    	<div class="meta">
+		    		<?php //echo bp_get_group_id(); ?>
 					Volunteer Jobs: <?php echo as21_wjm_get_manually_jobs_count_by_group_id( bp_get_group_id() );?>
 				</div>
 
