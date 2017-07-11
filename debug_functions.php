@@ -985,6 +985,7 @@ function as21_temp_1(){
 
 add_action('wp_footer','as21_display_width_window');
 function as21_display_width_window(){
+
 	if((bool)$_GET['dev'] == true){
 	?>
 	<script type="text/javascript">
@@ -999,6 +1000,7 @@ function as21_display_width_window(){
 	</script>
 	<?php
 	}
+
 }
 
 add_action( 'wp_enqueue_scripts','as21_job_debug',999);
@@ -1020,16 +1022,86 @@ function as21_job_debug(){
 
 // add_action('wp_footer','as21_del_noused_xprofile_fields');
 function as21_del_noused_xprofile_fields(){
-	global $wpdb;
-	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 57 ), array('%d') );
-	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 56 ), array('%d') );
-	$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 18 ), array('%d') );
-	$get_f = $wpdb->get_results( $wpdb->prepare(
-		"SELECT *
-		FROM {$wpdb->prefix}bp_xprofile_data
-		WHERE field_id = %d
-		ORDER BY id",
-		56
-	) );
-	alex_debug(0,1,'as21_del_noused_xprofile_fields',$get_f);
+	if( (bool)$_GET['dev'] === true){
+		global $wpdb;
+		$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 57 ), array('%d') );
+		$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 56 ), array('%d') );
+		$wpdb->delete( $wpdb->prefix."bp_xprofile_data", array('field_id' => 18 ), array('%d') );
+		$get_f = $wpdb->get_results( $wpdb->prepare(
+			"SELECT *
+			FROM {$wpdb->prefix}bp_xprofile_data
+			WHERE field_id = %d
+			ORDER BY id",
+			56
+		) );
+		alex_debug(0,1,'as21_del_noused_xprofile_fields',$get_f);
+	}
 }
+
+// add_action("wp_footer","list_hooks");
+function list_hooks(){
+
+	echo ' list_hooks======';
+	// function list_hooked_functions($tag=false){
+
+	//      global $wp_filter;
+	//      if ($tag) {
+	//       $hook[$tag]=$wp_filter[$tag];
+	//       if (!is_array($hook[$tag])) {
+	//       trigger_error("Nothing found for '$tag' hook", E_USER_WARNING);
+	//       return;
+	//       }
+	//      }
+	//      else {
+	//       $hook=$wp_filter;
+	//       ksort($hook);
+	//      }
+	//      echo '<pre>';
+	//      foreach($hook as $tag => $priority){
+	//       echo "<br />&gt;&gt;&gt;&gt;&gt;\t<strong>$tag</strong><br />";
+	//       ksort($priority);
+	//       foreach($priority as $priority => $function){
+	//       echo $priority;
+	//       foreach($function as $name => $properties) echo "\t$name<br />";
+	//       }
+	//      }
+	//      echo '</pre>';
+	//      return;
+	// }
+	// list_hooked_functions('wp_head');
+
+	// show all callbaks for some hook/filter by priority
+	 global $wp_filter;
+	 alex_debug(0,1,'',$wp_filter['wp_head']);
+	 // alex_debug(0,1,'',$wp_filter['wp_title']);
+	 // alex_debug(0,1,'',$wp_filter['bp_head']);
+
+}
+
+
+// add_action('wp_head','as21_head');
+function as21_head(){
+	 // global $wp_filter;
+	 // alex_debug(0,1,'',$wp_filter['wp_head']);
+
+	 add_filter('wp_title', 'kleo_wp_title2', 999999,2);
+	function kleo_wp_title2($title,$sep){
+		// echo ' wp_title ========='; exit;
+		return " ALEX ADD! ".$title;
+	}
+	exit;
+}
+
+// add_action('wp_head','as21_left_nav_hide');
+function as21_left_nav_hide(){
+?>
+<style>	#item-header-wrap{display:none !important;}</style>
+<?php	
+}
+
+// remove_all_actions("wp_head");
+// add_action('bp_head','as21_bphead');
+// function as21_bphead(){
+// 	exit;
+// }
+/* **** as21 **** */

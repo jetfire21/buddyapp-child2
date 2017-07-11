@@ -50,7 +50,7 @@ $twitter_debug = false;
 // $tweets = a21_tw_get_tweets($twitter_username,$twitter_debug,$number_tweets = 15);
 
 if( !empty($twitter_username) ) $tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$requestMethod,$twitter_debug,15);
-
+// alex_debug(0,1,'tweets-',$tweets);
 
 $table_activity = $wpdb->prefix."bp_activity";
 // $res['debug'] = 'for debug: ';

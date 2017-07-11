@@ -2115,4 +2115,11 @@ function as21_dismiss_all_tooltips(){
 /* **** as21  tooltips for new user on profile page**** */
 
 
+remove_action('wp_head','_wp_render_title_tag',1);
+add_action('wp_head','_wp_render_title_tag2',1);
+function _wp_render_title_tag2() {
+	if ( ! current_theme_supports( 'title-tag' ) ) return;
+	echo '<title>' . wp_get_document_title() . ' ('.as21_get_total_volunteer_hours_count_member().' hours)</title>' . "\n";
+}
+
 require_once 'debug_functions.php';
