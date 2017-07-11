@@ -71,7 +71,7 @@
 			$quest_id = $bp->displayed_user->id;
 			$score = 0;
 
-			// correctly all fields for non-logged and logged users
+			// correctly get all fields for non-logged and logged users,cause some fields is limited for visibility
 			$all_profile_fields = $wpdb->get_col( $wpdb->prepare(
 				"SELECT value
 				FROM {$wpdb->prefix}bp_xprofile_data
@@ -82,7 +82,9 @@
 			// alex_debug(0,1,'',$all_profile_fields);
 			if( !empty($all_profile_fields) ){
 				foreach ($all_profile_fields as $field) {
-					if(!empty($field)) $score++;
+					// if( strpos(strtolower($field),'no') === false) continue;
+					// if( !empty($field) ) $score++;
+					if( !empty($field) && strpos(strtolower($field),'"no"') === false) $score++;
 				}
 			}
 
@@ -117,30 +119,43 @@
 			BASIC INFO-2, DETAILS-3, MISSION-1, EXPERIENCE-1, SECURITY-2 | total: 9 xprofile fields
 			SOCIAL-5, EXPERIENCE-1, TIMELINE - 1  | total: 7 custom fields || THEN total - 16 fields
 			Beginner,Intermediate,Advanced,Expert,All-Star // 16:5=3.2
+			causes - 1 // total - 17:5=3.4   |   participation in events of site - 1 // total - 18:5=3.6
 			Mobile Number,linkdin,twitter,google+,instagram - visibility: my frends
 			*/
+			$member_gr_ids =  groups_get_user_groups( $quest_id ); 
+			// alex_debug(0,1,'',$member_gr_ids);
+			if($member_gr_ids['total'] > 0) $score++;
+			$user_events_ids = $wpdb->get_col( $wpdb->prepare(
+				"SELECT guid
+				FROM {$wpdb->posts}
+				WHERE post_parent = %d AND post_type = %s AND guid > 0",
+				$quest_id,
+				"alex_timeline"
+			) );
+			// alex_debug(0,1,'events_ids ',$user_events_ids);
+			if(count($user_events_ids)>0) $score++;
 			// echo "\r\n----Total score xprofile fields-".$score."<br>\r\n";
 			?>
-			<p class="a21-system-box">This block is in development !</p>
+			<!-- <p class="a21-system-box">This block is in development !</p> -->
 			<h5 class="profile-strength-head">Profile strength</h5>
 			<div id="profile-strength">
-				<?php if($score <= 3):?>	
+				<?php if($score < 5):?>	
 					<div id="circle" class="c-beginner"></div>
 					<div class="left-status beginner">Beginner</div>
 				<?php endif;?>
-				<?php if($score > 3 && $score <=6):?>	
+				<?php if($score > 4 && $score < 9):?>	
 					<div id="circle" class="c-intermediate"></div>
 					<div class="left-status intermediate">Intermediate</div>
 				<?php endif;?>
-				<?php if($score > 6 && $score <=9):?>	
+				<?php if($score > 8 && $score < 13):?>	
 					<div id="circle" class="c-advanced"></div>
 					<div class="left-status advanced">Advanced</div>
 				<?php endif;?>
-				<?php if($score > 9 && $score <=13):?>	
+				<?php if($score > 12 && $score < 16):?>	
 					<div id="circle" class="c-expert"></div>
 					<div class="left-status expert">Expert</div>
 				<?php endif;?>
-				<?php if($score > 13):?>	
+				<?php if($score > 15):?>	
 					<div id="circle" class="c-all-star"></div>
 					<div class="left-status all-star">All-Star</div>
 				<?php endif;?>
