@@ -645,7 +645,7 @@ function a21_inc_styles_for_timeline(){
 	}
 	// endif;
 
-	if( is_page("jobs")) {
+	if( is_page("gigs")) {
 	// if( is_page("jobs") || is_page("post-a-job")) {
 
 		wp_deregister_style("wp-job-manager-frontend");
@@ -2114,7 +2114,6 @@ function as21_dismiss_all_tooltips(){
 	exit;
 }
 // require_once 'libs/frontend-profile-tooltips.php';
-
 
 /* **** as21  tooltips for new user on profile page**** */
 remove_action('wp_head','_wp_render_title_tag',1);
