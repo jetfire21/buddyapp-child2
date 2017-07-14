@@ -9,7 +9,7 @@
 			console.log( row_i );
 			if(row_i > 0) el = row_i+el;
 			console.log("el "+el);
-			var html = '<tr class="dinam_row_js"> \
+			var html = '<tr class="dinam_row_js none"> \
 			<td class="timel_title a21_js">\
 				 <input type="text" required="required" placeholder="" name="new_data['+el+'][timel_title]" class="form-control" value="">\
 			</td>\
@@ -20,7 +20,7 @@
 			</td>\
 			<td class="qe_color">\
 			    <select class="form-control" name="new_data['+el+'][timel_class]">\
-			        <option value="" >None</option>\
+			        <option value="none" >None</option>\
 			        <option value="bricky" >Red</option>\
 			        <option value="green">Green</option>\
 			        <option value="purple" >Purple</option>\

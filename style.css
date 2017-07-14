@@ -485,6 +485,9 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 .bp-user #a21_timeleline_quick_edit {font-size: 1em; margin-bottom: 15px; border-collapse: collapse;}
 .bp-user #a21_timeleline_quick_edit .teal td{background-color: #98B5B7 !important;}
 .bp-user #a21_timeleline_quick_edit .bricky td{background-color: #E68176 !important; color:#fff !important;}
+.bp-user #a21_timeleline_quick_edit .none {background: #fff !important;}
+.bp-user #a21_timeleline_quick_edit .none td, .bp-user #a21_timeleline_quick_edit .none input,
+.bp-user #a21_timeleline_quick_edit .none textarea,.bp-user #a21_timeleline_quick_edit .none select {color:#000 !important;}
 .bp-user #a21_timeleline_quick_edit .purple td{background-color: #9f9daa !important; color:#fff !important;}
 .bp-user #a21_timeleline_quick_edit .green td{background-color: #3D9400 !important; color:#fff !important;}
 /*.bp-user #a21_timeleline_quick_edit .teal *,.bp-user #a21_timeleline_quick_edit .purple *,

@@ -914,6 +914,7 @@ function alex_add_timeline() {
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
 	$sort_date = date("Y-m-d",strtotime($date) ); // 2017-10-1 for sorting
+	if( preg_match('#none#i', strtolower($class)) ) $class = "none";
 
 	global $wpdb;
 	$last_post_id = $wpdb->get_var( "SELECT MAX(`ID`) FROM {$wpdb->posts}");
@@ -941,7 +942,7 @@ function alex_edit_timeline() {
 	$class = sanitize_text_field($_POST['class']);
 	$alex_tl_grp_id = (int)($_POST['alex_tl_grp_id']);
 	$vol_hours = (int)($_POST['vol_hours']);
-	if( preg_match('#none#i', strtolower($class)) ) $class = "";
+	if( preg_match('#none#i', strtolower($class)) ) $class = "none";
 	// alex_debug(0,1,"rrr",$_POST); exit;
 	// echo $class."--"; exit;
 

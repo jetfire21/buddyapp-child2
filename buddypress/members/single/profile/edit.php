@@ -85,6 +85,7 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					<td class="qe_color">
 					    <select class="form-control" name="data[<?php echo $i;?>][timel_class]">
 					        <!-- <option value="">None</option> -->
+					        <option value="none" <?php if($field->post_name=="none") echo 'selected="selected"';?>>None</option>
 					        <option value="bricky" <?php if($field->post_name=="bricky") echo 'selected="selected"';?>>Red</option>
 					        <option value="green" <?php if($field->post_name=="green") echo 'selected="selected"';?>>Green</option>
 					        <option value="purple" <?php if($field->post_name=="purple") echo 'selected="selected"';?>>Purple</option>
