@@ -34,7 +34,7 @@ function a21_kleo_show_page_title(){
 	?>
 	<div class="a21_inner_page_title">
 	<h1>VOLUNTEER JOB BOARD</h1>
-	<span>Where DuGoodrs impact causes most</span>
+	<span>Where DuGoodrs find... 1000's of Volunteer Gigs</span>
 	</div>
 	<?php
 	wp_nav_menu( array(
@@ -62,7 +62,7 @@ function a21_kleo_show_page_title(){
 ?>
 
 <?php get_template_part( 'page-parts/page-title' ); ?>
- <?php if( is_page('jobs') ) do_action( 'jobify_output_map' ); ?>
+ <?php if( is_page('gigs') ) do_action( 'jobify_output_map' ); ?>
 
 <!-- <div class="container content-area"> -->
 <!-- <div class="main-content <?php echo Kleo::get_config('container_class'); ?>"> -->

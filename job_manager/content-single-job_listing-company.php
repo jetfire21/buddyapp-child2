@@ -32,7 +32,7 @@ if ( ! get_the_company_name() ) {
 	<?php if ( $website = get_the_company_website() ) : ?>
 		<a class="website" href="<?php echo esc_url( $website ); ?>" itemprop="url" target="_blank" rel="nofollow"><?php echo esc_url( $website ); ?></a>
 	<?php endif; ?>
-	<?php if( !empty(get_job_field("job_available")) ) echo "<div>Volunteer Jobs: ".get_job_field("job_available")."</div>";
+	<?php if( !empty(get_job_field("job_available")) ) echo "<div>Volunteer #Gigs: ".get_job_field("job_available")."</div>";
 
 	function as21_wjm_wjmfe_details_get_job_data_group(){
 
