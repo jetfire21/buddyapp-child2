@@ -807,6 +807,7 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 #profile-strength .expert{ left:5.7em; top:0.9em; }
 #profile-strength .all-star{ left:4.8em; top:0em; }
 
+.bp-user-reviews span.rating{direction: rtl !important; unicode-bidi: bidi-override !important;}
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}

@@ -44,3 +44,11 @@ private метод нельзя переопределить http://php.net/manu
 -------------------
  Yes, enable caching of all field configuration
 This plugin uses WordPress transients to cache field configs to prevent excessive, and unecessary database queries. Whenever a new field is added, or updated, this cache is automatically purged and updated.. Disable this if you have issues with your custom filters not working correctly, or while debugging.
+
+###########  go-fetch-jobs-wp-job-manager ########
+кастомизировал этот плагин:
+добавил след файлы
+plugins/go-fetch-jobs-wp-job-manager/includes/phpQuery.php
+/home/jetfire/www/dugoodr2.dev/wp-content/plugins/go-fetch-jobs-wp-job-manager/includes/curl.php
+изменил:
+/home/jetfire/www/dugoodr2.dev/wp-content/plugins/go-fetch-jobs-wp-job-manager/includes/class-gofetch-importer.php
