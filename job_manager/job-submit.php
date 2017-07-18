@@ -40,6 +40,7 @@ global $job_manager;
 	    // alex_debug(1,1,'post',$_POST);
 		?>
 		
+		<?php if($job_id == 0)	unset( $job_fields['application'][value] ); ?>	
 		<?php foreach ( $job_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
 				<label for="<?php echo esc_attr( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
@@ -57,6 +58,12 @@ global $job_manager;
 
 			<?php do_action( 'submit_job_form_company_fields_start' ); ?>
 
+			<?php if($job_id == 0)	{
+				unset( $company_fields['company_name']['value'] ); 
+				unset( $company_fields['company_website']['value'] );	
+				unset( $company_fields['company_tagline']['value'] );	
+				unset( $company_fields['company_logo']['value'] ); 
+			}?>	
 			<?php foreach ( $company_fields as $key => $field ) : ?>
 				<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
 					<label for="<?php echo esc_attr( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>

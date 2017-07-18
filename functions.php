@@ -10,7 +10,6 @@
  * BuddyApp Child Theme Functions
  * Add custom code below
 */ 
-
 add_filter('wp_mail_from', 'new_mail_from');
 add_filter('wp_mail_from_name', 'new_mail_from_name');
  
@@ -2122,6 +2121,7 @@ add_action('wp_head','_wp_render_title_tag2',1);
 function _wp_render_title_tag2() {
 	if(bp_is_user_profile()){
 		if ( ! current_theme_supports( 'title-tag' ) ) return;
+		/* echo "<meta name='robots' content='all'/>\n"; http://dugoodr.com/i-am/christopher-dean/ */
 		echo '<title>' . wp_get_document_title() . ' ('.as21_get_total_volunteer_hours_count_member().' hours)</title>' . "\n";
 	}
 	else{

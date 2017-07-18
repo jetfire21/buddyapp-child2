@@ -1106,3 +1106,10 @@ function as21_left_nav_hide(){
 // 	exit;
 // }
 /* **** as21 **** */
+
+
+// add_action("wp_head",'as21_add_index_page',1);
+// function as21_add_index_page(){
+// if( bp_is_user_profile() )  echo "<meta name='robots' content='all'/>\n";
+// }
+

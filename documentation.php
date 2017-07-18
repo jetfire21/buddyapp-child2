@@ -52,3 +52,6 @@ plugins/go-fetch-jobs-wp-job-manager/includes/phpQuery.php
 /home/jetfire/www/dugoodr2.dev/wp-content/plugins/go-fetch-jobs-wp-job-manager/includes/curl.php
 изменил:
 /home/jetfire/www/dugoodr2.dev/wp-content/plugins/go-fetch-jobs-wp-job-manager/includes/class-gofetch-importer.php
+
+###############
+когда плагин total cache отключен браузеру отдается заголовок X-Robots-Tag:noindex, запрет индексации
