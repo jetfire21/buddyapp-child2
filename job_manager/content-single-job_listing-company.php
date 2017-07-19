@@ -12,7 +12,7 @@ if ( ! get_the_company_name() ) {
 }
 ?>
 <div class="company" itemscope itemtype="http://data-vocabulary.org/Organization">
-	<div class="main-logo"><?php the_company_logo(); ?></div>
+	<div class="main-logo"><?php the_company_logo('full'); ?></div>
 
 	<div class="name">
 		<?php the_company_twitter(); ?>
@@ -59,8 +59,11 @@ if ( ! get_the_company_name() ) {
 </div>
 <script>
 if( jQuery(".company").width() > 480 ){
-	var as21_height = jQuery(".company").height() - 20;
-	// console.log(as21_height);
-	jQuery(".company .main-logo").css({"height":as21_height});
+	var content_height = jQuery(".company").height() - 20;
+	var logo_height = jQuery('.company .company_logo').height()
+	console.log('content_height: '+content_height);
+	console.log( 'height logo: '+logo_height );
+	if( logo_height > content_height ) jQuery(".company .main-logo").css({"height":logo_height});
+	else jQuery(".company .main-logo").css({"height":content_height});
 }
 </script>

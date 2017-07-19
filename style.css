@@ -396,6 +396,10 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 /*.single-item.groups */
 #buddypress .sidebar span.activity{ display: inline-block !important; }
 
+@media only screen and (max-width: 460px){
+  .single_job_listing .company .name { clear: both; margin:0; padding: 20px 0 0 0;}
+}
+
 @media only screen and (max-width: 766px){
 
   .bp-user #a21_timeleline_quick_edit .datepicker{ left: -45px !important;}
@@ -679,7 +683,10 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .single-job_listing .container{ width: 100%; }
 .single-job_listing img.company_logo,
 .single_job_listing img.company_logo{
- max-width:130px; width: 130px; max-height:130px; height: auto; position: static; margin-right: 30px !important; min-width: auto;}
+ /*max-width:130px;width: 130px; max-height:130px; height: auto;*/
+ position: static; margin-right: 30px !important; min-width: auto;
+ max-width:180px;width: 180px; max-height:180px; height: auto;
+ }
 .single-job_listing .job_description,.single_job_listing .job_description{ clear: both; }
 .single-job_listing .company ,.single_job_listing .company {overflow: hidden;}
 .single-job_listing .company *:not(img),.single_job_listing .company *:not(img){color:#000 !important; margin:0;}
