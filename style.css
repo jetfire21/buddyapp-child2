@@ -732,6 +732,8 @@ ul#a21_job_menu li{ display: inline-block; padding: 10px 20px; }
 .company .main-logo {float: left;}
 .company .as21-block-empty { display: block; }
 .chosen-container-active.chosen-with-drop .chosen-single, .job_filters .search_categories{ background: #fff; }
+.job_filters .search_categories{ margin-right: 2%; }
+
 
 button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 
