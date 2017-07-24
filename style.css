@@ -817,6 +817,14 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 #profile-strength .all-star{ left:4.8em; top:0em; }
 
 .bp-user-reviews span.rating{direction: rtl !important; unicode-bidi: bidi-override !important;}
+form #as21-reviews-badge { margin-left: 25px; }
+form #as21-reviews-badge img{ border:1px solid transparent; cursor: pointer; float:left; margin:0 5px 5px 0;}
+form #as21-reviews-badge img:nth-child(3){clear: both;}
+form #as21-reviews-badge img:hover, form #as21-reviews-badge .active{ border:1px solid red; cursor: pointer; }
+.bp-user-reviews-table, form #as21-reviews-badge{float:left;}
+.bp-users-reviews-list .wrap-rating { float: left;}
+.bp-users-reviews-list .text{ clear: both;}
+.bp-users-reviews-list #as21-reviews-badge{ float:left; padding-left: 15px;}
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}
@@ -840,9 +848,11 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 @media only screen and (max-width: 460px){
   .profile #circle-dount-chart{ margin:0 auto; float: none !important; }
   #buddypress .profile .wrap_field-avail { width: 100%; }
-   #buddypress .profile .bp-widget.basic.info{padding-top:0;}
-   .company .as21-company-custom-field{ text-align: left; }
-   .company #alex_groups_user {display: block; line-height: 2;}
+  #buddypress .profile .bp-widget.basic.info{padding-top:0;}
+  .company .as21-company-custom-field{ text-align: left; }
+  .company #alex_groups_user {display: block; line-height: 2;}
+  form #as21-reviews-badge img:nth-child(3){clear: none;}
+  form #as21-reviews-badge {margin-left: 0; }
 }
 @media only screen and (max-width: 420px){
    .logo > a{text-align: left;}
@@ -851,7 +861,6 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
     .bp-user #a21_timeleline_quick_edit textarea{line-height: 1.3;}
     .bp-user.profile-edit .datepicker:before,
   .bp-user.profile-edit .datepicker:after{ right: auto !important; left: 33%;}
-
 }
 
 

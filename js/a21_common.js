@@ -396,5 +396,15 @@
 		}
 	});
 
+$("#as21-reviews-badge img").click(function(){
+	console.log('as21-reviews-badge click');
+	$("#as21-reviews-badge img").removeClass('active');
+	$(this).addClass('active');
+	var badge_id = $(this).data('id');
+	console.log(badge_id);
+	$(".bp-user-reviews #badge_id").val(badge_id);
+});
+
+
   });
 })(jQuery);

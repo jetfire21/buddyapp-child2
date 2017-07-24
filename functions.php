@@ -1044,6 +1044,13 @@ function ajax_review_override(){
 
 if ( class_exists('BP_Member_Reviews') ){
 	
+	/* **** as21 **** */
+	// alex_debug(0,1,'post',$_POST);
+	// $response['badge_id'] = (int)$_POST['badge_id'];
+	// $response['qq'] = 'any value';
+    // wp_send_json($response);
+    // die();
+
     $user_id = intval($_POST['user_id']);
     if( !wp_verify_nonce( $_POST['_wpnonce'], 'bp-user-review-new-'.$user_id ) ) die();
 
@@ -1151,7 +1158,7 @@ if ( class_exists('BP_Member_Reviews') ){
             $response['errors'][] = __('Review can`t be empty', 'bp-user-reviews');
         } elseif (mb_strlen($_POST['review']) < $bp_member_r->settings['min_length']) {
             $response['result'] = false;
-            $response['errors'][] = sprintf(__('Review must be at least %s characters', 'bp-user-reviews'), $bp_member_r->settings['min_length']);
+            $response['errors'][] = sprintf(__('2222 Review must be at least %s characters', 'bp-user-reviews'), $bp_member_r->settings['min_length']);
         } else {
             $review_meta['review'] = esc_attr($_POST['review']);
         }
@@ -1179,6 +1186,8 @@ if ( class_exists('BP_Member_Reviews') ){
         }
     }
 
+    $post['menu_order'] = (int)$_POST['badge_id'];
+
     if($response['result'] === true){
         $review_id = wp_insert_post($post);
 
@@ -1205,10 +1214,43 @@ if ( class_exists('BP_Member_Reviews') ){
 
 	$wpdb->query( $q );	
 	/* ****** adding a custom activity - compliment(review) ******* */
+
+	$response['badge_id'] = (int)$_POST['badge_id'];
+	// $response['qq'] = 'any value';
+
     wp_send_json($response);
     die();
 	}
 }
+
+function as21_rename_nav_item_reviews() {
+	global $bp;
+	// echo '--4444444---';
+	// var_dump($bp->bp_nav);
+	// alex_debug(0,1,'',$bp);
+
+	// global $BP_Member_Reviews;
+	$reviews = new WP_Query(array(
+	    'post_type'   => 'bp-user-reviews',
+	    'post_status' => 'publish',
+	    'meta_query' => array(
+	        array(
+	            'key'     => 'user_id',
+	            'value'   => bp_displayed_user_id()
+	        )
+	    ),
+	    'posts_per_page'  => 0,
+	));
+
+	$total = $reviews->found_posts;
+	// echo 'count total---'.$total;
+
+	$class = ( 0 === $total ) ? 'no-count' : 'count';
+	$title = sprintf(( 'Recognition <span class="%s">%s</span>' ), esc_attr( $class ), bp_core_number_format( $total ) );
+	$bp->bp_nav['reviews']['name'] = $title;
+}
+add_action( 'bp_setup_nav', 'as21_rename_nav_item_reviews', 999 );
+
 
 function register_widgets_for_groups_pages(){
 	register_sidebar( array(

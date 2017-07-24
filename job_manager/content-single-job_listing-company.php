@@ -58,12 +58,14 @@ if ( ! get_the_company_name() ) {
 	<?php the_company_video(); ?>
 </div>
 <script>
-if( jQuery(".company").width() > 480 ){
-	var content_height = jQuery(".company").height() - 20;
-	var logo_height = jQuery('.company .company_logo').height()
-	// console.log('content_height: '+content_height);
-	// console.log( 'height logo: '+logo_height );
-	if( logo_height > content_height ) jQuery(".company .main-logo").css({"height":logo_height});
-	else jQuery(".company .main-logo").css({"height":content_height});
-}
+jQuery( document ).ready(function($) {
+	if( jQuery(".company").width() > 480 ){
+		var content_height = jQuery(".company").height() - 20;
+		var logo_height = jQuery('.company .company_logo').height()
+		console.log('content_height: '+content_height);
+		console.log( 'height logo: '+logo_height );
+		if( logo_height > content_height ) jQuery(".company .main-logo").css({"height":logo_height});
+		else jQuery(".company .main-logo").css({"height":content_height});
+	}
+});
 </script>

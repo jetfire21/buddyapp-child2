@@ -1113,3 +1113,55 @@ function as21_left_nav_hide(){
 // if( bp_is_user_profile() )  echo "<meta name='robots' content='all'/>\n";
 // }
 
+// add_action( 'bp_template_content', array($this, 'screen_content') );
+// add_action('wp_footer','as21_000');
+// add_action('plugins_loaded','as21_000');
+function as21_000(){
+
+	if(class_exists('BP_Member_Reviews')){
+		global $BP_Member_Reviews;
+		alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
+		 global $wp_filter;
+	    alex_debug(0,1,'',$wp_filter['bp_template_content']);
+	    // $BP_Member_Reviews = new BP_Member_Reviews();
+		remove_action('bp_template_content', array($BP_Member_Reviews, 'screen_content'),20);
+		add_action("bp_template_content","screen_content_2");
+		function screen_content_2(){
+			echo "a21 new_html========";
+		}
+	}
+}
+
+/*
+        public function screen_content() {
+            if( (($this->settings['access'] == 'registered') && is_user_logged_in()) ||  $this->settings['access'] == 'all'){
+                if(get_current_user_id() != bp_displayed_user_id() &&
+                   apply_filters( 'bp_members_reviews_review_allowed', true, bp_loggedin_user_id(), bp_displayed_user_id() )
+                ) {
+                    include($this->path . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'review-form.php');
+                }
+            }
+
+            include($this->path . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'review-list.php');
+        }
+*/
+
+// add_action('wp_ajax_bp_user_review1', 'ajax_review2');
+add_action('wp_ajax_nopriv_bp_user_review1', 'ajax_review2');
+function ajax_review2(){
+	echo 'output test text in js console-------';
+	// $a['res'] = 'aaa';
+	// echo json_encode($a);
+	exit;
+}
+
+// add_action('wp_footer','as21_last1');
+function as21_last1(){
+	global $wpdb; 
+	$q = "INSERT INTO $wpdb->posts (post_title) VALUES ('rrrrr')";
+	$wpdb->query($q);
+	deb_last_query();
+}
+
+
+
