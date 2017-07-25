@@ -565,6 +565,7 @@ Cluster.prototype.updateIcon_ = function () {
 
   var numStyles = this.markerClusterer_.getStyles().length;
   var sums = this.markerClusterer_.getCalculator()(this.markers_, numStyles);
+  console.log('SUMS '+sums);
   this.clusterIcon_.setCenter(this.center_);
   this.clusterIcon_.useStyle(sums);
   this.clusterIcon_.show();
@@ -729,6 +730,10 @@ function MarkerClusterer(map, opt_markers, opt_options) {
 
   this.addMarkers(opt_markers, true);
   this.setMap(map); // Note: this causes onAdd to be called
+
+  console.log('this.calculator_ -------'+this.calculator_);
+  // console.log(this.calculator.text);
+  // console.log(this.calculator.index);
 }
 
 
@@ -1084,6 +1089,7 @@ MarkerClusterer.prototype.setImageSizes = function (imageSizes) {
  * @return {function} the value of the calculator property.
  */
 MarkerClusterer.prototype.getCalculator = function () {
+  // console.log( 'this.calculator_ '+this.calculator_);
   return this.calculator_;
 };
 
@@ -1585,14 +1591,27 @@ MarkerClusterer.CALCULATOR = function (markers, numStyles) {
   var index = 0;
   var title = "";
   var count = markers.length.toString();
+  // console.log('count'+count);
+  // console.log('markers-'+markers);
+  for(var i in markers) {
+    console.log('i- '+i+ ' '+markers[i]);
+    var t = markers[i];
+  //   for(var j in t) {
+  //     console.log('t- '+j+ ' '+t[j]);
+    }
+  
+  // console.log('markers = '+ markers.index.position );
+  // console.log('markers = '+ markers.[0].position );
 
   var dv = count;
   while (dv !== 0) {
     dv = parseInt(dv / 10, 10);
     index++;
   }
+  console.log('dv-'+ dv);
 
   index = Math.min(index, numStyles);
+  // console.log('index='+index + ' '+ 'count='+count+' numStyles '+numStyles);
   return {
     text: count,
     index: index,

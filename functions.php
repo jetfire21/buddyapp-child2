@@ -21,6 +21,10 @@ function new_mail_from_name($old) {
 return 'Justa DuGoodr';
 }
 
+function displayed_user_username_under_profile_picture() {
+	echo '<br>@'.strtolower(bp_get_member_user_login());
+}
+add_action('kleo_bp_after_profile_image', 'displayed_user_username_under_profile_picture');
 
 /* ********** code for member and groups not related,only styles and icons ********** */ 
 /* ********** for page members ********** */ 
@@ -1158,7 +1162,7 @@ if ( class_exists('BP_Member_Reviews') ){
             $response['errors'][] = __('Review can`t be empty', 'bp-user-reviews');
         } elseif (mb_strlen($_POST['review']) < $bp_member_r->settings['min_length']) {
             $response['result'] = false;
-            $response['errors'][] = sprintf(__('2222 Review must be at least %s characters', 'bp-user-reviews'), $bp_member_r->settings['min_length']);
+            $response['errors'][] = sprintf(__('Review must be at least %s characters', 'bp-user-reviews'), $bp_member_r->settings['min_length']);
         } else {
             $review_meta['review'] = esc_attr($_POST['review']);
         }

@@ -4,6 +4,10 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(function($) {
+    /* **** as21 **** */
+    console.log('load app.js---------');
+
+
     var MapView, Marker, MarkerView, MarkersCollection, MarkersCollectionView, jobs, resumes;
     MapView = (function(superClass) {
       extend(MapView, superClass);
@@ -140,6 +144,7 @@
           return template(marker.meta);
         });
         title = this.settings.overlayTitle.replace('%d', markers.length);
+        // title = 333;
         return $.magnificPopup.open({
           items: {
             src: '<div class="modal"><h2 class="modal-title">' + title + '</h2><ul class="cluster-items"><li class="map-marker-info">' + content.join('</li><li class="map-marker-info">') + '</li></ul></div>',
@@ -226,6 +231,14 @@
         } else {
           html = $(this.map.settings.list).first().find('li');
         }
+        /* **** as21 **** */
+        console.log('html-----'+html);
+        // for(var i in html) {
+        //   console.log('i- '+i+ ' '+html[i]);
+        // }
+        console.log('data-----'+data);
+        console.log('this.map.settings.list-----'+this.map.settings.list);
+
         data = _.map(html, function(i) {
           return $(i).data();
         });
@@ -241,6 +254,10 @@
           map: this.map
         });
         this.map.bounds.extend(marker.position());
+        console.log('marker----'+marker);
+        console.log('markerview-----'+markerview);
+        console.log('markerview.model-----'+markerview.model);
+        console.log('markerview.add-----'+markerview.add());
         return markerview.add();
       };
 
@@ -382,9 +399,11 @@
       submit: $('.job_filters').find('.update_results')
     });
 
-    // a21
+    /* **** as21 **** */
     console.log($('.job_filters'));
     console.log($('.job_filters').find('.update_results'));
+    console.log( 'jobs-'+jobs );
+    console.log( 'jobs-'+jobs.list );
 
 
     return resumes = new MapView({
