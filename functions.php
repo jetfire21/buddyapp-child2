@@ -93,7 +93,11 @@ function member_social_extend(){
 			$html .= '</span>';
 		}
 	if( $has_social === true ) echo '<div class="member-social">'.$html.'</div>';
-	else echo '<div class="member-social" id="tooltips-socilal-links" style="width:100px;"></div>';
+	else {
+		global $as21_has_group;
+		$as21_has_group['social-links'] = false;
+		echo '<div class="member-social" id="tooltips-socilal-links" style="width:100px;"></div>';
+	}
 }
 add_filter( 'bp_before_member_header_meta', 'member_social_extend' ); 
 

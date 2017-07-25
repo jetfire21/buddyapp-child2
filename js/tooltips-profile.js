@@ -76,7 +76,8 @@ jQuery( document ).ready(function() {
 			  if( id == 'tooltips-socilal-links') pos_top = 246; // exception,cause element in fixed block
 			  // console.log('pos_left='+pos_left);
 			  // console.log('pos_top tooltip ='+pos_top);
-			  tooltip.css({"top":pos_top,"left":pos_left,"display":"block"});
+			  // tooltip.css({"top":pos_top,"left":pos_left,"display":"block"});
+			  tooltip.css({"top":pos_top,"left":pos_left});
 			  // tooltip.css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block","z-index":zindex});
 			  // jQuery("#wp-pointer-a").css({"top":pos_top,"left":pos_left,"width":toolt_width+"px","position":"absolute","display":"block"});
 
@@ -87,9 +88,11 @@ jQuery( document ).ready(function() {
 		 }
 	}
 
-  	// console.log('tooltip_js------'+tooltip_js);
-  	// for(tip in tooltip_js){ 	console.log(tip+' = '+tooltip_js[tip].id);	} 
+  	console.log('tooltip_js!!!!'+tooltip_js);
+  	for(tip in tooltip_js){ 	console.log(tip+' === '+tooltip_js[tip].id);	} 
   	// console.log(tooltip_js.length); 
+   console.log('first-'+tooltip_js[0].id);
+   jQuery("#wp-pointer-"+tooltip_js[0].id).css({'display':'block'});
 
   	var tooltips_offset = [];
   	for(tip in tooltip_js){
@@ -170,8 +173,10 @@ jQuery( document ).ready(function() {
 	
 
 	jQuery(".wp-pointer button").click(function(){ 
-		// console.log('----next------');
+		console.log('----next------');
+		console.log(jQuery(this).closest(".wp-pointer").next().html());
 		jQuery(this).closest(".wp-pointer").remove();
+		jQuery(this).closest(".wp-pointer").next().css({'display':'block'});
  		// console.log('scrollTop-'+ jQuery(this).scrollTop() );
  		// console.log('scrollTop-'+ jQuery(this).html() );
  		var step = '';
@@ -180,6 +185,8 @@ jQuery( document ).ready(function() {
 			 // console.log(step);  	
 	 		if(step != (tooltips_offset.length-1) ) {
 	 			// console.log('move to next tip '+(step+1) +' '+tooltips_offset[step+1]);
+	 			console.log(tooltip_js[step+1].id);
+ 			   jQuery("#wp-pointer-"+tooltip_js[step+1].id).css({'display':'block'});
 	 			jQuery("body").scrollTo(tooltips_offset[step+1]-90);
 	 		}
  		}

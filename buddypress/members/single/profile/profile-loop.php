@@ -107,7 +107,7 @@ endif;
 
 	<?php
 		function groups_user($edit_link ='',$text_field_empty){
-			global $bp;
+			global $bp,$as21_has_group;
 			$quest_id = $bp->displayed_user->id;
 			// groups for auth and noauth user
 			$user_groups =  groups_get_user_groups( $quest_id ); 
@@ -130,6 +130,7 @@ endif;
 				return $html;
 			// }else return false;
 			}else {
+				$as21_has_group['groups'] = false;
 				$html = '<div class="bp-widget groups">
 							<span class="field-name" id="tooltips-groups">Causes</span>
 							'.$text_field_empty.'
@@ -273,7 +274,9 @@ endif;
 					
 		/* **** as21 if profile fields is full empty**** */		
 
-		if((bool)$_GET['dev'] == true ) alex_debug(1,1,'',$profile_template->groups);
+		// if((bool)$_GET['dev'] == true ) alex_debug(1,1,'',$profile_template->groups);
+		global $as21_has_group;
+
 		$has_mission_group = false;
 		$has_security_group = false;
 		$has_details_group = false;
@@ -282,6 +285,7 @@ endif;
 		}
 		if(!$has_details_group) {
 		// if(!$has_details_group && $LALA) {
+			$as21_has_group['name'] = false;
 			$details_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE id=%d AND group_id = %d AND parent_id = %d",10, 4, 0 ) );
 			echo "<div class='bp-widget 1. details details'><span class='field-name not-filled-filed' id='tooltips-name'>".$details_field->name."</span>".$details_field->description."</div>";
 				?>
@@ -309,6 +313,7 @@ endif;
 	
 		if(!$has_mission_group) {
 			// echo '--Mission not EXIST---';
+			$as21_has_group['mission'] = false;
 			$mission_field = $wpdb->get_row( $wpdb->prepare( "SELECT description,name FROM {$wpdb->prefix}bp_xprofile_fields WHERE group_id = %d AND parent_id = %d", 5, 0 ) );
 			// deb_last_query();
 			echo "<div class='bp-widget'><span class='field-name' id='tooltips-mission'>".$mission_field->name."</span>".$mission_field->description."</div>";
@@ -332,6 +337,7 @@ endif;
 			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$html."</div>";
 			 // $score++;
 		}else{
+			$as21_has_group['experiences'] = false;
 			 echo "<div class='bp-widget'><span class='field-name' id='tooltips-experiences'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		}
 
@@ -605,7 +611,7 @@ function as21_tooltips_for_new_user_profile(){
 	// echo ' user_id-'.$user_id; echo ' member_id-'.$member_id;
 
 	if( $user_id == $member_id):
-
+/*
 	    // print_r($status_tooltips_db);
 		$tooltips = array(
 			array(
@@ -634,6 +640,63 @@ function as21_tooltips_for_new_user_profile(){
 			'text' => '<h3>Step 5:</h3><p> Add causes you support and have joined</p>',
 			'zindex' => 994)
 		  );
+*/
+	  $tooltips = array();
+	  $ti = 1;
+	  global $as21_has_group;
+	  // echo '====888';
+	  // var_dump($as21_has_group);
+	  
+	if($as21_has_group['name'] === false) {
+
+		 $tooltips[$ti] = array(
+			'id'   => 'tooltips-name',
+			'edge' => 'bottom', // align tooltip arrow
+			'text' => '<h3>Step '.$ti.': </h3> <p> Build your Profile (image, background, name, contact details)</p>',
+			'zindex' => 998
+		);
+		 $ti++;
+	}
+
+	if($as21_has_group['mission'] === false) {
+		$tooltips[$ti] = array(
+			'id'   => 'tooltips-mission',
+			'edge' => 'top',
+			'text' => '<h3>Step '.$ti.': </h3> <p> Add your mission statement</p>',
+			'zindex' => 997
+		);
+		$ti++;
+	}
+
+	if( $as21_has_group['experiences'] === false ){
+			$tooltips[$ti] = array(
+				'id'   => 'tooltips-experiences',
+				'edge' => 'top',
+				'text' => '<h3>Step '.$ti.':</h3><p> Add your experiences</p>',
+				'zindex' => 996
+			);
+			$ti++;
+	}	
+	if( $as21_has_group['social-links'] === false ){
+			$tooltips[$ti] = array(
+				'id'   => 'tooltips-socilal-links',
+				'edge' => 'top',
+				'text' => '<h3>Step '.$ti.':</h3><p> add your social media accounts</p>',
+				'zindex' => 995
+			);
+			$ti++;
+	}
+	if( $as21_has_group['groups'] === false ){
+			$tooltips[$ti] = array(
+				'id'   => 'tooltips-groups',
+				'edge' => 'top',
+				'text' => '<h3>Step '.$ti.':</h3><p> Add causes you support and have joined',
+				'zindex' => 994
+			);
+			$ti++;
+	}
+
+	// alex_debug(0,1,'',$tooltips);
 
 		/* **** as21 get tooltips for case when only one tooltip dismiss ****
 		// echo ' conditional user_id == member_id first=========';
