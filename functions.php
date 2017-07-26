@@ -1231,34 +1231,53 @@ if ( class_exists('BP_Member_Reviews') ){
 	}
 }
 
-function as21_rename_nav_item_reviews() {
-	global $bp;
-	// echo '--4444444---';
-	// var_dump($bp->bp_nav);
-	// alex_debug(0,1,'',$bp);
+if ( class_exists('BP_Member_Reviews') ){
 
-	// global $BP_Member_Reviews;
-	$reviews = new WP_Query(array(
-	    'post_type'   => 'bp-user-reviews',
-	    'post_status' => 'publish',
-	    'meta_query' => array(
-	        array(
-	            'key'     => 'user_id',
-	            'value'   => bp_displayed_user_id()
-	        )
-	    ),
-	    'posts_per_page'  => 0,
-	));
+	function as21_rename_nav_item_reviews() {
+		global $bp;
+		// echo '--4444444---';
+		// var_dump($bp->bp_nav);
+		// alex_debug(0,1,'',$bp);
 
-	$total = $reviews->found_posts;
-	// echo 'count total---'.$total;
+		// global $BP_Member_Reviews;
+		$reviews = new WP_Query(array(
+		    'post_type'   => 'bp-user-reviews',
+		    'post_status' => 'publish',
+		    'meta_query' => array(
+		        array(
+		            'key'     => 'user_id',
+		            'value'   => bp_displayed_user_id()
+		        )
+		    ),
+		    'posts_per_page'  => 0,
+		));
 
-	$class = ( 0 === $total ) ? 'no-count' : 'count';
-	$title = sprintf(( 'Recognition <span class="%s">%s</span>' ), esc_attr( $class ), bp_core_number_format( $total ) );
-	$bp->bp_nav['reviews']['name'] = $title;
+		$total = $reviews->found_posts;
+		// echo 'count total---'.$total;
+
+		$class = ( 0 === $total ) ? 'no-count' : 'count';
+		$title = sprintf(( 'Recognition <span class="%s">%s</span>' ), esc_attr( $class ), bp_core_number_format( $total ) );
+		$bp->bp_nav['reviews']['name'] = $title;
+	}
+	add_action( 'bp_setup_nav', 'as21_rename_nav_item_reviews', 999 );
+
+	// owerride add_action( 'bp_template_content', array($this, 'screen_content') );
+	add_action( 'bp_template_content', 'screen_content2',1 );
+	function screen_content2(){
+		$bp_member_r = new BP_Member_Reviews();
+	    if( (($bp_member_r->settings['access'] == 'registered') && is_user_logged_in()) ||  $bp_member_r->settings['access'] == 'all'){
+	        if(get_current_user_id() != bp_displayed_user_id() &&
+	           apply_filters( 'bp_members_reviews_review_allowed', true, bp_loggedin_user_id(), bp_displayed_user_id() )
+	        ) {
+	            // include($bp_member_r->path .'templates' . DIRECTORY_SEPARATOR . 'review-form-b.php');
+	        	locate_template('/plugins-modif/review-form-b.php', true);
+	        }
+	    }
+
+	    // include($bp_member_r->path . 'templates' . DIRECTORY_SEPARATOR . 'review-list-b.php');
+	    locate_template('/plugins-modif/review-list-b.php', true);
+	}
 }
-add_action( 'bp_setup_nav', 'as21_rename_nav_item_reviews', 999 );
-
 
 function register_widgets_for_groups_pages(){
 	register_sidebar( array(

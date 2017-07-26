@@ -88,10 +88,10 @@ jQuery( document ).ready(function() {
 		 }
 	}
 
-  	console.log('tooltip_js!!!!'+tooltip_js);
-  	for(tip in tooltip_js){ 	console.log(tip+' === '+tooltip_js[tip].id);	} 
+  	// console.log('tooltip_js!!!!'+tooltip_js);
+  	// for(tip in tooltip_js){ 	console.log(tip+' === '+tooltip_js[tip].id);	} 
   	// console.log(tooltip_js.length); 
-   console.log('first-'+tooltip_js[0].id);
+   // console.log('first-'+tooltip_js[0].id);
    jQuery("#wp-pointer-"+tooltip_js[0].id).css({'display':'block'});
 
   	var tooltips_offset = [];
@@ -100,7 +100,7 @@ jQuery( document ).ready(function() {
   		// tooltips_offset[tip] = tooltip_js[tip].id;
   		tooltips_offset[tip] = jQuery("#wp-pointer-"+tooltip_js[tip].id).offset().top;
   	}
-  	console.log(tooltips_offset);
+  	// console.log(tooltips_offset);
 	jQuery(window).resize(function(){
 	  	for(tip in tooltip_js){
 	  		// console.log(tip+' = '+tooltip_js[tip].id);
@@ -174,7 +174,7 @@ jQuery( document ).ready(function() {
 
 	jQuery(".wp-pointer button").click(function(){ 
 		console.log('----next------');
-		console.log(jQuery(this).closest(".wp-pointer").next().html());
+		// console.log(jQuery(this).closest(".wp-pointer").next().html());
 		jQuery(this).closest(".wp-pointer").remove();
 		jQuery(this).closest(".wp-pointer").next().css({'display':'block'});
  		// console.log('scrollTop-'+ jQuery(this).scrollTop() );
@@ -185,7 +185,7 @@ jQuery( document ).ready(function() {
 			 // console.log(step);  	
 	 		if(step != (tooltips_offset.length-1) ) {
 	 			// console.log('move to next tip '+(step+1) +' '+tooltips_offset[step+1]);
-	 			console.log(tooltip_js[step+1].id);
+	 			// console.log(tooltip_js[step+1].id);
  			   jQuery("#wp-pointer-"+tooltip_js[step+1].id).css({'display':'block'});
 	 			jQuery("body").scrollTo(tooltips_offset[step+1]-90);
 	 		}

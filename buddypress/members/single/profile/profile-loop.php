@@ -611,7 +611,8 @@ function as21_tooltips_for_new_user_profile(){
 	// echo ' user_id-'.$user_id; echo ' member_id-'.$member_id;
 
 	if( $user_id == $member_id):
-/*
+
+		/*
 	    // print_r($status_tooltips_db);
 		$tooltips = array(
 			array(
@@ -640,7 +641,7 @@ function as21_tooltips_for_new_user_profile(){
 			'text' => '<h3>Step 5:</h3><p> Add causes you support and have joined</p>',
 			'zindex' => 994)
 		  );
-*/
+			*/
 	  $tooltips = array();
 	  $ti = 1;
 	  global $as21_has_group;
