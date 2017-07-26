@@ -1121,8 +1121,10 @@ function as21_000(){
 	if(class_exists('BP_Member_Reviews')){
 		global $BP_Member_Reviews;
 		alex_debug(1,1,"BP_Member_Reviews",$BP_Member_Reviews);
+
 		 global $wp_filter;
 	    alex_debug(0,1,'',$wp_filter['bp_template_content']);
+
 	    // $BP_Member_Reviews = new BP_Member_Reviews();
 		remove_action('bp_template_content', array($BP_Member_Reviews, 'screen_content'),20);
 		add_action("bp_template_content","screen_content_2");
@@ -1157,11 +1159,21 @@ function ajax_review2(){
 
 // add_action('wp_footer','as21_last1');
 function as21_last1(){
-	global $wpdb; 
-	$q = "INSERT INTO $wpdb->posts (post_title) VALUES ('rrrrr')";
-	$wpdb->query($q);
-	deb_last_query();
+	// global $wpdb; 
+	// $q = "INSERT INTO $wpdb->posts (post_title) VALUES ('rrrrr')";
+	// $wpdb->query($q);
+	// deb_last_query();
+	echo '---lala----';
+
+	global $BP_Member_Reviews;
+	remove_action( 'bp_template_content',array($BP_Member_Reviews,'screen_content'),999);
+	
+	global $wp_filter;
+	var_dump($wp_filter['bp_template_content']->callbacks);
+	var_dump($wp_filter['bp_template_content']);
+	echo '---lala----';
 }
+
 
 
 

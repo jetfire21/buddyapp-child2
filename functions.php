@@ -1231,7 +1231,13 @@ if ( class_exists('BP_Member_Reviews') ){
 	}
 }
 
+
+
+
 if ( class_exists('BP_Member_Reviews') ){
+
+	// global $BP_Member_Reviews;
+	// remove_action( 'bp_template_content',array($BP_Member_Reviews,'screen_content'));
 
 	function as21_rename_nav_item_reviews() {
 		global $bp;
@@ -1262,7 +1268,7 @@ if ( class_exists('BP_Member_Reviews') ){
 	add_action( 'bp_setup_nav', 'as21_rename_nav_item_reviews', 999 );
 
 	// owerride add_action( 'bp_template_content', array($this, 'screen_content') );
-	add_action( 'bp_template_content', 'screen_content2',1 );
+	// add_action( 'bp_template_content', 'screen_content2',1 );
 	function screen_content2(){
 		$bp_member_r = new BP_Member_Reviews();
 	    if( (($bp_member_r->settings['access'] == 'registered') && is_user_logged_in()) ||  $bp_member_r->settings['access'] == 'all'){
@@ -1270,12 +1276,12 @@ if ( class_exists('BP_Member_Reviews') ){
 	           apply_filters( 'bp_members_reviews_review_allowed', true, bp_loggedin_user_id(), bp_displayed_user_id() )
 	        ) {
 	            // include($bp_member_r->path .'templates' . DIRECTORY_SEPARATOR . 'review-form-b.php');
-	        	locate_template('/plugins-modif/review-form-b.php', true);
+	        	locate_template('/plugins-modif/bp-user-reviews/review-form-b.php', true);
 	        }
 	    }
 
 	    // include($bp_member_r->path . 'templates' . DIRECTORY_SEPARATOR . 'review-list-b.php');
-	    locate_template('/plugins-modif/review-list-b.php', true);
+	    locate_template('/plugins-modif/bp-user-reviews/review-list-b.php', true);
 	}
 }
 

@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit; ?>
         )
     ));
 ?>
-<h2><?php _e('Reviews', 'bp-user-reviews'); ?></h2>
+<h2><?php _e('Reviews !!!!!!!!', 'bp-user-reviews'); ?></h2>
 <div class="bp-users-reviews-list">
     <?php
     global $post;

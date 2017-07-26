@@ -55,3 +55,8 @@ plugins/go-fetch-jobs-wp-job-manager/includes/phpQuery.php
 
 ###############
 когда плагин total cache отключен браузеру отдается заголовок X-Robots-Tag:noindex, запрет индексации
+
+###### bp-user-reviews
+bp-user-reviews.php change version
+plugins/bp-user-reviews/templates/review-list.php change
+plugins/bp-user-reviews/templates/review-form.php change
