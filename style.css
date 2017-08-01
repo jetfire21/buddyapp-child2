@@ -639,7 +639,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 /* **** modal popup for to show description security verified field ****** */
 
 /*.profile .mfp-content {*/
-.profile #security_desc{
+.profile #security_desc, .profile .verif_send_notif{
   padding: 25px; position: relative;
    border-radius: 10px;
   width: 80%;
@@ -651,14 +651,24 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
   background: linear-gradient(to bottom, #ffffff 0%,#ffffff 23%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
 }
-.profile #security_desc .mfp-close{ position: absolute; right: -12px; top:-12px; line-height: 1.3;
+.profile #security_desc .mfp-close, .profile .verif_send_notif .mfp-close{ position: absolute; right: -12px; top:-12px; line-height: 1.3;
   opacity: 1;
   background: #2d2727;
-  color: #fff;
+  color: #fff !important;
   width: 28px;
   font-size: 22px;
   border-radius: 15px;
 }
+
+.verif_send_notif *{font-size: 12px;}
+.verif_send_notif p{font-size: 14px;}
+.verif_send_notif  textarea{
+    width: 400px;
+    max-width: 100%;
+    height: 130px;
+}
+.verif_send_notif input[type='submit']{font-size: 10px;}
+.submenu li:first-child{display: none;}
 
 /* **** modal popup for to show description security verified field ****** */
 .text_between_memb_and_gr{margin-bottom: 5px;}
@@ -745,6 +755,9 @@ button.rtmedia-comment-media-upload {margin:16px 0 0 10px;}
 #as21_experience_volunteer th:nth-child(3){width: 30px;}
 #as21_experience_volunteer tr td:nth-child(3){font-size: 20px;}
 #as21_list_experiences {list-style: disc !important; margin-left: 20px !important;}
+img.exper_verif{width: 20px; margin-left: 8px;}
+.exper-non-verif{ font-weight: bold; background-color: #d91414; color: #fff !important;padding: 2px 10px;  margin-left: 8px; font-size:10px; display: inline-block;}
+#buddypress .profile #as21_list_experiences .exper-non-verif:hover{ color: #fff !important; }
 
 
 /* fixing styles for date-picker Posted date field */
@@ -825,6 +838,8 @@ form #as21-reviews-badge img:hover, form #as21-reviews-badge .active{ border:1px
 .bp-users-reviews-list .wrap-rating { float: left;}
 .bp-users-reviews-list .text{ clear: both;}
 .bp-users-reviews-list #as21-reviews-badge{ float:left; padding-left: 15px;}
+
+#verification-experience-personal-li {display: none !important;}
 
 .a21-system-message{ margin:0; color: #e80808; font-size: 12px; line-height: 15px;}
 .a21-system-box{ padding: 5px 10px; background: #cddc39; margin: 15px 0; color: #e80808;}

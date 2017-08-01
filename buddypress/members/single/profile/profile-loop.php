@@ -328,10 +328,116 @@ endif;
 		// if($has_experience == "")  echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		// echo "development mode exper";
 		 $all_exper = as21_get_all_experience_from_page_edit_profile();
+		 // alex_debug(0,1,'',$all_exper);
 		 if( !empty($all_exper) ){
+		 	// alex_debug(0,1,'',$all_exper);
+		 	// alex_debug(0,1,'',$_POST);
+		 	if(!empty($_POST['ve_send_notif'])){
+
+		 		// $args = array(
+					// 'user_id' => $user_id,
+					// 'item_id' => 0,
+					// 'secondary_item_id' => 0,
+					// 'component_name' => 'messages',
+					// 'component_action' => 'new_message',
+					// 'date_notified' => bp_core_current_time(),
+					// 'is_new' => 1 );
+
+		 		// $notif_id = bp_notifications_add_notification( $args );
+				$ids = $wpdb->get_col("SELECT ID FROM {$wpdb->users}");
+				// alex_debug(0,1,'',$ids);
+
+				if( !empty($ids)):
+					foreach ($ids as $id) {
+						if($id == $user_id ) continue;
+				       $notif_id = bp_notifications_add_notification( array(
+						// 'user_id'           => $user_id,
+				   		'user_id'           => $id, //	dev-test-1
+						'item_id'           => $_POST['ve_exper_id'], // 10785
+						'secondary_item_id' => 0,
+						'component_name'    => 'custom',
+						'component_action'  => 'custom_action',
+						'date_notified'     => bp_core_current_time(),
+						'is_new'            => 1,
+					) );
+					}
+				endif;
+
+		  //      $notif_id = bp_notifications_add_notification( array(
+				// 	// 'user_id'           => $user_id,
+		  //      		'user_id'           => 909, //	dev-test-1
+				// 	'item_id'           => $_POST['ve_exper_id'], // 10785
+				// 	'secondary_item_id' => 0,
+				// 	'component_name'    => 'custom',
+				// 	'component_action'  => 'custom_action',
+				// 	'date_notified'     => bp_core_current_time(),
+				// 	'is_new'            => 1,
+				// ) );
+		 		// var_dump($notif_id);
+
+				$wpdb->update( $wpdb->posts,
+					array( 'guid'=> 1), // status send 'get verified'
+					array( 'ID' => $_POST['ve_exper_id'] ),
+					array( '%d' ),
+					array( '%d' )
+				);
+				// unset($_POST);
+						$ref = $_SERVER['HTTP_REFERER'];
+				?>
+				<script>window.location.href = '<?php echo $ref;?>';</script>
+				<?php
+		 	}
 			 $html = '<ul id="as21_list_experiences">';
-			 foreach ($all_exper as $exper) {
-			 	$html .= '<li>'.$exper->post_title.'</li>';
+			 foreach ($all_exper as $k => $exper) {
+
+			 	// if($k == 0) $html .= '<li>'.$exper->post_title.'<img class="exper_verif" src="'.get_stylesheet_directory_uri().'/images/experience_verified.png" /></li>';
+			 	// else $html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
+				$dugoodr = get_userdata($exper->post_parent);
+			 	if($exper->comment_count == 1) $html .= '<li>'.$exper->post_title.'<a title="'.$dugoodr->data->display_name.'" href="'.bp_core_get_user_domain($exper->post_parent).'"><img class="exper_verif" src="'.get_stylesheet_directory_uri().'/images/experience_verified.png" /></a></li>';
+			 	else $html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
+
+			 	// $html .= '<li>'.$exper->post_title.'</li>';
+			 		$html .= '<div id="verif_send_notif_'.$k.'" class="verif_send_notif white-popup-block mfp-hide">
+			 					<div class="a21-system-box">block under development</div>
+								<div><p>Get verified via sendig notification to all registered DuGoodrs </p>
+									
+									<form id="invite-anyone-by-email" action="" method="post">				
+									<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
+									<input type="submit" data-id="'.$exper->ID.'" name="ve_send_notif" class="as21-send-verif-exper" value="Send" />
+									</form>
+
+									<!--<h4>Invite New Members</h4>-->
+									<p id="welcome-message">Get verified via email:</p>
+									<form id="invite-anyone-by-email" action="" method="post">
+									<ol id="invite-anyone-steps">
+										<li>
+											<div class="manual-email">
+												<p>
+													Enter email addresses below, one per line.									</p>
+													<p class="description">You can invite a maximum of 5 people at a time.</p>
+													<textarea name="ve_email_addresses" class="invite-anyone-email-addresses" id="invite-anyone-email-addresses"></textarea>
+												</div>
+											</li>
+											<li>
+												<strong>Subject:</strong> Verification of new experience item
+												<input type="hidden" id="invite-anyone-customised-subject" name="ve_custom_subject" value="Verification of new experience item" />
+											</li>
+											<li>
+											<label for="invite-anyone-custom-message">(optional) Customize the text of the invitation.</label>
+											<p class="description">The message will also contain a custom footer containing links to verify new experience item.</p>
+											<textarea name="ve_custom_message" id="invite-anyone-custom-message" cols="40" rows="10">Please verify my experience.For details visit your profile</textarea>
+
+											</li>
+										</ol>
+										<div class="submit">
+											<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
+											<!--<input type="submit" data-id="'.$exper->ID.'" name="ve_send_verif_exper" class="as21-send-verif-exper" value="Send for verification" />-->
+										</div>
+										</form>';
+								$html .= '</div>
+							    <a class="mfp-close" href="#">x</a>
+							</div>';
+
 			 }
 			 $html .= '</ul>';
 			 echo "<div class='bp-widget'><span class='field-name'>Experience".$edit_link_exp."</span>".$html."</div>";
@@ -340,7 +446,7 @@ endif;
 			$as21_has_group['experiences'] = false;
 			 echo "<div class='bp-widget'><span class='field-name' id='tooltips-experiences'>Experience".$edit_link_exp."</span>".$text_field_empty."</div>";
 		}
-
+		// <input type="hidden" name="exper_id" data-id="'.$exper->ID.'" />
 		/* **** as21 if profile fields is full empty**** */		
 
 

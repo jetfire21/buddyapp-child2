@@ -168,7 +168,8 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 			<?php if(!empty($all_exper) ):?>
 				<?php $i=0; foreach ($all_exper as $exper): ?>
 	 			<tr class="a21_dinam_row">
-					<td><input type="text" name="as21_experiences[<?php echo $i;?>][title]" value="<?php echo stripslashes($exper->post_title);?>"></td>
+					<td><input type="text" name="as21_experiences[<?php echo $i;?>][title]" value="<?php echo stripslashes($exper->post_title);?>">
+					</td>
 					<td><input type="text" name="as21_experiences[<?php echo $i;?>][hours]" value="<?php echo $exper->menu_order;?>"></td>
 					<td><a href="#" data-id="<?php echo $exper->ID;?>" class="experience_del">x</a></td>
 					<input type="hidden" name="as21_experiences[<?php echo $i;?>][exper_id]" value="<?php echo $exper->ID;?>">

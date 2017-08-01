@@ -396,15 +396,41 @@
 		}
 	});
 
-$("#as21-reviews-badge img").click(function(){
-	console.log('as21-reviews-badge click');
-	$("#as21-reviews-badge img").removeClass('active');
-	$(this).addClass('active');
-	var badge_id = $(this).data('id');
-	console.log(badge_id);
-	$(".bp-user-reviews #badge_id").val(badge_id);
-});
+	$("#as21-reviews-badge img").click(function(){
+		console.log('as21-reviews-badge click');
+		$("#as21-reviews-badge img").removeClass('active');
+		$(this).addClass('active');
+		var badge_id = $(this).data('id');
+		console.log(badge_id);
+		$(".bp-user-reviews #badge_id").val(badge_id);
+	});
 
+
+    jQuery('.popup-modal-exper').magnificPopup({
+        type: 'inline',
+        preloader: false,
+        focus: '#username',
+        modal: true,
+        callbacks: {
+	    open: function() {
+	    	console.log("open---");
+	    	// jQuery("#show-signup-report-modal").show();
+	    	// var orig = jQuery("body").html();
+	    	// console.log("open===="+orig);
+	    	console.log(this);
+	    	console.log(this.currItem);
+	    	console.log(this.content);
+	    	// console.log(this.currItem.attr('data-id'));
+	    }}
+    });
+
+
+    //  $(".as21-send-verif-exper").click(function(e){
+    // 	e.preventDefault();
+    // 	console.log('send from magnificPopup');
+    // 	console.log( $(this).parent().html() );
+    // 	console.log( $(this).data('id') );
+    // });
 
   });
 })(jQuery);

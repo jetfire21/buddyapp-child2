@@ -1149,7 +1149,7 @@ function as21_000(){
 */
 
 // add_action('wp_ajax_bp_user_review1', 'ajax_review2');
-add_action('wp_ajax_nopriv_bp_user_review1', 'ajax_review2');
+// add_action('wp_ajax_nopriv_bp_user_review1', 'ajax_review2');
 function ajax_review2(){
 	echo 'output test text in js console-------';
 	// $a['res'] = 'aaa';
@@ -1164,16 +1164,206 @@ function as21_last1(){
 	// $wpdb->query($q);
 	// deb_last_query();
 	echo '---lala----';
+// var_dump(bp_get_members_directory_permalink());
+// var_dump($bp->displayed_user);
+$user = wp_get_current_user();
+	var_dump(bp_get_members_directory_permalink().$user->data->user_nicename);
 
-	global $BP_Member_Reviews;
-	remove_action( 'bp_template_content',array($BP_Member_Reviews,'screen_content'),999);
+alex_debug(0,1,'',$user);
+	// global $BP_Member_Reviews;
+	// remove_action( 'bp_template_content',array($BP_Member_Reviews,'screen_content'),999);
 	
-	global $wp_filter;
-	var_dump($wp_filter['bp_template_content']->callbacks);
-	var_dump($wp_filter['bp_template_content']);
-	echo '---lala----';
+	// global $wp_filter;
+	// var_dump($wp_filter['bp_template_content']->callbacks);
+	// var_dump($wp_filter['bp_template_content']);
+	// echo '---lala----';
 }
 
 
 
+// 
 
+// this is to add a fake component to BuddyPress. A registered component is needed to add notifications
+function custom_filter_notifications_get_registered_components( $component_names = array() ) {
+	// Force $component_names to be an array
+	if ( ! is_array( $component_names ) ) {
+		$component_names = array();
+	}
+	// Add 'custom' component to registered components array
+	array_push( $component_names, 'custom' );
+	// Return component's with 'custom' appended
+	// echo '---lala777';
+	// print_r($component_names);
+	// exit;
+	return $component_names;
+}
+
+add_filter( 'bp_notifications_get_registered_components', 'custom_filter_notifications_get_registered_components' );
+
+// this gets the saved item id, compiles some data and then displays the notification
+function custom_format_buddypress_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
+	// echo '---lala777';
+	// print_r($action);
+	// var_dump($item_id);
+	// exit;
+
+	// New custom notifications
+	if ( 'custom_action' === $action ) {
+	
+		// $comment = get_comment( $item_id );
+	
+		// $custom_title = $comment->comment_author . ' commented on the post ' . get_the_title( $comment->comment_post_ID );
+		// $custom_link  = get_comment_link( $comment );
+		// $custom_text = $comment->comment_author . ' commented on your post ' . get_the_title( $comment->comment_post_ID );
+		// // WordPress Toolbar
+		// if ( 'string' === $format ) {
+		// 	$return = apply_filters( 'custom_filter', '<a href="' . esc_url( $custom_link ) . '" title="' . esc_attr( $custom_title ) . '">' . esc_html( $custom_text ) . '</a>', $custom_text, $custom_link );
+		// // Deprecated BuddyBar
+		// } else {
+		// 	$return = apply_filters( 'custom_filter', array(
+		// 		'text' => $custom_text,
+		// 		'link' => $custom_link
+		// 	), $custom_link, (int) $total_items, $custom_text, $custom_title );
+		// }
+		// $return = 'ALEX777';
+		// $custom_link = '/';
+		// $comment = get_comment( $item_id );
+		// $custom_link  = get_comment_link( $comment );
+		$user = wp_get_current_user();
+		$custom_link = bp_get_members_directory_permalink().$user->data->user_nicename.'/verification-experience?id='.$item_id;
+		$custom_title = 'Custom title';
+		$custom_text = 'New experience item for verification';
+		$return = apply_filters( 'custom_filter', '<a href="' . esc_url( $custom_link ) . '" title="' . esc_attr( $custom_title ) . '">' . esc_html( $custom_text ) . '</a>', $custom_text, $custom_link );
+		
+		return $return;
+		
+	}
+	
+}
+
+
+add_filter( 'bp_notifications_get_notifications_for_user', 'custom_format_buddypress_notifications', 10, 5 );
+
+// this hooks to comment creation and saves the comment id
+function bp_custom_add_notification( $comment_id, $comment_object ) {
+	$post = get_post( $comment_object->comment_post_ID );
+	$author_id = $post->post_author;
+	bp_notifications_add_notification( array(
+		'user_id'           => $author_id,
+		'item_id'           => $comment_id,
+		'component_name'    => 'custom',
+		'component_action'  => 'custom_action',
+		'date_notified'     => bp_core_current_time(),
+		'is_new'            => 1,
+	) );
+	
+}
+// add_action( 'wp_insert_comment', 'bp_custom_add_notification', 99, 2 );
+
+
+
+/* **** as21 buddypress add custom page tab (beside activity,profile,groups etc) **** */
+
+add_action( 'bp_setup_nav', 'my_bp_nav_adder', 50 );
+
+function my_bp_nav_adder() {
+	global $bp;
+	bp_core_new_nav_item(
+			array(
+					'name'                => __( 'Listings', 'buddypress' ),
+					'slug'                => 'verification-experience',
+					'position'            => 1,
+					'screen_function'     => 'listingsdisplay',
+					'default_subnav_slug' => 'verification-experience',
+					// 'parent_url'          => $bp->loggedin_user->domain . $bp->slug . '/',
+					'parent_url'          => '',
+					'parent_slug'         => $bp->slug,
+					// 'show_for_displayed_user' => false,
+					// 'site_admin_only'         => true, 
+			) );
+}
+
+function listingsdisplay() {
+	//add title and content here - last is to call the members plugin.php template
+	add_action( 'bp_template_title', 'my_groups_page_function_to_show_screen_title' );
+	add_action( 'bp_template_content', 'my_groups_page_function_to_show_screen_content' );
+	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+}
+
+function my_groups_page_function_to_show_screen_title() {
+	echo 'Verification of experience';
+}
+
+function my_groups_page_function_to_show_screen_content() {
+	// echo 'My Tab content here';
+	global $bp,$wpdb;
+	$quest_id = $bp->displayed_user->id;
+
+	// $all_exper = $wpdb->get_results( $wpdb->prepare(
+	// 	"SELECT ID,post_title,menu_order,post_author
+	// 	FROM {$wpdb->posts}
+	// 	WHERE post_author = %d
+	// 	    AND post_type = %s AND guid=%d
+	// 	ORDER BY ID",
+	// 	intval( $quest_id ),
+	// 	'experience_volunteer',
+	// 	1
+	// ) );
+	// alex_debug(0,1,'',$all_exper);
+
+	// double $_POST
+	if(!empty($_POST)){
+		// alex_debug(0,1,'POST',$_POST);
+		if( (bool)$_POST['ve_verif'] === true ) {
+			$wpdb->update( $wpdb->posts,
+				array( 'comment_count'=> 1,'post_parent'=> $quest_id), // (comment_count - status verified of dugoodr), (post_parent-id verif of dugoodr)
+				array( 'ID' => $_POST['ve_exper_id'] ),
+				array( '%d' ),
+				array( '%d' )
+			);
+			// deb_last_query();
+		}
+		// header('Location: http://ya.ru/');
+		$ref = $_SERVER['HTTP_REFERER'];
+		?>
+		<script>window.location.href = '<?php echo $ref;?>';</script>
+		<?php
+	}
+
+	$exper = $wpdb->get_row( $wpdb->prepare(
+		"SELECT ID,post_title,menu_order,post_author,comment_count
+		FROM {$wpdb->posts}
+		WHERE ID = %d",
+		(int)$_GET['id']
+	) );
+	// deb_last_query();
+	// alex_debug(0,1,'',$exper);
+	// echo '<ul id="as21_list_experiences"><li>'.$exper->post_title.'</li></ul>';
+	if( !empty($exper)):
+		if( $exper->comment_count == 0 ):
+	?>
+	<form method="post">
+	<table id="as21_experience_volunteer">
+		<tr><th>Details of experience</th><th class="exper_hours">Hours</th><th>User</th><th>Approve</th></tr>
+		<tr class="a21_dinam_row">
+			<td><input type="text" name="as21_experiences[0][title]" value="<?php echo $exper->post_title;?>"></td>
+			<td><input type="text" name="as21_experiences[0][hours]" value="<?php echo $exper->menu_order;?>"></td>
+		    <td><?php echo bp_core_get_username($exper->post_author);?></td>
+			<td><input type="checkbox" name="ve_verif" value="1"/></td>
+			<input type="hidden" name="ve_exper_id" value="<?php echo $exper->ID;?>">
+		</tr>
+	</table>
+	<input type="submit" data-id="'.$exper->ID.'" name="ve_send_notifs" class="as21-send-verif-exper" value="Approve" />
+	</form>
+	<?php
+		else:
+			echo '<div id="message"><p>This experience item verified!</p></div>';
+		endif;
+	endif;
+
+
+
+}
+
+
+/* **** as21 buddypress add custom page tab (beside activity,profile,groups etc) **** */

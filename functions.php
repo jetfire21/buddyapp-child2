@@ -2123,7 +2123,7 @@ function as21_get_all_experience_from_page_edit_profile(){
 	$quest_id = $bp->displayed_user->id;
 
 	$fields = $wpdb->get_results( $wpdb->prepare(
-		"SELECT ID,post_title,menu_order
+		"SELECT ID,post_title,menu_order,guid,comment_count,post_parent
 		FROM {$wpdb->posts}
 		WHERE post_author = %d
 		    AND post_type = %s
