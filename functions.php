@@ -21,10 +21,12 @@ function new_mail_from_name($old) {
 return 'Justa DuGoodr';
 }
 
+/*
 function displayed_user_username_under_profile_picture() {
 	echo '<br>@'.strtolower(bp_get_member_user_login());
 }
 add_action('kleo_bp_after_profile_image', 'displayed_user_username_under_profile_picture');
+*/
 
 /* ********** code for member and groups not related,only styles and icons ********** */ 
 /* ********** for page members ********** */ 

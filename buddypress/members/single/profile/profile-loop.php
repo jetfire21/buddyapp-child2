@@ -329,6 +329,7 @@ endif;
 		// echo "development mode exper";
 		 $all_exper = as21_get_all_experience_from_page_edit_profile();
 		 // alex_debug(0,1,'',$all_exper);
+
 		 if( !empty($all_exper) ){
 		 	// alex_debug(0,1,'',$all_exper);
 		 	// alex_debug(0,1,'',$_POST);
@@ -388,13 +389,21 @@ endif;
 				<?php
 		 	}
 			 $html = '<ul id="as21_list_experiences">';
+			 	// $quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
+	  		$cur_auth_user = wp_get_current_user();
+	  		// echo $user_id.'-'.$cur_auth_user->ID;
+
 			 foreach ($all_exper as $k => $exper) {
 
 			 	// if($k == 0) $html .= '<li>'.$exper->post_title.'<img class="exper_verif" src="'.get_stylesheet_directory_uri().'/images/experience_verified.png" /></li>';
 			 	// else $html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
 				$dugoodr = get_userdata($exper->post_parent);
 			 	if($exper->comment_count == 1) $html .= '<li>'.$exper->post_title.'<a title="'.$dugoodr->data->display_name.'" href="'.bp_core_get_user_domain($exper->post_parent).'"><img class="exper_verif" src="'.get_stylesheet_directory_uri().'/images/experience_verified.png" /></a></li>';
-			 	else $html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
+			 	elseif($user_id == $cur_auth_user->ID && $exper->comment_count == 0){
+			 		$html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
+			 	}else{
+			 		$html .= '<li>'.$exper->post_title.'</li>';
+			 	}
 
 			 	// $html .= '<li>'.$exper->post_title.'</li>';
 			 		$html .= '<div id="verif_send_notif_'.$k.'" class="verif_send_notif white-popup-block mfp-hide">
@@ -453,7 +462,6 @@ endif;
 	    if( !empty( groups_user()) ) echo groups_user($edit_link,$text_field_empty);
 
 		global $wpdb;
- 		$user = wp_get_current_user();
 		global $bp;
 		$quest_id = (int)$bp->displayed_user->id;
 
