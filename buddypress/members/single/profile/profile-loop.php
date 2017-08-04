@@ -364,9 +364,9 @@ endif;
 					}
 				endif;
 
-		  //      $notif_id = bp_notifications_add_notification( array(
+				//      $notif_id = bp_notifications_add_notification( array(
 				// 	// 'user_id'           => $user_id,
-		  //      		'user_id'           => 909, //	dev-test-1
+				//      		'user_id'           => 909, //	dev-test-1
 				// 	'item_id'           => $_POST['ve_exper_id'], // 10785
 				// 	'secondary_item_id' => 0,
 				// 	'component_name'    => 'custom',
@@ -374,7 +374,7 @@ endif;
 				// 	'date_notified'     => bp_core_current_time(),
 				// 	'is_new'            => 1,
 				// ) );
-		 		// var_dump($notif_id);
+				// var_dump($notif_id);
 
 				$wpdb->update( $wpdb->posts,
 					array( 'guid'=> 1), // status send 'get verified'
@@ -388,6 +388,15 @@ endif;
 				<script>window.location.href = '<?php echo $ref;?>';</script>
 				<?php
 		 	}
+
+		 	if(!empty($_POST['ve_send_email'])){
+
+		 		alex_debug(0,1,'',$_POST);
+
+		 		as21_verification_experience_process($_POST);
+
+		 	}
+
 			 $html = '<ul id="as21_list_experiences">';
 			 	// $quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
 	  		$cur_auth_user = wp_get_current_user();
@@ -424,7 +433,7 @@ endif;
 												<p>
 													Enter email addresses below, one per line.									</p>
 													<p class="description">You can invite a maximum of 5 people at a time.</p>
-													<textarea name="ve_email_addresses" class="invite-anyone-email-addresses" id="invite-anyone-email-addresses"></textarea>
+													<textarea name="ve_email_addresses" class="ve_email_addresses" id="invite-anyone-email-addresses"></textarea>
 												</div>
 											</li>
 											<li>
@@ -434,13 +443,13 @@ endif;
 											<li>
 											<label for="invite-anyone-custom-message">(optional) Customize the text of the invitation.</label>
 											<p class="description">The message will also contain a custom footer containing links to verify new experience item.</p>
-											<textarea name="ve_custom_message" id="invite-anyone-custom-message" cols="40" rows="10">Please verify my experience.For details visit your profile</textarea>
+											<textarea name="ve_custom_message" id="invite-anyone-custom-message" cols="40" rows="10">Please verify my experience. For details visit your profile</textarea>
 
 											</li>
 										</ol>
 										<div class="submit">
 											<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
-											<!--<input type="submit" data-id="'.$exper->ID.'" name="ve_send_verif_exper" class="as21-send-verif-exper" value="Send for verification" />-->
+											<input type="submit" data-id="'.$exper->ID.'" name="ve_send_email" class="as21-send-verif-exper" value="Send for verification" />
 										</div>
 										</form>';
 								$html .= '</div>

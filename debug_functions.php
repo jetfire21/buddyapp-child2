@@ -1322,11 +1322,16 @@ function my_groups_page_function_to_show_screen_content() {
 				array( '%d' )
 			);
 			// deb_last_query();
+			// $ve_email_invation = $wpdb->get_var( $wpdb->prepare("SELECT user_email FROM {$wpdb->users} WHERE ID = %d ",intval( $quest_id) ));
+			//$exper_id = $wpdb->get_var("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type ='invation_verif_exper' AND guid='".$_GET['ve_email']."' ");
+		    $wpdb->delete( $wpdb->posts, array('post_type'=>'invation_verif_exper','menu_order'=> $_POST['ve_exper_id']), array('%s','%d') );
+		    // deb_last_query();
+
 		}
 		// header('Location: http://ya.ru/');
 		$ref = $_SERVER['HTTP_REFERER'];
 		?>
-		<script>window.location.href = '<?php echo $ref;?>';</script>
+		<script> window.location.href = '<?php echo $ref;?>';</script>
 		<?php
 	}
 
@@ -1367,3 +1372,268 @@ function my_groups_page_function_to_show_screen_content() {
 
 
 /* **** as21 buddypress add custom page tab (beside activity,profile,groups etc) **** */
+
+
+/* **** as21 **** */
+
+function as21_verification_experience_process( $data ) {
+	global $bp;
+
+	// $options = invite_anyone_options();
+
+	$emails = false;
+	// Parse out the individual email addresses
+	if ( !empty( $data['ve_email_addresses'] ) ) {
+		$emails = invite_anyone_parse_addresses( $data['ve_email_addresses'] );
+	}
+	// echo '------step as21_verification_experience_process------';
+	// alex_debug(0,1,'data',$data);
+	// var_dump($emails);
+	// exit;
+
+	// Filter the email addresses so that plugins can have a field day
+	// $emails = apply_filters( 'invite_anyone_submitted_email_addresses', $emails, $data );
+
+	// Set up a wrapper for any data to return to the Send Invites screen in case of error
+	$returned_data = array(
+		'error_message' => false,
+		'error_emails'  => array(),
+		// 'groups' 	=> isset( $data['invite_anyone_groups'] ) ? $data['invite_anyone_groups'] : ''
+	);
+
+	// if ( 'yes' === $options['subject_is_customizable'] ) {
+	// 	$data['invite_anyone_custom_subject'] = $data['invite_anyone_custom_subject'];
+	// } else {
+	// 	$data['invite_anyone_custom_subject'] = invite_anyone_invitation_subject();
+	// }
+
+	// if ( 'yes' === $options['message_is_customizable'] ) {
+	// 	$data['invite_anyone_custom_message'] = $data['invite_anyone_custom_message'];
+	// } else {
+	// 	$data['invite_anyone_custom_message'] = invite_anyone_invitation_message();
+	// }
+
+	$returned_data['subject'] = $data['ve_custom_subject'];
+	$returned_data['message'] = $data['ve_custom_message'];
+
+	// Check against the max number of invites. Send back right away if there are too many.
+	$max_emails = ! empty( $options['max_invites'] ) ? $options['max_invites'] : 5;
+
+	echo '------step as21_verification_experience_process------<br>';
+	// alex_debug(0,1,'data',$data);
+	print_r($emails);
+	print_r($returned_data);
+	var_dump($max_emails);
+	// exit;
+
+	if ( count( $emails ) > $max_emails ) {
+
+		$returned_data['error_message']	= sprintf('You are only allowed to invite up to %s people at a time. Please remove some addresses and try again', $max_emails );
+		$returned_data['error_emails'] 	= $emails;
+		
+		echo $returned_data['error_message'];
+		// setcookie( 'invite-anyone', serialize( $returned_data ), 0, '/' );
+		// $redirect = bp_loggedin_user_domain() . $bp->invite_anyone->slug . '/invite-new-members/';
+		// bp_core_redirect( $redirect );
+		// die();
+	}
+
+	if ( empty( $emails ) ) {
+		// bp_core_add_message( __( 'You didn\'t include any email addresses!', 'invite-anyone' ), 'error' );
+		// bp_core_redirect( $bp->loggedin_user->domain . $bp->invite_anyone->slug . '/invite-new-members' );
+		// die();
+		$returned_data['error_message'] = 'You didn\'t include any email addresses!';
+		echo $returned_data['error_message'];
+	}
+
+/*
+	// Max number of invites sent
+	$limit_total_invites = !empty( $options['email_limit_invites_toggle'] ) && 'no' != $options['email_limit_invites_toggle'];
+	if ( $limit_total_invites && !current_user_can( 'delete_others_pages' ) ) {
+		$sent_invites = invite_anyone_get_invitations_by_inviter_id( bp_loggedin_user_id() );
+		$sent_invites_count      = (int) $sent_invites->post_count;
+		$remaining_invites_count = (int) $options['limit_invites_per_user'] - $sent_invites_count;
+
+		if ( count( $emails ) > $remaining_invites_count ) {
+			$returned_data['error_message'] = sprintf( __( 'You are only allowed to invite %s more people. Please remove some addresses and try again', 'invite-anyone' ), $remaining_invites_count );
+			$returned_data['error_emails'] = $emails;
+
+			setcookie( 'invite-anyone', serialize( $returned_data ), 0, '/' );
+			$redirect = bp_loggedin_user_domain() . $bp->invite_anyone->slug . '/invite-new-members/';
+			bp_core_redirect( $redirect );
+			die();
+		}
+	}
+*/
+
+	// Turn the CS emails into an array so that they can be matched against the main list
+	// if ( isset( $_POST['cloudsponge-emails'] ) ) {
+	// 	$cs_emails = explode( ',', $_POST['cloudsponge-emails'] );
+	// }
+
+	// validate email addresses
+	foreach( $emails as $key => $email ) {
+		$check = invite_anyone_validate_email( $email );
+		switch ( $check ) {
+
+			// case 'opt_out' :
+			// 	$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> has opted out of email invitations from this site.', 'invite-anyone' ), $email );
+			// 	break;
+
+			case 'used' :
+				$returned_data['error_message'] .= sprintf( __( "<strong>%s</strong> is already a registered user of the site.", 'invite-anyone' ), $email );
+				break;
+
+			case 'unsafe' :
+				$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> is not a permitted email address.', 'invite-anyone' ), $email );
+				break;
+
+			case 'invalid' :
+				$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> is not a valid email address. Please make sure that you have typed it correctly.', 'invite-anyone' ), $email );
+				break;
+
+			case 'limited_domain' :
+				$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> is not a permitted email address. Please make sure that you have typed the domain name correctly.', 'invite-anyone' ), $email );
+				break;
+		}
+		echo $email.'-'.$check."<br>";
+
+		// If there was an error in validation, we won't process this email
+		if ( $check != 'okay' ) {
+			$returned_data['error_message'] .= '<br />';
+			$returned_data['error_emails'][] = $email;
+			unset( $emails[$key] );
+		}
+	}
+
+	print_r($emails);
+
+	if ( ! empty( $emails ) ) {
+
+
+	echo '------step as21_verification_experience_process------send mail<br>';
+
+		unset( $message, $to );
+
+		/* send and record invitations */
+
+		do_action( 'invite_anyone_process_addl_fields' );
+
+		// $groups = ! empty( $data['invite_anyone_groups'] ) ? $data['invite_anyone_groups'] : array();
+		$is_error = 0;
+		global $wpdb;
+		foreach( $emails as $email ) {
+
+			$add_email_id_exper = $wpdb->insert(
+				$wpdb->posts,
+				array( 'post_type'=>'invation_verif_exper','menu_order'=> $data['ve_exper_id'],'guid'=>$email),
+				array( '%s','%d','%s' )
+			);
+			deb_last_query();
+			$subject = stripslashes( strip_tags( $data['ve_custom_subject']) );
+
+			$message = stripslashes( strip_tags( $data['ve_custom_message'] ) );
+
+			// $footer = invite_anyone_process_footer( $email );
+			// $footer = invite_anyone_wildcard_replace( $footer, $email );
+			// 'To accept this invite, please visit http://dugoodr2.dev/register/?iaaction=accept-invitation&email=devtest201721%40gmail.com';
+			$footer = 'To accept this invite, please visit http://'.$_SERVER['HTTP_HOST'].'/register/?ve_action=ve&ve_email='.$email;
+
+
+			$message .= '
+
+================
+';
+			$message .= $footer;
+
+			$to = apply_filters( 'invite_anyone_invitee_email', $email );
+			// $subject = apply_filters( 'invite_anyone_invitation_subject', $subject );
+			// $message = apply_filters( 'invite_anyone_invitation_message', $message );
+
+			echo ' to- ';var_dump($to);
+			if(wp_mail( $to, $subject, $message )) echo ' sent to email - success! ';
+			else echo ' error send mail! ';
+
+			// exit;
+
+			/* todo: isolate which email(s) cause problems, and send back to user */
+		/*	if ( !invite_anyone_send_invitation( $bp->loggedin_user->id, $email, $message, $groups ) )
+				$is_error = 1; */
+
+			// Determine whether this address came from CloudSponge
+			// $is_cloudsponge = isset( $cs_emails ) && in_array( $email, $cs_emails ) ? true : false;
+
+			// invite_anyone_record_invitation( $bp->loggedin_user->id, $email, $message, $groups, $subject, $is_cloudsponge );
+
+			// do_action( 'sent_email_invite', $bp->loggedin_user->id, $email, $groups );
+
+			unset( $message, $to );
+		}
+
+		// Set a success message
+
+		$success_message = sprintf( __( "Invitations were sent successfully to the following email addresses: %s", 'invite-anyone' ), implode( ", ", $emails ) );
+		bp_core_add_message( $success_message );
+
+		do_action( 'sent_email_invites', $bp->loggedin_user->id, $emails, $groups );
+	} else {
+		echo $success_message =  "Please correct your errors and resubmit." ;
+		echo $returned_data['error_message'];
+		// bp_core_add_message( $success_message, 'error' );
+	}
+	// exit;
+	// If there are errors, redirect to the Invite New Members page
+	// if ( ! empty( $returned_data['error_emails'] ) ) {
+	// 	setcookie( 'invite-anyone', serialize( $returned_data ), 0, '/' );
+	// 	$redirect = bp_loggedin_user_domain() . $bp->invite_anyone->slug . '/invite-new-members/';
+	// 	bp_core_redirect( $redirect );
+	// 	die();
+	// }
+
+	return true;
+}
+
+add_action('bp_complete_signup','as21_ve_go_from_mail');
+function as21_ve_go_from_mail(){
+	// http://dugoodr2.dev/register/?iaaction=accept-invitation&email=oenomaus2017%40mail.ru
+	// http://dugoodr2.dev/register/?ve_action=ve&ve_email=oenomaus2017%40mail.ru
+	// invation_verif_exper
+	alex_debug(0,1,'post',$_POST);
+	alex_debug(0,1,'get',$_GET);
+	// echo 'wp_user_id===';var_dump($wp_user_id );
+	// echo 'wp_user_id===';var_dump($usermeta );
+	// $wp_user_id = bp_core_signup_user( $_POST['signup_username'], $_POST['signup_email'], $usermeta );
+
+	if($_GET['ve_action']=='ve' && !empty($_GET['ve_email'])){
+
+		$user_id = bp_core_get_userid($_POST['signup_username']);
+		var_dump($user_id);
+			global $wpdb;
+			$exper_id= $wpdb->get_var("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type ='invation_verif_exper' AND guid='".$_GET['ve_email']."' ");
+			var_dump($exper_id);
+
+	       bp_notifications_add_notification( array(
+			// 'user_id'           => $user_id,
+	   		'user_id'           => $user_id, //	dev-test-1
+			'item_id'           => $exper_id, // 10785
+			'secondary_item_id' => 0,
+			'component_name'    => 'custom',
+			'component_action'  => 'custom_action',
+			'date_notified'     => bp_core_current_time(),
+			'is_new'            => 1,
+		) );
+	}
+	// exit;
+}
+
+add_action( 'bp_before_register_page', 'invite_anyone_register_screen_message1' );
+
+function invite_anyone_register_screen_message1(){
+?>
+	<script type="text/javascript">
+	jQuery(document).ready( function() {
+		jQuery("input#signup_email").val("<?php echo $_GET['ve_email'];?>");
+	});
+	</script>
+<?php
+}
