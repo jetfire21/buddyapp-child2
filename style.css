@@ -660,6 +660,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
   border-radius: 15px;
 }
 
+.verif_send_notif input[type='submit']{margin-bottom: 0 !important;}
 .verif_send_notif *{font-size: 12px;}
 .verif_send_notif p{font-size: 14px;}
 .verif_send_notif  textarea{
@@ -668,6 +669,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
     height: 130px;
 }
 .verif_send_notif input[type='submit']{font-size: 10px;}
+ #ve_form_via_email textarea{ background-color: rgba(0,0,0,.05) !important; }
 .submenu li:first-child{display: none;}
 
 /* **** modal popup for to show description security verified field ****** */

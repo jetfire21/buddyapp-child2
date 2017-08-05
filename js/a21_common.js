@@ -425,6 +425,98 @@
     });
 
 
+    $('.ve_send_notif').click(function(e){
+    	e.preventDefault();
+    	$('#ve_loading, #message').remove();
+    	$('#ve_form_via_email .a21-system-box').remove();
+    	console.log('---work action #ve_send_notif---');
+    	var f_data = $(this).closest('#ve_form_notif').serialize();
+    	console.log( f_data );
+    	// return false;
+
+		// var data = {
+		// 	'action': 'as21_ve_send_via_email',
+		// 	data:f_data
+		// };
+		f_data = f_data+'&action=as21_ve_send_notif';
+
+		$.ajax({
+			url:KLEO.ajaxurl,
+			data:f_data, 
+			type:'POST', 
+			success:function(data){
+				// console.log(path.url);
+				// console.log("----from WP AJAX data---");
+				console.log(data);
+				data = $.parseJSON(data);
+				// if( data.error ) { 
+				// 	$('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.error+"</div>");
+			 //    	$('#ve_loading').remove();
+				// } 
+				if( data.success == 'ok' ) { 
+					console.log("---step ok---");
+					$.magnificPopup.close();
+					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
+					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
+					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>Notifications successfully sent</p></div>');
+			    	$('#ve_loading').remove();
+				} 
+			},
+			// beforeSend: function(){
+			// 	// $('#ve_form_via_email .submit').append("<div class='a21-system-box'>Loading...</div>");
+			// 	$('#ve_form_via_email .submit').append("<img id='ve_loading' src='"+path.url+"/images/loading.gif' />");
+			// },
+
+		 });
+
+    });
+
+
+    $('.ve_send_via_email').click(function(e){
+    	e.preventDefault();
+    	$('#ve_loading, #message').remove();
+    	$('#ve_form_via_email .a21-system-box').remove();
+    	console.log('---work action #ve_send_via_email---');
+    	var f_data = $(this).closest('#ve_form_via_email').serialize();
+    	// console.log( f_data );
+
+		// var data = {
+		// 	'action': 'as21_ve_send_via_email',
+		// 	data:f_data
+		// };
+		f_data = f_data+'&action=as21_ve_send_via_email';
+
+		$.ajax({
+			url:KLEO.ajaxurl,
+			data:f_data, 
+			type:'POST', 
+			success:function(data){
+				// console.log(path.url);
+				// console.log("----from WP AJAX data---");
+				// console.log(data);
+				data = $.parseJSON(data);
+				if( data.error ) { 
+					$('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.error+"</div>");
+			    	$('#ve_loading').remove();
+				} 
+				if( data.success ) { 
+					$.magnificPopup.close();
+					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
+					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
+					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>'+data.success+"</p></div>");
+			    	$('#ve_loading').remove();
+				} 
+			},
+			beforeSend: function(){
+				// $('#ve_form_via_email .submit').append("<div class='a21-system-box'>Loading...</div>");
+				$('#ve_form_via_email .submit').append("<img id='ve_loading' src='"+path.url+"/images/loading.gif' />");
+			},
+
+		 });
+
+    });
+
+
     //  $(".as21-send-verif-exper").click(function(e){
     // 	e.preventDefault();
     // 	console.log('send from magnificPopup');

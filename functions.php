@@ -673,6 +673,8 @@ function a21_inc_styles_for_timeline(){
 	endif;
   
    wp_enqueue_script('a21_common',get_stylesheet_directory_uri().'/js/a21_common.js',array('jquery'),'',true);
+   $data = array( 'url' => get_stylesheet_directory_uri() );
+	wp_localize_script( 'a21_common', 'path', $data );
 }
 
 /*

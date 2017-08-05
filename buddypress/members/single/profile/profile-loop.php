@@ -333,16 +333,9 @@ endif;
 		 if( !empty($all_exper) ){
 		 	// alex_debug(0,1,'',$all_exper);
 		 	// alex_debug(0,1,'',$_POST);
-		 	if(!empty($_POST['ve_send_notif'])){
 
-		 		// $args = array(
-					// 'user_id' => $user_id,
-					// 'item_id' => 0,
-					// 'secondary_item_id' => 0,
-					// 'component_name' => 'messages',
-					// 'component_action' => 'new_message',
-					// 'date_notified' => bp_core_current_time(),
-					// 'is_new' => 1 );
+		 	/*
+		 	if(!empty($_POST['ve_send_notif'])){
 
 		 		// $notif_id = bp_notifications_add_notification( $args );
 				$ids = $wpdb->get_col("SELECT ID FROM {$wpdb->users}");
@@ -364,17 +357,6 @@ endif;
 					}
 				endif;
 
-				//      $notif_id = bp_notifications_add_notification( array(
-				// 	// 'user_id'           => $user_id,
-				//      		'user_id'           => 909, //	dev-test-1
-				// 	'item_id'           => $_POST['ve_exper_id'], // 10785
-				// 	'secondary_item_id' => 0,
-				// 	'component_name'    => 'custom',
-				// 	'component_action'  => 'custom_action',
-				// 	'date_notified'     => bp_core_current_time(),
-				// 	'is_new'            => 1,
-				// ) );
-				// var_dump($notif_id);
 
 				$wpdb->update( $wpdb->posts,
 					array( 'guid'=> 1), // status send 'get verified'
@@ -388,7 +370,8 @@ endif;
 				<script>window.location.href = '<?php echo $ref;?>';</script>
 				<?php
 		 	}
-
+		 	*/
+		 	/*
 		 	if(!empty($_POST['ve_send_email'])){
 
 		 		alex_debug(0,1,'',$_POST);
@@ -396,6 +379,7 @@ endif;
 		 		as21_verification_experience_process($_POST);
 
 		 	}
+		 	*/
 
 			 $html = '<ul id="as21_list_experiences">';
 			 	// $quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
@@ -416,17 +400,18 @@ endif;
 
 			 	// $html .= '<li>'.$exper->post_title.'</li>';
 			 		$html .= '<div id="verif_send_notif_'.$k.'" class="verif_send_notif white-popup-block mfp-hide">
-			 					<div class="a21-system-box">block under development</div>
+			 					<!--<div class="a21-system-box">block under development</div>-->
 								<div><p>Get verified via sendig notification to all registered DuGoodrs </p>
 									
-									<form id="invite-anyone-by-email" action="" method="post">				
+									<form id="ve_form_notif" action="" method="post">				
 									<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
-									<input type="submit" data-id="'.$exper->ID.'" name="ve_send_notif" class="as21-send-verif-exper" value="Send" />
+									<input type="hidden" name="cur_user_id" value="'.$cur_auth_user->ID.'" />
+									<input type="submit" name="ve_send_notif" class="as21-send-verif-exper ve_send_notif" value="Send" />
 									</form>
 
 									<!--<h4>Invite New Members</h4>-->
 									<p id="welcome-message">Get verified via email:</p>
-									<form id="invite-anyone-by-email" action="" method="post">
+									<form id="ve_form_via_email" action="" method="post">
 									<ol id="invite-anyone-steps">
 										<li>
 											<div class="manual-email">
@@ -449,7 +434,7 @@ endif;
 										</ol>
 										<div class="submit">
 											<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
-											<input type="submit" data-id="'.$exper->ID.'" name="ve_send_email" class="as21-send-verif-exper" value="Send for verification" />
+											<input type="submit" name="ve_send_email" class="as21-send-verif-exper ve_send_via_email" value="Send" />
 										</div>
 										</form>';
 								$html .= '</div>
