@@ -420,6 +420,7 @@
 	    	console.log(this);
 	    	console.log(this.currItem);
 	    	console.log(this.content);
+	    	$('#ve_loading').remove();
 	    	// console.log(this.currItem.attr('data-id'));
 	    }}
     });
@@ -459,6 +460,14 @@
 					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
 					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>Notifications successfully sent</p></div>');
+			    	$('#ve_loading').remove();
+				} 				
+				if( data.success == 'exist' ) { 
+					console.log("---step exist---");
+					$.magnificPopup.close();
+					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
+					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
+					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
 				} 
 			},
@@ -504,6 +513,14 @@
 					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
 					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>'+data.success+"</p></div>");
+			    	$('#ve_loading').remove();
+				}
+				if( data.warning == 'exist' ) { 
+					console.log("---step exist---");
+					$.magnificPopup.close();
+					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
+					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
+					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
 				} 
 			},

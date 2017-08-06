@@ -2047,7 +2047,7 @@ function as21_get_total_volunteer_hours_count_member($user_id = false){
 	// $total_estimate_hours = xprofile_get_field(57, $quest_id);
 	// alex_debug(0,1,'',$total_estimate_hours);
 	// $experience_total_hours = (!empty($total_estimate_hours->data->value)) ? $total_estimate_hours->data->value : 0 ;
-	$experience_total_hours = $wpdb->get_var($wpdb->prepare("SELECT SUM(menu_order) FROM {$wpdb->posts} WHERE post_author = %d  AND post_type = %s ",(int)$quest_id,"experience_volunteer"));
+	$experience_total_hours = $wpdb->get_var($wpdb->prepare("SELECT SUM(menu_order) FROM {$wpdb->posts} WHERE post_author = %d  AND post_type = %s AND comment_count= %d",(int)$quest_id,"experience_volunteer",1));
 	// var_dump($experience_total_hours);exit;
 	$experience_total_hours = (!empty($experience_total_hours)) ? $experience_total_hours : 0 ;
 	$total_hours_every_entry = $wpdb->get_var($wpdb->prepare("SELECT SUM(comment_count) FROM {$wpdb->posts} WHERE post_parent = %d  AND post_type = %s ",(int)$quest_id,"alex_timeline"));
@@ -2208,4 +2208,5 @@ function _wp_render_title_tag2() {
 		echo '<title>' . wp_get_document_title() . '</title>' . "\n";
 	}
 }
+require_once 'libs/verify_user_experience_item.php';
 require_once 'debug_functions.php';
