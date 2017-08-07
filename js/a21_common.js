@@ -523,6 +523,7 @@
 					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
 				} 
+				if(data.tmp_info) console.log(data.tmp_info);
 			},
 			beforeSend: function(){
 				// $('#ve_form_via_email .submit').append("<div class='a21-system-box'>Loading...</div>");

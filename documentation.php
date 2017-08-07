@@ -60,3 +60,7 @@ plugins/go-fetch-jobs-wp-job-manager/includes/phpQuery.php
 bp-user-reviews.php change version
 plugins/bp-user-reviews/templates/review-list.php change
 plugins/bp-user-reviews/templates/review-form.php change
+
+######## WP-SpamShield  #####
+этот плагин мешает корректо передавать email адресс в js ( например jQuery("input#signup_email").val("<?php echo $_GET['ve_email'];?>"); )
+и снижает быстродействие сайта достаточно сильно

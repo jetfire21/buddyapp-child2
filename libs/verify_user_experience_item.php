@@ -395,9 +395,8 @@ function as21_ve_send_via_email() {
 			if(wp_mail( $to, $subject, $message )) $send .= ' send email to '.$email.' - success!<br> ';
 			else $send .= ' send email to '.$email.' - error!<br> ';
 			$success_send_emails .= $email.'<br>';
-
-
 		}
+		$res['tmp_info'] = $send;
 
 		// Set a success message
 
@@ -495,7 +494,7 @@ function as21_ve_go_from_mail(){
 	if( $_GET['ve_action']=='ve' && is_email($email) ) {
 
 		$user_id = bp_core_get_userid(sanitize_text_field($_POST['signup_username']));
-		var_dump($user_id);
+		// var_dump($user_id);
 			global $wpdb;
 			$exper_id= $wpdb->get_var($wpdb->prepare("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type = %s AND guid=%s ",'invation_verif_exper',$email
 				));
@@ -515,13 +514,21 @@ function as21_ve_go_from_mail(){
 	// exit;
 }
 
-add_action( 'bp_before_register_page', 'invite_anyone_register_screen_message1' );
 
-function invite_anyone_register_screen_message1(){
+add_action( 'bp_after_register_page', 'as21_ve_register_screen_message' );
+
+function as21_ve_register_screen_message(){
+	// devtest201721@gmail.com
+	// $_GET['ve_email'] = urlencode('devtest201721@gmail.com');
+	// $email =  urlencode('devtest201721@gmail.com');
+	// $email1 = 'devtest201721ya.ru';
+	// $email2 = 'devtest201721@ya.ru';
 ?>
 	<script type="text/javascript">
 	jQuery(document).ready( function() {
 		jQuery("input#signup_email").val("<?php echo $_GET['ve_email'];?>");
+		// console.log('email1 <?php echo $email1;?>');
+		// console.log('email2 <?php echo $email2;?>');
 	});
 	</script>
 <?php
