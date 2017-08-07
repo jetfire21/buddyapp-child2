@@ -168,8 +168,6 @@ function my_groups_page_function_to_show_screen_content() {
 		endif;
 	endif;
 
-
-
 }
 
 
@@ -521,17 +519,30 @@ function as21_ve_register_screen_message(){
 	// devtest201721@gmail.com
 	// $_GET['ve_email'] = urlencode('devtest201721@gmail.com');
 	// $email =  urlencode('devtest201721@gmail.com');
-	// $email1 = 'devtest201721ya.ru';
-	// $email2 = 'devtest201721@ya.ru';
-?>
-	<script type="text/javascript">
-	jQuery(document).ready( function() {
-		jQuery("input#signup_email").val("<?php echo $_GET['ve_email'];?>");
-		// console.log('email1 <?php echo $email1;?>');
-		// console.log('email2 <?php echo $email2;?>');
-	});
-	</script>
-<?php
+	if( $_GET['ve_action']=='ve' && !empty($_GET['ve_email']) ) {
+		remove_filter('the_content','rs_wpss_encode_emails', 9999 ); // remove fiter WP-SpamShield plugin
+		?>
+		<script type="text/javascript">
+		jQuery(document).ready( function() {
+			jQuery("input#signup_email").val("<?php echo $_GET['ve_email'];?>");
+		});
+		</script>
+		<?php
+	}
 }
+
+function as21_when_delete_user_reset_verfi_exper( $user_id ) {
+	global $wpdb;
+	$wpdb->update( $wpdb->posts,
+		array( 'comment_count'=> 0,'post_parent'=> 0,'guid'=> 0), // (comment_count - status verified of dugoodr), (post_parent-id verif of dugoodr)
+		array( 'post_type' => 'experience_volunteer','post_parent'=>(int)$user_id),
+		array( '%d','%d','%d' ),
+		array( '%s','%d' )
+	);
+	// deb_last_query();
+	// exit;
+
+}
+add_action( 'delete_user', 'as21_when_delete_user_reset_verfi_exper' );
 
 /* **** as21  “Verified” for user experience item   **** */

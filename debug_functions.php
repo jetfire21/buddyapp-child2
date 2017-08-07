@@ -1179,4 +1179,29 @@ alex_debug(0,1,'',$user);
 	// echo '---lala----';
 }
 
+// add_action('wp_footer','as21_get_exper');
+function as21_get_exper(){
+	if( (bool)$_GET['dev'] == true ) {
+		global $bp,$wpdb;
+		$quest_id = $bp->displayed_user->id;
 
+		// $fields = $wpdb->get_results( $wpdb->prepare(
+		// 	"SELECT *
+		// 	FROM {$wpdb->posts}
+		// 	WHERE post_author = %d
+		// 	    AND post_type = %s
+		// 	ORDER BY ID",
+		// 	intval( $quest_id ),
+		// 	'experience_volunteer'
+		// ) );	
+
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT *
+			FROM {$wpdb->posts}
+			WHERE ID = %d
+			ORDER BY ID",
+			10787
+		) );
+		alex_debug(1,1,'',$fields);
+	}
+}
