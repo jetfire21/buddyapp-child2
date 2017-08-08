@@ -261,17 +261,17 @@ function as21_ve_send_via_email() {
 
 	$emails = false;
 	// Parse out the individual email addresses
-	if ( !empty( $data['ve_email_addresses'] ) ) {
-		// $emails = invite_anyone_parse_addresses( $data['ve_email_addresses'] );
-		$emails = as21_ve_parse_addresses( $data['ve_email_addresses'] );
-	}
+	// if ( !empty( $data['ve_email_addresses'] ) ) {
+	// 	// $emails = invite_anyone_parse_addresses( $data['ve_email_addresses'] );
+	// 	$emails = as21_ve_parse_addresses( $data['ve_email_addresses'] );
+	// }
 	// echo '------step as21_verification_experience_process------';
 	// alex_debug(0,1,'data',$data);
 	// var_dump($emails);
 	// exit;
 
 
-	$max_emails = 5;
+	// $max_emails = 5;
 
 	// echo '------step as21_verification_experience_process------<br>';
 	// alex_debug(0,1,'data',$data);
@@ -280,18 +280,19 @@ function as21_ve_send_via_email() {
 	// var_dump($max_emails);
 	// exit;
 
-	if ( count( $emails ) > $max_emails ) {
+	// if ( count( $emails ) > $max_emails ) {
 
-		$res['error']	= sprintf('You are only allowed to invite up to %s people at a time. Please remove some addresses and try again', $max_emails );
-		// $returned_data['error_emails'] 	= $emails;
+	// 	$res['error']	= sprintf('You are only allowed to invite up to %s people at a time. Please remove some addresses and try again', $max_emails );
+	// 	// $returned_data['error_emails'] 	= $emails;
 		
-		// echo json_encode($returned_data['error_message']);
-		// setcookie( 'invite-anyone', serialize( $returned_data ), 0, '/' );
-		// $redirect = bp_loggedin_user_domain() . $bp->invite_anyone->slug . '/invite-new-members/';
-		// bp_core_redirect( $redirect );
-		// die();
-	}
+	// 	// echo json_encode($returned_data['error_message']);
+	// 	// setcookie( 'invite-anyone', serialize( $returned_data ), 0, '/' );
+	// 	// $redirect = bp_loggedin_user_domain() . $bp->invite_anyone->slug . '/invite-new-members/';
+	// 	// bp_core_redirect( $redirect );
+	// 	// die();
+	// }
 
+	$emails = $data['ve_email_addresses'] ;
 	if ( empty( $emails ) ) {
 		// bp_core_add_message( __( 'You didn\'t include any email addresses!', 'invite-anyone' ), 'error' );
 		// bp_core_redirect( $bp->loggedin_user->domain . $bp->invite_anyone->slug . '/invite-new-members' );
@@ -311,7 +312,43 @@ function as21_ve_send_via_email() {
 	// }
 
 	// validate email addresses
-	foreach( $emails as $key => $email ) {
+	// foreach( $emails as $key => $email ) {
+	// 	// $check = invite_anyone_validate_email( $email );
+	// 	$check = as21_ve_validate_email($email);
+	// 	switch ( $check ) {
+
+	// 		// case 'opt_out' :
+	// 		// 	$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> has opted out of email invitations from this site.', 'invite-anyone' ), $email );
+	// 		// 	break;
+
+	// 		case 'used' :
+	// 			$returned_data['error_message'] .= sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );
+	// 			break;
+
+	// 		case 'unsafe' :
+	// 			$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a permitted email address.', $email );
+	// 			break;
+
+	// 		case 'invalid' :
+	// 			$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a valid email address. Please make sure that you have typed it correctly.', $email );
+	// 			break;
+
+	// 		case 'limited_domain' :
+	// 			$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a permitted email address. Please make sure that you have typed the domain name correctly.', $email );
+	// 			break;
+	// 	}
+	// 	// echo $email.'-'.$check."<br>";
+
+	// 	// If there was an error in validation, we won't process this email
+	// 	if ( $check != 'okay' ) {
+	// 		// $returned_data['error_message'] .= '<br />';
+	// 		// $returned_data['error_emails'][] = $email;
+	// 		unset( $emails[$key] );
+	// 	}
+	// }
+
+		$email = $data['ve_email_addresses'] ;
+
 		// $check = invite_anyone_validate_email( $email );
 		$check = as21_ve_validate_email($email);
 		switch ( $check ) {
@@ -321,7 +358,9 @@ function as21_ve_send_via_email() {
 			// 	break;
 
 			case 'used' :
-				$returned_data['error_message'] .= sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );
+				$res['error'] = sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );		
+				echo json_encode($res);
+				exit;
 				break;
 
 			case 'unsafe' :
@@ -329,7 +368,9 @@ function as21_ve_send_via_email() {
 				break;
 
 			case 'invalid' :
-				$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a valid email address. Please make sure that you have typed it correctly.', $email );
+				$res['error']  = sprintf( '<strong>%s</strong> is not a valid email address. Please make sure that you have typed it correctly.', $email );
+				echo json_encode($res);
+				exit;
 				break;
 
 			case 'limited_domain' :
@@ -339,12 +380,12 @@ function as21_ve_send_via_email() {
 		// echo $email.'-'.$check."<br>";
 
 		// If there was an error in validation, we won't process this email
-		if ( $check != 'okay' ) {
-			// $returned_data['error_message'] .= '<br />';
-			// $returned_data['error_emails'][] = $email;
-			unset( $emails[$key] );
-		}
-	}
+		// if ( $check != 'okay' ) {
+		// 	// $returned_data['error_message'] .= '<br />';
+		// 	// $returned_data['error_emails'][] = $email;
+		// 	// unset( $emails[$key] );
+		// }
+	
 
 		// print_r($emails);
 		// $res['success'] = $emails;
@@ -353,7 +394,7 @@ function as21_ve_send_via_email() {
 
 		// unset( $message, $to );
 
-	if ( ! empty( $emails ) ) {
+	if ( ! empty( $email ) ) {
 
 
 	// echo '------step as21_verification_experience_process------send mail<br>';
@@ -366,7 +407,6 @@ function as21_ve_send_via_email() {
 		// $groups = ! empty( $data['invite_anyone_groups'] ) ? $data['invite_anyone_groups'] : array();
 		$is_error = 0;
 		global $wpdb;
-		foreach( $emails as $email ) {
 
 			$subject = stripslashes( strip_tags( $data['ve_custom_subject']) );
 
@@ -393,7 +433,7 @@ function as21_ve_send_via_email() {
 			if(wp_mail( $to, $subject, $message )) $send .= ' send email to '.$email.' - success!<br> ';
 			else $send .= ' send email to '.$email.' - error!<br> ';
 			$success_send_emails .= $email.'<br>';
-		}
+		
 		$res['tmp_info'] = $send;
 
 		// Set a success message

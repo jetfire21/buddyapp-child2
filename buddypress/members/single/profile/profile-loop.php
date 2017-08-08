@@ -415,10 +415,15 @@ endif;
 									<ol id="invite-anyone-steps">
 										<li>
 											<div class="manual-email">
-												<p>
-													Enter email addresses below, one per line.									</p>
+													<!--
+													<p>Enter email addresses below, one per line.</p>
 													<p class="description">You can invite a maximum of 5 people at a time.</p>
 													<textarea name="ve_email_addresses" class="ve_email_addresses" id="invite-anyone-email-addresses"></textarea>
+													-->
+													<p>Enter email addresses below</p>
+													<div class="ve_email_addresses_wrap">
+														<input type="text" name="ve_email_addresses" class="ve_email_addresses" id="ve_email_addresses"><span>x</span>
+													</div>
 												</div>
 											</li>
 											<li>

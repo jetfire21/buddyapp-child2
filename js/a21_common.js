@@ -534,6 +534,10 @@
 
     });
 
+    $("#ve_form_via_email .ve_email_addresses_wrap span").click(function(){
+    	console.log('click :after');
+    	$('#ve_email_addresses').val("");
+    });
 
     //  $(".as21-send-verif-exper").click(function(e){
     // 	e.preventDefault();

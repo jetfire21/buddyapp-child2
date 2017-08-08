@@ -51,7 +51,7 @@
 							// <a id="nav-a21-jobs" href="http://dugoodr2.dev/causes/ottawa-mission/a21-jobs/">Jobs</a>
 							// <a id="nav-a21-jobs" href="/jobs">Jobs</a>
 							// $a = str_replace("\"nav-a21-jobs\"", "gggg", $a);
-							$a = preg_replace("#\"nav-a21-jobs\"[^>]+#i", "\"nav-a21-jobs\" href=\"/jobs/?id={$cur_gr_id}\"", $a);
+							$a = preg_replace("#\"nav-a21-jobs\"[^>]+#i", "\"nav-a21-jobs\" href=\"/gigs/?id={$cur_gr_id}\"", $a);
 							ob_end_clean();
 							echo $a; 
 							// echo $a."3333333333"; 

@@ -669,7 +669,10 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
     height: 130px;
 }
 .verif_send_notif input[type='submit']{font-size: 10px;}
- #ve_form_via_email textarea{ background-color: rgba(0,0,0,.05) !important; }
+ #ve_form_via_email textarea, #ve_form_via_email input[type="text"]{ background-color: rgba(0,0,0,.05) !important; }
+ #ve_form_via_email input[type="text"] { padding-right: 15px; }
+#ve_form_via_email .ve_email_addresses_wrap span{ position: absolute; top:0; right: 0; cursor:pointer; font-size:18px; margin:5px;}
+.ve_email_addresses_wrap {position: relative; display: table;}
 .submenu li:first-child{display: none;}
 
 /* **** modal popup for to show description security verified field ****** */
