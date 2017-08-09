@@ -42,6 +42,11 @@ defined( 'ABSPATH' ) || exit; ?>
         <img src='<?php echo get_stylesheet_directory_uri().'/images/b3.png'; ?>' data-id='3' /> 
         <img src='<?php echo get_stylesheet_directory_uri().'/images/b4.png'; ?>' data-id='4' /> 
         <img src='<?php echo get_stylesheet_directory_uri().'/images/b5.png'; ?>' data-id='5' /> 
+        <img src='<?php echo get_stylesheet_directory_uri().'/images/b6.png'; ?>' data-id='6' /> 
+        <img src='<?php echo get_stylesheet_directory_uri().'/images/b7.png'; ?>' data-id='7' /> 
+        <img src='<?php echo get_stylesheet_directory_uri().'/images/b8.png'; ?>' data-id='8' /> 
+        <img src='<?php echo get_stylesheet_directory_uri().'/images/b9.png'; ?>' data-id='9' /> 
+        <img src='<?php echo get_stylesheet_directory_uri().'/images/b10.png'; ?>' data-id='10' /> 
     </div>
 
 

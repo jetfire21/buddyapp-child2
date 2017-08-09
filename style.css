@@ -836,9 +836,12 @@ img.exper_verif{width: 20px; margin-left: 8px;}
 
 .bp-user-reviews span.rating{direction: rtl !important; unicode-bidi: bidi-override !important;}
 form #as21-reviews-badge { margin-left: 25px; }
-form #as21-reviews-badge img{ border:1px solid transparent; cursor: pointer; float:left; margin:0 5px 5px 0;}
-form #as21-reviews-badge img:nth-child(3){clear: both;}
+form #as21-reviews-badge img{ border:1px solid transparent; cursor: pointer; float:left; margin:0 5px 5px 0;
+max-width: 50px; }
+/*form #as21-reviews-badge img:nth-child(3){clear: both;}*/
+form #as21-reviews-badge img:nth-child(6){clear: both;}
 form #as21-reviews-badge img:hover, form #as21-reviews-badge .active{ border:1px solid red; cursor: pointer; }
+.bmr_badge_activity { max-height: 30px; margin-left:5px; }
 .bp-user-reviews-table, form #as21-reviews-badge{float:left;}
 .bp-users-reviews-list .wrap-rating { float: left;}
 .bp-users-reviews-list .text{ clear: both;}

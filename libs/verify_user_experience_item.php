@@ -364,9 +364,10 @@ function as21_ve_send_via_email() {
 				break;
 
 			case 'unsafe' :
-				$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a permitted email address.', $email );
+				$res['error']  = sprintf( '<strong>%s</strong> is not a permitted email address.', $email );
+				echo json_encode($res);
+				exit;
 				break;
-
 			case 'invalid' :
 				$res['error']  = sprintf( '<strong>%s</strong> is not a valid email address. Please make sure that you have typed it correctly.', $email );
 				echo json_encode($res);
@@ -374,7 +375,9 @@ function as21_ve_send_via_email() {
 				break;
 
 			case 'limited_domain' :
-				$returned_data['error_message'] .= sprintf( '<strong>%s</strong> is not a permitted email address. Please make sure that you have typed the domain name correctly.', $email );
+				$res['error'] = sprintf( '<strong>%s</strong> is not a permitted email address. Please make sure that you have typed the domain name correctly.', $email );
+				echo json_encode($res);
+				exit;
 				break;
 		}
 		// echo $email.'-'.$check."<br>";
@@ -441,7 +444,7 @@ function as21_ve_send_via_email() {
 		// $success_message = sprintf( "Invitations were sent successfully to the following email addresses: %s", implode( ", ", $emails ) );
 		// $success_message = sprintf( "Invitations were sent successfully to the following email addresses: %s", $success_send_emails );
 		// bp_core_add_message( $success_message );
-			$res['success'] = 'Invitations were sent successfully to the following email addresses: '.$success_send_emails; 
+		$res['success'] = 'Invitation were sent successfully to the email address: '.$success_send_emails; 
 
 		// do_action( 'sent_email_invites', $bp->loggedin_user->id, $emails, $groups );
 		$add_email_id_exper = $wpdb->insert(

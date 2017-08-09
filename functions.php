@@ -1209,7 +1209,7 @@ if ( class_exists('BP_Member_Reviews') ){
         }
     }
 
-	/* ****** adding a custom activity - compliment(review) ******* */
+	/* ****** adding a custom activity - compliment( for plugin bp-users-reviews) ******* */
 
 	$table_activity = $wpdb->prefix."bp_activity";
 	$to_user_id = intval($_POST['user_id']);
@@ -1220,14 +1220,19 @@ if ( class_exists('BP_Member_Reviews') ){
 	$user_link = bp_core_get_userlink($from_user_id);
 	$to_user_link_nohtml = bp_core_get_userlink($to_user_id, false, true);
 	$date_recorded = date( 'Y-m-d H:i:s');
-	$action = $primary_link.' has received a <a href="'.$to_user_link_nohtml.'reviews/">compliment</a> from '.$user_link;
+	$badge_id = (int)$_POST['badge_id'];
+	// $action = $primary_link.' has received a <a href="'.$to_user_link_nohtml.'reviews/">compliment</a> from '.$user_link;
+	$badge_img = '';
+	if( $badge_id > 0 ) $badge_img = '<img class="bmr_badge_activity" src='.get_stylesheet_directory_uri().'/images/b'.$badge_id.'.png />';
+	$action = $primary_link.' has received a <a href="'.$to_user_link_nohtml.'reviews/">compliment</a> from '.$user_link.$badge_img;
+
 
 	$q = $wpdb->prepare( "INSERT INTO {$table_activity} (user_id, component, type, action, content, primary_link, date_recorded, item_id, secondary_item_id, hide_sitewide, is_spam ) VALUES ( %d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d )", $to_user_id, 'compliments', 'compliment_sent', $action, '', $to_user_link_nohtml, $date_recorded, 0, 0, 0,0);
 
 	$wpdb->query( $q );	
 	/* ****** adding a custom activity - compliment(review) ******* */
 
-	$response['badge_id'] = (int)$_POST['badge_id'];
+	$response['badge_id'] = $badge_id;
 	// $response['qq'] = 'any value';
 
     wp_send_json($response);
