@@ -323,7 +323,12 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
     .single-item.groups div#item-header div#item-meta p { width:50%; margin:0 auto;}
     .single-item.groups #buddypress div.item-list-tabs#subnav ul li.last {margin-top: 23px;}
      .single-item.groups.group-members #buddypress div#subnav.item-list-tabs { float: right; }
-
+     #buddypress div#item-header div#item-buttons {position: relative;}
+     #item-buttons .as21-right-group-admins { display:block; position: absolute; top:0; right: 0; }
+     .as21-right-group-admins h3{margin:  0 !important; color:#fff; font-size:0.750em;}
+     .as21-right-group-admins img{ margin-top: 0 !important; }
+     .as21-right-group-admins li{ width: 30px; margin:0 auto; float:left !important;}
+     #item-actions .group-admins{ display: none; }
     .single-item.groups #buddypress div#item-header-avatar {
         display: none;
         /*display: inline-block;*/
@@ -833,6 +838,9 @@ img.exper_verif{width: 20px; margin-left: 8px;}
 #profile-strength .advanced{ left:6em; top:1.8em; }
 #profile-strength .expert{ left:5.7em; top:0.9em; }
 #profile-strength .all-star{ left:4.8em; top:0em; }
+
+.as21-right-group-admins{display: none;}
+
 
 .bp-user-reviews span.rating{direction: rtl !important; unicode-bidi: bidi-override !important;}
 form #as21-reviews-badge { margin-left: 25px; }

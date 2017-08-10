@@ -79,6 +79,10 @@ do_action( 'bp_before_group_header' );
 			 * @since BuddyPress (1.2.6)
 			 */
 			do_action( 'bp_group_header_actions' ); ?>
+			<div class="as21-right-group-admins">
+        		<h3><?php _e( 'Group Admins', 'buddypress' ); ?></h3>
+        		<?php bp_group_list_admins();?>
+        	</div>
 
 		</div><!-- #item-buttons -->
 
