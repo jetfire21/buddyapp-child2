@@ -539,6 +539,9 @@
     	$('#ve_email_addresses').val("");
     });
 
+    if( $(".as21-right-group-admins").length == 0 )  $("#item-actions .group-admins").css({"display":"block"});
+     console.log('has as21-right-group-admins - '+$(".as21-right-group-admins").length);
+
     //  $(".as21-send-verif-exper").click(function(e){
     // 	e.preventDefault();
     // 	console.log('send from magnificPopup');

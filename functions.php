@@ -2213,5 +2213,19 @@ function _wp_render_title_tag2() {
 		echo '<title>' . wp_get_document_title() . '</title>' . "\n";
 	}
 }
+
+add_filter( 'bp_get_group_join_button', 'as21_block_group_admins_align_right',$button );
+function as21_block_group_admins_align_right($button){
+	$user = wp_get_current_user();
+	if( strpos(bp_group_admin_ids(), strval($user->ID) ) !== false && strpos(bp_group_admin_ids(), ',') !== false) {
+		echo '<div class="as21-right-group-admins">
+			<h3>Group Admins</h3>
+			'; bp_group_list_admins();
+		echo '</div>';
+	}
+	return $button;
+
+}
+
 require_once 'libs/verify_user_experience_item.php';
 require_once 'debug_functions.php';

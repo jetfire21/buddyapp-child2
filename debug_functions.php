@@ -1205,3 +1205,5 @@ function as21_get_exper(){
 		alex_debug(1,1,'',$fields);
 	}
 }
+
+
