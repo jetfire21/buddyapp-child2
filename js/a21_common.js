@@ -518,8 +518,6 @@
 				if( data.warning == 'exist' ) { 
 					console.log("---step exist---");
 					$.magnificPopup.close();
-					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
-					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
 				} 

@@ -244,14 +244,14 @@ function as21_ve_send_via_email() {
 	$data = $_POST;
 
 	global $wpdb;
-	$status_get_verified = $wpdb->get_var($wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d ", (int)$data['ve_exper_id']));
-	// deb_last_query();
-	// var_dump($status_get_verified); exit;
-	if( $status_get_verified == '1') {
-		$res['warning'] = 'exist';
-		echo json_encode($res);
-		exit;
-	}
+	// $status_get_verified = $wpdb->get_var($wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d ", (int)$data['ve_exper_id']));
+	// // deb_last_query();
+	// // var_dump($status_get_verified); exit;
+	// if( $status_get_verified == '1') {
+	// 	$res['warning'] = 'exist';
+	// 	echo json_encode($res);
+	// 	exit;
+	// }
 
 	// echo json_encode($_POST);
 
@@ -282,11 +282,11 @@ function as21_ve_send_via_email() {
 			// 	$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> has opted out of email invitations from this site.', 'invite-anyone' ), $email );
 			// 	break;
 
-			case 'used' :
-				$res['error'] = sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );		
-				echo json_encode($res);
-				exit;
-				break;
+			// case 'used' :
+			// 	$res['error'] = sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );		
+			// 	echo json_encode($res);
+			// 	exit;
+			// 	break;
 
 			case 'unsafe' :
 				$res['error']  = sprintf( '<strong>%s</strong> is not a permitted email address.', $email );
@@ -330,6 +330,13 @@ function as21_ve_send_via_email() {
 			// $footer = invite_anyone_wildcard_replace( $footer, $email );
 			// 'To accept this invite, please visit http://dugoodr2.dev/register/?iaaction=accept-invitation&email=devtest201721%40gmail.com';
 			$footer = 'To accept this invite, please visit http://'.$_SERVER['HTTP_HOST'].'/register/?ve_action=ve&ve_email='.$email;
+			if( $check == 'used') {
+				$user = get_user_by( 'email', $email );
+				$user_id = $user->data->ID;
+				// print_r($user);
+				// echo $user->data->ID;
+				$footer = 'To accept this invite, please visit '.bp_core_get_user_domain($user_id).'verification-experience?id='.(int)$data['ve_exper_id'];
+			}
 
 
 			$message .= '
@@ -358,11 +365,34 @@ function as21_ve_send_via_email() {
 		$res['success'] = 'Invitation were sent successfully to the email address: '.$success_send_emails; 
 
 		// do_action( 'sent_email_invites', $bp->loggedin_user->id, $emails, $groups );
-		$add_email_id_exper = $wpdb->insert(
+		if( $check != 'used') {
+			$wpdb->insert(
 				$wpdb->posts,
 				array( 'post_type'=>'invation_verif_exper','menu_order'=> (int)$data['ve_exper_id'],'guid'=>$email),
 				array( '%s','%d','%s' )
 			);
+		}
+		if($check == 'used'){
+			       $notif_id = bp_notifications_add_notification( array(
+					// 'user_id'           => $user_id,
+			   		'user_id'           => $user->data->ID, //	dev-test-1
+					'item_id'           => (int)$data['ve_exper_id'], // 10785
+					'secondary_item_id' => 0,
+					'component_name'    => 'custom',
+					'component_action'  => 'custom_action',
+					'date_notified'     => bp_core_current_time(),
+					'is_new'            => 1,
+				) );
+			    // deb_last_query();
+
+
+			$wpdb->update( $wpdb->posts,
+				array( 'guid'=> 1,'post_parent'=>$user_id), // status send 'get verified'
+				array( 'ID' => (int)$data['ve_exper_id'] ),
+				array( '%d','%d' ),
+				array( '%d' )
+			);
+		}
 		// deb_last_query();
 	} else {
 		$res['error'] =  "Please correct your errors and resubmit." ;

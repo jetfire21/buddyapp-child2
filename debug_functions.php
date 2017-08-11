@@ -1183,7 +1183,7 @@ alex_debug(0,1,'',$user);
 function as21_get_exper(){
 	if( (bool)$_GET['dev'] == true ) {
 		global $bp,$wpdb;
-		$quest_id = $bp->displayed_user->id;
+		// $quest_id = $bp->displayed_user->id;
 
 		// $fields = $wpdb->get_results( $wpdb->prepare(
 		// 	"SELECT *
@@ -1195,14 +1195,18 @@ function as21_get_exper(){
 		// 	'experience_volunteer'
 		// ) );	
 
-		$fields = $wpdb->get_results( $wpdb->prepare(
-			"SELECT *
-			FROM {$wpdb->posts}
-			WHERE ID = %d
-			ORDER BY ID",
-			10787
-		) );
-		alex_debug(1,1,'',$fields);
+		// $fields = $wpdb->get_results( $wpdb->prepare(
+		// 	"SELECT *
+		// 	FROM {$wpdb->posts}
+		// 	WHERE ID = %d
+		// 	ORDER BY ID",
+		// 	10787
+		// ) );
+		// alex_debug(1,1,'',$fields);
+		$user = get_user_by( 'email', 'freerun-2012@yandex.ru' );
+		print_r($user);
+		echo $user->data->ID;
+		echo bp_core_get_user_domain($user->data->ID).'/verification-experience?id='.(int)$item_id;
 	}
 }
 
