@@ -1179,34 +1179,36 @@ alex_debug(0,1,'',$user);
 	// echo '---lala----';
 }
 
-// add_action('wp_footer','as21_get_exper');
-function as21_get_exper(){
+add_action('wp_footer','as21_temp_data_experience');
+function as21_temp_data_experience(){
+
 	if( (bool)$_GET['dev'] == true ) {
 		global $bp,$wpdb;
 		// $quest_id = $bp->displayed_user->id;
 
-		// $fields = $wpdb->get_results( $wpdb->prepare(
-		// 	"SELECT *
-		// 	FROM {$wpdb->posts}
-		// 	WHERE post_author = %d
-		// 	    AND post_type = %s
-		// 	ORDER BY ID",
-		// 	intval( $quest_id ),
-		// 	'experience_volunteer'
-		// ) );	
+		$fields = $wpdb->get_results( $wpdb->prepare(
+			"SELECT *
+			FROM {$wpdb->posts} WHERE post_type=%s
+			ORDER BY ID",
+			'experience_volunteer'
+		) );			
 
-		// $fields = $wpdb->get_results( $wpdb->prepare(
-		// 	"SELECT *
-		// 	FROM {$wpdb->posts}
-		// 	WHERE ID = %d
-		// 	ORDER BY ID",
-		// 	10787
-		// ) );
-		// alex_debug(1,1,'',$fields);
-		$user = get_user_by( 'email', 'freerun-2012@yandex.ru' );
-		print_r($user);
-		echo $user->data->ID;
-		echo bp_core_get_user_domain($user->data->ID).'/verification-experience?id='.(int)$item_id;
+		$fields2 = $wpdb->get_results( $wpdb->prepare(
+			"SELECT *
+			FROM {$wpdb->posts} WHERE post_type=%s
+			ORDER BY ID",
+			'invation_verif_exper'
+		) );	
+		// deb_last_query();
+
+
+		alex_debug(1,1,'experience_volunteer',$fields);
+		alex_debug(1,1,'invation_verif_exper',$fields2);
+
+		// $user = get_user_by( 'email', 'freerun-2012@yandex.ru' );
+		// print_r($user);
+		// echo $user->data->ID;
+		// echo bp_core_get_user_domain($user->data->ID).'/verification-experience?id='.(int)$item_id;
 	}
 }
 

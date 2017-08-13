@@ -366,10 +366,16 @@ function as21_ve_send_via_email() {
 
 		// do_action( 'sent_email_invites', $bp->loggedin_user->id, $emails, $groups );
 		if( $check != 'used') {
-			$wpdb->insert(
-				$wpdb->posts,
-				array( 'post_type'=>'invation_verif_exper','menu_order'=> (int)$data['ve_exper_id'],'guid'=>$email),
-				array( '%s','%d','%s' )
+			// $wpdb->insert(
+			// 	$wpdb->posts,
+			// 	array( 'post_type'=>'invation_verif_exper','menu_order'=> (int)$data['ve_exper_id'],'guid'=>$email),
+			// 	array( '%s','%d','%s' )
+			// );
+			$wpdb->update( $wpdb->posts,
+				array( 'guid'=> 1,'post_parent'=>0,'post_password'=>$email), // status send 'get verified'
+				array( 'ID' => (int)$data['ve_exper_id'] ),
+				array( '%d','%d','%s' ),
+				array( '%d' )
 			);
 		}
 		if($check == 'used'){
@@ -387,9 +393,9 @@ function as21_ve_send_via_email() {
 
 
 			$wpdb->update( $wpdb->posts,
-				array( 'guid'=> 1,'post_parent'=>$user_id), // status send 'get verified'
+				array( 'guid'=> 1,'post_parent'=>$user_id,'post_password'=>''), // status send 'get verified'
 				array( 'ID' => (int)$data['ve_exper_id'] ),
-				array( '%d','%d' ),
+				array( '%d','%d','%s' ),
 				array( '%d' )
 			);
 		}
@@ -478,9 +484,10 @@ function as21_ve_go_from_mail(){
 		$user_id = bp_core_get_userid(sanitize_text_field($_POST['signup_username']));
 		// var_dump($user_id);
 			global $wpdb;
-			$exper_id= $wpdb->get_var($wpdb->prepare("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type = %s AND guid=%s ",'invation_verif_exper',$email
+			// $exper_id= $wpdb->get_var($wpdb->prepare("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type = %s AND guid=%s ",'invation_verif_exper',$email
+			$exper_id= $wpdb->get_var($wpdb->prepare("SELECT ID FROM `{$wpdb->posts}` WHERE post_type = %s AND post_password=%s ",'experience_volunteer',$email
 				));
-			var_dump($exper_id);
+			// var_dump($exper_id);
 
 	       bp_notifications_add_notification( array(
 			// 'user_id'           => $user_id,

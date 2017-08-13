@@ -396,9 +396,13 @@ endif;
 			 		$html .= '<li>'.$exper->post_title.'<a href="#verif_send_notif_'.$k.'" class="popup-modal-exper exper-non-verif">Get verified</a></li>';
 			 		// 
 			 		if($exper->guid == 1) {
-			 		 $user_data = get_user_by('ID',$exper->post_parent);
-			 		 // print_r($user_data); 
-			 		 $send_email = $user_data->data->user_email;
+				 		 if($exper->post_parent > 0){ // when user is registered
+				 		 	$user_data = get_user_by('ID',$exper->post_parent);
+					 		 // print_r($user_data); 
+					 		 $send_email = $user_data->data->user_email;
+					 	}else{
+					 		$send_email = $exper->post_password; // when send email non-register user
+					 	}
 			 		}
 			 	}else{
 			 		$html .= '<li>'.$exper->post_title.'</li>';
