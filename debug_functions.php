@@ -1179,7 +1179,7 @@ alex_debug(0,1,'',$user);
 	// echo '---lala----';
 }
 
-add_action('wp_footer','as21_temp_data_experience');
+// add_action('wp_footer','as21_temp_data_experience');
 function as21_temp_data_experience(){
 
 	if( (bool)$_GET['dev'] == true ) {

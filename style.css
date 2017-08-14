@@ -666,6 +666,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
 }
 
 #ve_form_notif{ margin-left: 40px; }
+
 .verif_send_notif input[type='submit']{margin-bottom: 0 !important;}
 .verif_send_notif *{font-size: 12px;}
 .verif_send_notif p{font-size: 14px;}
@@ -885,6 +886,11 @@ form #as21-reviews-badge img:hover, form #as21-reviews-badge .active{ border:1px
   .company #alex_groups_user {display: block; line-height: 2;}
   form #as21-reviews-badge img:nth-child(3){clear: none;}
   form #as21-reviews-badge {margin-left: 0; }
+  #ve_form_notif select {margin-bottom: 15px;}
+  #ve_form_via_email ol{padding-left:0;}
+  #ve_form_notif{margin-left: 0;}
+  /*.verif_send_notif p, .verif_send_notif span, .verif_send_notif input[type={font-size: 12px !important;}*/
+  .profile .verif_send_notif {width: 90%;}
 }
 @media only screen and (max-width: 420px){
    .logo > a{text-align: left;}
