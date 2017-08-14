@@ -665,6 +665,7 @@ a#link_edit_timeline{ display: inline-block; margin:20px 0 50px 0; /*font-weight
   border-radius: 15px;
 }
 
+#ve_form_notif{ margin-left: 40px; }
 .verif_send_notif input[type='submit']{margin-bottom: 0 !important;}
 .verif_send_notif *{font-size: 12px;}
 .verif_send_notif p{font-size: 14px;}

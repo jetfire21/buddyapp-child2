@@ -418,8 +418,14 @@ function as21_ve_send_notif() {
 	// print_r($_POST);
 	if(!empty($_POST['ve_exper_id'])) $exper_id = (int)$_POST['ve_exper_id'];
 	if(!empty($_POST['cur_user_id'])) $cur_user_id = (int)$_POST['cur_user_id'];
+	if(!empty($_POST['ve_notif_user_id'])) $user_id = (int)$_POST['ve_notif_user_id'];
  	if($exper_id > 0){
  		// echo 'exper_id '.$exper_id;
+		if( $user_id == 0) {
+			$res['success'] = 'nouser';
+			echo json_encode($res);
+			exit;
+		}
  		global $wpdb;
 		$status_get_verified = $wpdb->get_var($wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d ", $exper_id));
 		// deb_last_query();
@@ -430,6 +436,8 @@ function as21_ve_send_notif() {
 			exit;
 		}
 
+
+		/*
 		// $notif_id = bp_notifications_add_notification( $args );
 		$ids = $wpdb->get_col("SELECT ID FROM {$wpdb->users}");
 		// alex_debug(0,1,'',$ids);
@@ -451,6 +459,17 @@ function as21_ve_send_notif() {
 			    // deb_last_query();
 			}
 		endif;
+		*/
+       $notif_id = bp_notifications_add_notification( array(
+			// 'user_id'           => $user_id,
+	   		'user_id'           => $user_id, //	dev-test-1
+			'item_id'           => $exper_id, // 10785
+			'secondary_item_id' => 0,
+			'component_name'    => 'custom',
+			'component_action'  => 'custom_action',
+			'date_notified'     => bp_core_current_time(),
+			'is_new'            => 1,
+		) );
 
 		$wpdb->update( $wpdb->posts,
 			array( 'guid'=> 1), // status send 'get verified'

@@ -429,7 +429,7 @@
     $('.ve_send_notif').click(function(e){
     	e.preventDefault();
     	$('#ve_loading, #message').remove();
-    	$('#ve_form_via_email .a21-system-box').remove();
+    	$('.a21-system-box').remove();
     	console.log('---work action #ve_send_notif---');
     	var f_data = $(this).closest('#ve_form_notif').serialize();
     	console.log( f_data );
@@ -469,6 +469,9 @@
 					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
+				} 		
+				if( data.success == 'nouser' ) { 
+					$('#ve_form_notif').prepend("<div class='a21-system-box'>You did not select a user</div>");
 				} 
 			},
 			// beforeSend: function(){

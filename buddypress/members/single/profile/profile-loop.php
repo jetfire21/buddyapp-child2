@@ -385,6 +385,21 @@ endif;
 			 	// $quest_id = (!$user_id) ? $quest_id = $bp->displayed_user->id : $user_id;
 	  		$cur_auth_user = wp_get_current_user();
 	  		// echo $user_id.'-'.$cur_auth_user->ID;
+	  		$users_data = $wpdb->get_results("SELECT ID,display_name FROM {$wpdb->users}");
+	  		// print_r($users_data);
+			if( !empty($users_data)):
+				$select_user = '<select name="ve_notif_user_id"><option value="0" selected>None</option>';
+				foreach ($users_data as $user) {
+					if($user->ID == $cur_auth_user->ID ) continue;
+					$select_user .= '<option value="'.$user->ID.'">'.$user->display_name.'</option>';
+				}
+				$select_user .= '</select>';
+			// 	echo $id->display_name;
+			endif;
+			// 					<select>
+			// 	<option>1</option>
+			// 	<option>2</option>
+			// </select>	
 
 			 foreach ($all_exper as $k => $exper) {
 
@@ -411,9 +426,11 @@ endif;
 			 	// $html .= '<li>'.$exper->post_title.'</li>';
 			 		$html .= '<div id="verif_send_notif_'.$k.'" class="verif_send_notif white-popup-block mfp-hide">
 			 					<!--<div class="a21-system-box">block under development</div>-->
-								<div><p>Get verified via sendig notification to all registered DuGoodrs </p>
+								<div><p>Get verified via sendig notification to registered DuGoodr:</p>
 									
-									<form id="ve_form_notif" action="" method="post">				
+									<form id="ve_form_notif" action="" method="post">
+									<p>Select user</p>	
+									'.$select_user.'
 									<input type="hidden" name="ve_exper_id" value="'.$exper->ID.'" />
 									<input type="hidden" name="cur_user_id" value="'.$cur_auth_user->ID.'" />
 									<input type="submit" name="ve_send_notif" class="as21-send-verif-exper ve_send_notif" value="Send" />
