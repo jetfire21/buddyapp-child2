@@ -11,10 +11,6 @@ function custom_filter_notifications_get_registered_components( $component_names
 	}
 	// Add 'custom' component to registered components array
 	array_push( $component_names, 'custom' );
-	// Return component's with 'custom' appended
-	// echo '---lala777';
-	// print_r($component_names);
-	// exit;
 	return $component_names;
 }
 
@@ -22,10 +18,6 @@ add_filter( 'bp_notifications_get_registered_components', 'custom_filter_notific
 
 // this gets the saved item id, compiles some data and then displays the notification
 function custom_format_buddypress_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
-	// echo '---lala777';
-	// print_r($action);
-	// var_dump($item_id);
-	// exit;
 
 	// New custom notifications
 	if ( 'custom_action' === $action ) {
@@ -76,11 +68,8 @@ function my_bp_nav_adder() {
 					'position'            => 1,
 					'screen_function'     => 'listingsdisplay',
 					'default_subnav_slug' => 'verification-experience',
-					// 'parent_url'          => $bp->loggedin_user->domain . $bp->slug . '/',
 					'parent_url'          => '',
 					'parent_slug'         => $bp->slug,
-					// 'show_for_displayed_user' => false,
-					// 'site_admin_only'         => true, 
 			) );
 }
 
@@ -97,21 +86,8 @@ function my_groups_page_function_to_show_screen_title() {
 
 // temp
 function my_groups_page_function_to_show_screen_content() {
-	// echo 'My Tab content here';
 	global $bp,$wpdb;
 	$quest_id = $bp->displayed_user->id;
-
-	// $all_exper = $wpdb->get_results( $wpdb->prepare(
-	// 	"SELECT ID,post_title,menu_order,post_author
-	// 	FROM {$wpdb->posts}
-	// 	WHERE post_author = %d
-	// 	    AND post_type = %s AND guid=%d
-	// 	ORDER BY ID",
-	// 	intval( $quest_id ),
-	// 	'experience_volunteer',
-	// 	1
-	// ) );
-	// alex_debug(0,1,'',$all_exper);
 
 	// double $_POST
 	// if(!empty($_POST)){
@@ -437,29 +413,7 @@ function as21_ve_send_notif() {
 		}
 
 
-		/*
-		// $notif_id = bp_notifications_add_notification( $args );
-		$ids = $wpdb->get_col("SELECT ID FROM {$wpdb->users}");
-		// alex_debug(0,1,'',$ids);
-		// deb_last_query();
 
-		if( !empty($ids)):
-			foreach ($ids as $id) {
-				if($id == $cur_user_id ) continue;
-			       $notif_id = bp_notifications_add_notification( array(
-					// 'user_id'           => $user_id,
-			   		'user_id'           => $id, //	dev-test-1
-					'item_id'           => $exper_id, // 10785
-					'secondary_item_id' => 0,
-					'component_name'    => 'custom',
-					'component_action'  => 'custom_action',
-					'date_notified'     => bp_core_current_time(),
-					'is_new'            => 1,
-				) );
-			    // deb_last_query();
-			}
-		endif;
-		*/
        $notif_id = bp_notifications_add_notification( array(
 			// 'user_id'           => $user_id,
 	   		'user_id'           => $user_id, //	dev-test-1
@@ -488,14 +442,7 @@ function as21_ve_send_notif() {
 // user input - safe
 add_action('bp_complete_signup','as21_ve_go_from_mail');
 function as21_ve_go_from_mail(){
-	// http://dugoodr2.dev/register/?iaaction=accept-invitation&email=oenomaus2017%40mail.ru
-	// http://dugoodr2.dev/register/?ve_action=ve&ve_email=oenomaus2017%40mail.ru
-	// invation_verif_exper
-	// alex_debug(0,1,'post',$_POST);
-	// alex_debug(0,1,'get',$_GET);
-	// echo 'wp_user_id===';var_dump($wp_user_id );
-	// echo 'wp_user_id===';var_dump($usermeta );
-	// $wp_user_id = bp_core_signup_user( $_POST['signup_username'], $_POST['signup_email'], $usermeta );
+
 
 	if( !empty($_GET['ve_email']) ) $email = $_GET['ve_email'];
 	if( $_GET['ve_action']=='ve' && is_email($email) ) {
