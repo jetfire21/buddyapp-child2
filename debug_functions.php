@@ -1,6 +1,6 @@
 <?php
 
-/***** After production it is possible to remove safely this file
+/***** This file don't include on production,it can to remove after development
 TEMP - MAIN DEBUGING FUNCTIONS *******/
 
 // echo "debug function work!"; exit;
