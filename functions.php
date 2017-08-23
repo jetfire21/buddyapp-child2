@@ -557,7 +557,6 @@ function a21_inc_styles_for_timeline(){
 	 if( !preg_match("/edit/i", $_SERVER['REQUEST_URI']) ){
 
 		wp_enqueue_style( 'bootstrap-2', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',array('bootstrap'));
-		// wp_enqueue_style( 'font-awesome-a21', 'http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',array('bootstrap-2'));
 		wp_enqueue_style( 'datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css',array('bootstrap-2'));
 		}else{
 			
@@ -1850,4 +1849,4 @@ function as21_block_group_admins_align_right($button){
 }
 
 require_once 'libs/verify_user_experience_item.php';
-require_once 'debug_functions.php';
+// require_once 'debug_functions.php';
