@@ -66,14 +66,14 @@ function my_bp_nav_adder() {
 					'name'                => __( 'Listings', 'buddypress' ),
 					'slug'                => 'verification-experience',
 					'position'            => 1,
-					'screen_function'     => 'listingsdisplay',
+					'screen_function'     => 'as21_listing_verif_exper',
 					'default_subnav_slug' => 'verification-experience',
 					'parent_url'          => '',
 					'parent_slug'         => $bp->slug,
 			) );
 }
 
-function listingsdisplay() {
+function as21_listing_verif_exper() {
 	//add title and content here - last is to call the members plugin.php template
 	add_action( 'bp_template_title', 'my_groups_page_function_to_show_screen_title' );
 	add_action( 'bp_template_content', 'my_groups_page_function_to_show_screen_content' );
@@ -84,14 +84,10 @@ function my_groups_page_function_to_show_screen_title() {
 	echo 'Verification of experience';
 }
 
-// temp
 function my_groups_page_function_to_show_screen_content() {
 	global $bp,$wpdb;
 	$quest_id = $bp->displayed_user->id;
 
-	// double $_POST
-	// if(!empty($_POST)){
-		// alex_debug(0,1,'POST',$_POST);
 		if( (bool)$_POST['ve_verif'] === true && !empty($_POST['ve_exper_id']) ) {
 			$wpdb->update( $wpdb->posts,
 				array( 'comment_count'=> 1,'post_parent'=> $quest_id), // (comment_count - status verified of dugoodr), (post_parent-id verif of dugoodr)
@@ -99,19 +95,13 @@ function my_groups_page_function_to_show_screen_content() {
 				array( '%d' ),
 				array( '%d' )
 			);
-			// deb_last_query();
-			// $ve_email_invation = $wpdb->get_var( $wpdb->prepare("SELECT user_email FROM {$wpdb->users} WHERE ID = %d ",intval( $quest_id) ));
-			//$exper_id = $wpdb->get_var("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type ='invation_verif_exper' AND guid='".$_GET['ve_email']."' ");
 		    $wpdb->delete( $wpdb->posts, array('post_type'=>'invation_verif_exper','menu_order'=> (int)$_POST['ve_exper_id']), array('%s','%d') );
-		    // deb_last_query();
-			// header('Location: http://ya.ru/');
 			$ref = $_SERVER['HTTP_REFERER'];
 			?>
 			<script> window.location.href = '<?php echo $ref;?>';</script>
 			<?php
 
 		}
-	// }
 
 	$exper = $wpdb->get_row( $wpdb->prepare(
 		"SELECT ID,post_title,menu_order,post_author,comment_count
@@ -119,28 +109,26 @@ function my_groups_page_function_to_show_screen_content() {
 		WHERE ID = %d",
 		(int)$_GET['id']
 	) );
-	// deb_last_query();
-	// alex_debug(0,1,'',$exper);
-	// echo '<ul id="as21_list_experiences"><li>'.$exper->post_title.'</li></ul>';
+
 	if( !empty($exper)):
 		if( $exper->comment_count == 0 ):
-	?>
-	<form method="post">
-	<table id="as21_experience_volunteer">
-		<tr><th>Details of experience</th><th class="exper_hours">Hours</th><th>User</th><th>Approve</th></tr>
-		<tr class="a21_dinam_row">
-			<td><input type="text" name="as21_experiences[0][title]" value="<?php echo $exper->post_title;?>"></td>
-			<td><input type="text" name="as21_experiences[0][hours]" value="<?php echo $exper->menu_order;?>"></td>
-		    <td><?php echo bp_core_get_username($exper->post_author);?></td>
-			<td><input type="checkbox" name="ve_verif" value="1"/></td>
-			<input type="hidden" name="ve_exper_id" value="<?php echo $exper->ID;?>">
-		</tr>
-	</table>
-	<input type="submit" data-id="'.$exper->ID.'" name="ve_send_notifs" class="as21-send-verif-exper" value="Approve" />
-	</form>
-	<?php
-		else:
-			echo '<div id="message"><p>This experience item verified!</p></div>';
+			?>
+			<form method="post">
+			<table id="as21_experience_volunteer">
+				<tr><th>Details of experience</th><th class="exper_hours">Hours</th><th>User</th><th>Approve</th></tr>
+				<tr class="a21_dinam_row">
+					<td><input type="text" name="as21_experiences[0][title]" value="<?php echo $exper->post_title;?>"></td>
+					<td><input type="text" name="as21_experiences[0][hours]" value="<?php echo $exper->menu_order;?>"></td>
+				    <td><?php echo bp_core_get_username($exper->post_author);?></td>
+					<td><input type="checkbox" name="ve_verif" value="1"/></td>
+					<input type="hidden" name="ve_exper_id" value="<?php echo $exper->ID;?>">
+				</tr>
+			</table>
+			<input type="submit" data-id="'.$exper->ID.'" name="ve_send_notifs" class="as21-send-verif-exper" value="Approve" />
+			</form>
+			<?php
+				else:
+					echo '<div id="message"><p>This experience item verified!</p></div>';
 		endif;
 	endif;
 
@@ -216,33 +204,16 @@ add_action('wp_ajax_as21_ve_send_via_email', 'as21_ve_send_via_email');
 // add_action('wp_ajax_nopriv_as21_ve_send_via_email', 'as21_ve_send_via_email');
 
 function as21_ve_send_via_email() {
-	// print_r($_POST);
 	$data = $_POST;
 
 	global $wpdb;
-	// $status_get_verified = $wpdb->get_var($wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d ", (int)$data['ve_exper_id']));
-	// // deb_last_query();
-	// // var_dump($status_get_verified); exit;
-	// if( $status_get_verified == '1') {
-	// 	$res['warning'] = 'exist';
-	// 	echo json_encode($res);
-	// 	exit;
-	// }
+	global $bp;
 
-	// echo json_encode($_POST);
-
-		global $bp;
-
-	// $options = invite_anyone_options();
 
 	$emails = false;
 
 	$emails = $data['ve_email_addresses'] ;
 	if ( empty( $emails ) ) {
-		// bp_core_add_message( __( 'You didn\'t include any email addresses!', 'invite-anyone' ), 'error' );
-		// bp_core_redirect( $bp->loggedin_user->domain . $bp->invite_anyone->slug . '/invite-new-members' );
-		// die();
-		// $returned_data['error_message'] = 'You didn\'t include any email addresses!';
 		$res['error'] = 'You didn\'t include any email address!';
 		echo json_encode($res);
 		exit;
@@ -250,19 +221,8 @@ function as21_ve_send_via_email() {
 
 		$email = $data['ve_email_addresses'] ;
 
-		// $check = invite_anyone_validate_email( $email );
 		$check = as21_ve_validate_email($email);
-		switch ( $check ) {
-
-			// case 'opt_out' :
-			// 	$returned_data['error_message'] .= sprintf( __( '<strong>%s</strong> has opted out of email invitations from this site.', 'invite-anyone' ), $email );
-			// 	break;
-
-			// case 'used' :
-			// 	$res['error'] = sprintf( "<strong>%s</strong> is already a registered user of the site.", $email );		
-			// 	echo json_encode($res);
-			// 	exit;
-			// 	break;
+		switch ( $check ) {	
 
 			case 'unsafe' :
 				$res['error']  = sprintf( '<strong>%s</strong> is not a permitted email address.', $email );
@@ -281,20 +241,11 @@ function as21_ve_send_via_email() {
 				exit;
 				break;
 		}
-		// echo $email.'-'.$check."<br>";
 
 
 	if ( ! empty( $email ) ) {
 
 
-	// echo '------step as21_verification_experience_process------send mail<br>';
-
-
-		/* send and record invitations */
-
-		// do_action( 'invite_anyone_process_addl_fields' );
-
-		// $groups = ! empty( $data['invite_anyone_groups'] ) ? $data['invite_anyone_groups'] : array();
 		$is_error = 0;
 		global $wpdb;
 
@@ -302,15 +253,10 @@ function as21_ve_send_via_email() {
 
 			$message = stripslashes( strip_tags( $data['ve_custom_message'] ) );
 
-			// $footer = invite_anyone_process_footer( $email );
-			// $footer = invite_anyone_wildcard_replace( $footer, $email );
-			// 'To accept this invite, please visit http://dugoodr2.dev/register/?iaaction=accept-invitation&email=devtest201721%40gmail.com';
 			$footer = 'To accept this invite, please visit http://'.$_SERVER['HTTP_HOST'].'/register/?ve_action=ve&ve_email='.$email;
 			if( $check == 'used') {
 				$user = get_user_by( 'email', $email );
 				$user_id = $user->data->ID;
-				// print_r($user);
-				// echo $user->data->ID;
 				$footer = 'To accept this invite, please visit '.bp_core_get_user_domain($user_id).'verification-experience?id='.(int)$data['ve_exper_id'];
 			}
 
@@ -321,32 +267,16 @@ function as21_ve_send_via_email() {
 ';
 			$message .= $footer;
 
-			// $to = apply_filters( 'invite_anyone_invitee_email', $email );
 			$to =  $email;
-			// $subject = apply_filters( 'invite_anyone_invitation_subject', $subject );
-			// $message = apply_filters( 'invite_anyone_invitation_message', $message );
-
-			// echo ' to- ';var_dump($to);
 			if(wp_mail( $to, $subject, $message )) $send .= ' send email to '.$email.' - success!<br> ';
 			else $send .= ' send email to '.$email.' - error!<br> ';
 			$success_send_emails .= $email.'<br>';
 		
 		$res['tmp_info'] = $send;
 
-		// Set a success message
-
-		// $success_message = sprintf( "Invitations were sent successfully to the following email addresses: %s", implode( ", ", $emails ) );
-		// $success_message = sprintf( "Invitations were sent successfully to the following email addresses: %s", $success_send_emails );
-		// bp_core_add_message( $success_message );
 		$res['success'] = 'Invitation were sent successfully to the email address: '.$success_send_emails; 
 
-		// do_action( 'sent_email_invites', $bp->loggedin_user->id, $emails, $groups );
 		if( $check != 'used') {
-			// $wpdb->insert(
-			// 	$wpdb->posts,
-			// 	array( 'post_type'=>'invation_verif_exper','menu_order'=> (int)$data['ve_exper_id'],'guid'=>$email),
-			// 	array( '%s','%d','%s' )
-			// );
 			$wpdb->update( $wpdb->posts,
 				array( 'guid'=> 1,'post_parent'=>0,'post_password'=>$email), // status send 'get verified'
 				array( 'ID' => (int)$data['ve_exper_id'] ),
@@ -356,7 +286,6 @@ function as21_ve_send_via_email() {
 		}
 		if($check == 'used'){
 			       $notif_id = bp_notifications_add_notification( array(
-					// 'user_id'           => $user_id,
 			   		'user_id'           => $user->data->ID, //	dev-test-1
 					'item_id'           => (int)$data['ve_exper_id'], // 10785
 					'secondary_item_id' => 0,
@@ -365,7 +294,6 @@ function as21_ve_send_via_email() {
 					'date_notified'     => bp_core_current_time(),
 					'is_new'            => 1,
 				) );
-			    // deb_last_query();
 
 
 			$wpdb->update( $wpdb->posts,
@@ -375,11 +303,8 @@ function as21_ve_send_via_email() {
 				array( '%d' )
 			);
 		}
-		// deb_last_query();
 	} else {
 		$res['error'] =  "Please correct your errors and resubmit." ;
-		// echo $returned_data['error_message'];
-		// bp_core_add_message( $success_message, 'error' );
 	}
 
 
@@ -396,7 +321,6 @@ function as21_ve_send_notif() {
 	if(!empty($_POST['cur_user_id'])) $cur_user_id = (int)$_POST['cur_user_id'];
 	if(!empty($_POST['ve_notif_user_id'])) $user_id = (int)$_POST['ve_notif_user_id'];
  	if($exper_id > 0){
- 		// echo 'exper_id '.$exper_id;
 		if( $user_id == 0) {
 			$res['success'] = 'nouser';
 			echo json_encode($res);
@@ -404,8 +328,6 @@ function as21_ve_send_notif() {
 		}
  		global $wpdb;
 		$status_get_verified = $wpdb->get_var($wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d ", $exper_id));
-		// deb_last_query();
-		// var_dump($status_get_verified); exit;
 		if( $status_get_verified == '1') {
 			$res['success'] = 'exist';
 			echo json_encode($res);
@@ -431,7 +353,6 @@ function as21_ve_send_notif() {
 			array( '%d' ),
 			array( '%d' )
 		);
-		// unset($_POST);
 		$res['success'] = 'ok';
 		echo json_encode($res);
 	}
@@ -448,12 +369,9 @@ function as21_ve_go_from_mail(){
 	if( $_GET['ve_action']=='ve' && is_email($email) ) {
 
 		$user_id = bp_core_get_userid(sanitize_text_field($_POST['signup_username']));
-		// var_dump($user_id);
 			global $wpdb;
-			// $exper_id= $wpdb->get_var($wpdb->prepare("SELECT menu_order FROM `{$wpdb->posts}` WHERE post_type = %s AND guid=%s ",'invation_verif_exper',$email
 			$exper_id= $wpdb->get_var($wpdb->prepare("SELECT ID FROM `{$wpdb->posts}` WHERE post_type = %s AND post_password=%s ",'experience_volunteer',$email
 				));
-			// var_dump($exper_id);
 
 	       bp_notifications_add_notification( array(
 			// 'user_id'           => $user_id,
@@ -473,9 +391,6 @@ function as21_ve_go_from_mail(){
 add_action( 'bp_after_register_page', 'as21_ve_register_screen_message' );
 
 function as21_ve_register_screen_message(){
-	// devtest201721@gmail.com
-	// $_GET['ve_email'] = urlencode('devtest201721@gmail.com');
-	// $email =  urlencode('devtest201721@gmail.com');
 	if( $_GET['ve_action']=='ve' && !empty($_GET['ve_email']) ) {
 		remove_filter('the_content','rs_wpss_encode_emails', 9999 ); // remove fiter WP-SpamShield plugin
 		?>
@@ -496,8 +411,6 @@ function as21_when_delete_user_reset_verfi_exper( $user_id ) {
 		array( '%d','%d','%d' ),
 		array( '%s','%d' )
 	);
-	// deb_last_query();
-	// exit;
 
 }
 add_action( 'delete_user', 'as21_when_delete_user_reset_verfi_exper' );

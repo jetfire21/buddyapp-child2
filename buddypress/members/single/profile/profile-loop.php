@@ -646,7 +646,6 @@ function as21_tooltips_for_new_user_profile(){
 
 		/**** as21 get tooltips for case when all tooltips dismiss ****/
 
-		// echo ' conditional user_id == member_id first=========';
 		$status_tooltips_db = $wpdb->get_var( $wpdb->prepare(
 			"SELECT meta_value
 			FROM {$wpdb->postmeta}

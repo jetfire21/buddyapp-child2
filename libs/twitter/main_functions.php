@@ -3,12 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /*********** this code for work with twitter ***********/
 
-// add_action('wp_ajax_al21_tw_automate_enable', 'al21_tw_automate_enable');
-// function al21_tw_automate_enable(){
-// 	print_r($_REQUEST);
-// 	exit;
-// }
-
 add_action('wp_ajax_get_tweets', 'alex_my_action_callback');
 add_action('wp_ajax_nopriv_get_tweets', 'alex_my_action_callback');
 function alex_my_action_callback(){
@@ -30,30 +24,20 @@ if($gr_id > 0) {
 	{
 		$crop_twitter_url = explode(".com/", $twitter_url);
 		$twitter_username = $crop_twitter_url[1];
-		// var_dump($crop_twitter_url);
-		// echo $twitter_username."<br>";
 		$twitter_username = str_replace("/", "", $twitter_username);
 		// echo $twitter_username;
 	}
 }
-// exit;
-// $res['html'] = $twitter_url;
-// 	echo json_encode($res);
-// 	exit;
 
 require_once 'tw-api.php';
 $twitter_debug = false;
 // $twitter_username = 'ottawafoodbank';
 // $twitter_username = 'kaspersky_ru';
 // $tweets = a21_tw_get_tweets($settings,$url,$getfield,$requestMethod,$twitter_debug,5);
-// $tweets = a21_tw_get_tweets($tw_user,$settings,$url,$requestMethod,$twitter_debug, 10);
-// $tweets = a21_tw_get_tweets($twitter_username,$twitter_debug,$number_tweets = 15);
 
 if( !empty($twitter_username) ) $tweets = a21_tw_get_tweets($twitter_username, $settings,$url,$requestMethod,$twitter_debug,15);
-// alex_debug(0,1,'tweets-',$tweets);
 
 $table_activity = $wpdb->prefix."bp_activity";
-// $res['debug'] = 'for debug: ';
 $tw_i = 1;
 if(!$twitter_debug && !empty($tweets) ):
 	foreach ($tweets as $k => $v):
@@ -62,23 +46,15 @@ if(!$twitter_debug && !empty($tweets) ):
 		$tweet = $v->text;
 		$date = $v->created_at; //Wed Mar 08 14:11:10 +0000 2017
 		$date_to_db = date("Y-m-d H:i:s", strtotime($date)); // 2017-03-08 14:11:10
-		// data-livestamp="2017-03-08T17:30:01+0000"
 		$date_for_html = date("Y-m-dTH:i:s+0000", strtotime($date)); // 2017-03-08 14:11:10
-		// $date_unix = mktime("14","05","09","3","9","2017"); // e.g. 1489069887
 
 		if(!empty($v->entities->urls[0]->url)) $short_link = $v->entities->urls[0]->url;
-		// extract($output);
-		// echo "\r\n".$tweet.": ".$date_to_db.": ".$short_link.": ".$date_for_html.": ".$date_format."\r\n \r\n";
-
-		//$check_tweet_db = $wpdb->get_row("SELECT id FROM `{$table_activity}` WHERE date_recorded='{$date_to_db}' AND content='{$tweet}' ");
 		$check_tweet_db = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM `{$table_activity}` WHERE component='%s' AND date_recorded='%s' AND content='%s' AND item_id='%d' ",
 			'groups',$date_to_db,$tweet, $gr_id) );
 
 		// if value = NULL, in other words if tweet not exist db then add it in db and output on site
 		if( is_null($check_tweet_db) ) {
 
-			// echo "\r\n == this tweet not exist in db \r\n";
-			// $res['debug'] .= "has tweet db: ".$check_tweet_db."; ";
 
 			$user = wp_get_current_user();
 			$from_user_id = $user->ID;
@@ -95,8 +71,6 @@ if(!$twitter_debug && !empty($tweets) ):
 			$q = $wpdb->prepare( "INSERT INTO {$table_activity} (user_id, component, type, action, content, primary_link, date_recorded, item_id, secondary_item_id, hide_sitewide, is_spam ) VALUES ( %d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d )", $from_user_id, 'groups', 'new_event', $action, $tweet, $to_user_link_nohtml, $date_to_db, $gr_id, 0, 0,0);
 			$wpdb->query( $q );	
 			$last_activity_id = $wpdb->get_var( "SELECT MAX(`id`) FROM {$table_activity}");
-
-			// $res['debug'] .= "; user_id: ".$from_user_id.";  root_slug -".$gr_root_slug.";  ".$root_member_slug."; ".$group->slug;
 
 			$html .= '
 				<li class="groups activity_update activity-item date-recorded-'.strtotime($date_to_db).'" id="activity-'.$last_activity_id.'">
@@ -163,7 +137,6 @@ if(!$twitter_debug && !empty($tweets) ):
 						</div>
 				</li>';
 		}
-		// $res['debug'] .= "\r\n last query: ".$wpdb->last_query.";\r\n--- ";
 		$tw_i++;
 	endforeach;
 	endif;
@@ -171,22 +144,17 @@ if(!$twitter_debug && !empty($tweets) ):
 	$count_tw = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*)  FROM {$table_activity} WHERE component='%s' AND item_id='%d' AND type='%s' ",
 	'groups',$gr_id,'new_event') );
 
-	// $res['debug'] .= "\r\n count tw before while ".$count_tw.";\r\n--- ";
 	while($count_tw > 15){
 		$old_tw = $wpdb->get_var($wpdb->prepare("SELECT MIN(date_recorded)  FROM {$table_activity} WHERE component='%s' AND item_id='%d' AND type='%s' ",
-		//$old_tw = $wpdb->get_var($wpdb->prepare("SELECT id MIN(date_recorded)  FROM {$table_activity} WHERE component='%s' AND item_id='%d' AND type='%s' ",
 		'groups',$gr_id,'new_event') );
 		// var_dump($old_tw);
 		$wpdb->delete( $table_activity, array( 'item_id'=>$gr_id,'date_recorded' => $old_tw,'component'=> 'groups', 'type'=>'new_event'), array( '%d','%s','%s','%s' ) );
 		$count_tw--;
-		// $res['debug'] .= "\r\n count tw in while ".$count_tw.";\r\n--- ";
-		// echo $i++;
 	}
 
 	// $res['html'] = "html";
 	$res['html'] = $html;
 	$end_time =	microtime(true);
-	// $res['debug'] .= ($end_time - $st_time) ." sec ";
 
 	echo json_encode($res);
 	exit;
@@ -196,20 +164,13 @@ add_action("wp_footer","alex_tweet");
 function alex_tweet(){
 
 		$gr_id = bp_get_group_id();
-		// echo "gr ".$gid;
 		$group = groups_get_group($gr_id);
 		$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
 		$avatar_options = array ( 'item_id' => $gr_id, 'object' => 'group','avatar_dir' => 'group-avatars', 'html' => false );
 		$gr_avatar = bp_core_fetch_avatar($avatar_options);
 
-		// print_r($bp);
         $tw_url = groups_get_groupmeta( $gr_id, 'al21_twitteer_url' );
 		$tw_user = substr(strrchr($tw_url,"/"), 1); // parse url and return last part,e.g. ottawafoodbank
-		// echo "<hr>".$tw_url."<br>".$tw_user;
-
-	// echo $getfield;
-	// print_r($settings);
-
 
 	if(bp_is_group_home()) {
 
@@ -234,22 +195,8 @@ function alex_tweet(){
 					data:data, // данные
 					type:'POST', // тип запроса
 					success:function(data){
-						console.log("js ok!");
-						// console.log(data);
-						// // console.log(typeof data);
-						// var data = JSON.parse(data);
-						// console.log(data.debug);
-						// if( data.html != 'null' ) { 
-						// 	// current_page++; // увеличиваем номер страницы на единицу
-						// 	// if (current_page == max_pages) $("#true_loadmore").remove(); // если последняя страница, удаляем кнопку
-						// 	// jQuery(".activity.single-group>ul").prepend(data.html);
-						// } else {
-						// 	console.log("no html");
-						// }
-						// console.log("\r\n------------");
 					},
 					beforeSend: function(){
-						// $("#loading-text").html('<a class="loading-link" href="#">Loading ...</a>');
 						console.log("Loading get_tweets");
 					}
 				 });
@@ -372,8 +319,6 @@ class Group_Extension_Example_2 extends BP_Group_Extension {
 				$user = wp_get_current_user();
 				echo $from_user_id = $user->ID;
 
-				// echo $gr_id = bp_get_group_id();
-				// echo "gr ".$gid;
 				 $gr_id = $bp->groups->current_group->id;
 				$group = groups_get_group($gr_id);
 				$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
@@ -443,9 +388,6 @@ function al_add_tweets_in_db(){
 
 
 	// http://dugoodr2.dev/causes/create/step/group-automation/
-	// echo "new !!!!!!! http://dugoodr2.dev/causes/create/step/group-automation/";
-	// alex_debug(0,1,'req1',$_REQUEST);
-	// alex_debug(0,1,'post1',$_POST);
 	if( !empty($_REQUEST['al21_twitteer_url']) ) $twitter_url = sanitize_text_field($_REQUEST['al21_twitteer_url']);
 	if (!empty($twitter_url) ){
 		require_once 'tw-api.php';
@@ -453,26 +395,14 @@ function al_add_tweets_in_db(){
 		// $twitter_username = 'ottawafoodbank';
 		$twitter_username = substr(strrchr($twitter_url,"/"), 1); // parse url and return last part,e.g. ottawafoodbank
 
-		// echo "<br>before a21_tw_get_tweets<br>";
-		// $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-
 		global $gb_twitter;
 		$tweets = a21_tw_get_tweets($twitter_username,$gb_twitter['settings'],$gb_twitter['url'],$gb_twitter['requestMethod'],$twitter_debug,15);
-
-		// $tweets = a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug,$number_tweets);
-
-		// $tweets = a21_tw_get_tweets2($twitter_username);
-		// $tweets = a21_tw_get_tweets($twitter_username, $twitter_debug,3,$settings,$url,$requestMethod);
-		// echo "<br>after a21_tw_get_tweets<br>";
-		// exit;
 
 		global $wpdb,$bp;
 		$table_activity = $wpdb->prefix."bp_activity";
 		$user = wp_get_current_user();
 		$from_user_id = $user->ID;
 
-		// echo $gr_id = bp_get_group_id();
-		// echo "gr ".$gid;
 		$gr_id = (int)$_REQUEST['group_id'];
 		$group = groups_get_group($gr_id);
 		$group_permalink =  'http://'.$_SERVER['HTTP_HOST'] . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/';
@@ -496,7 +426,6 @@ function al_add_tweets_in_db(){
 				$wpdb->query( $q );	
 			endforeach;
 		endif;
-		// print_r($output);
 	}
 }
 
