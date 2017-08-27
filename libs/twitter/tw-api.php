@@ -30,8 +30,6 @@ $consumer_secret		= 'bh0YwwvETuN7cC8VLURUPcbEkjYubRa8JS0awq7WsPObjmFbPR';
 // Some variables
 // $twitter_username 		= 'Sergei_Malinin';
 // $twitter_username 		= 'OttawaFoodBank';
-// $twitter_username 		= 'ottawahumane';
-// $twitter_username 		= 'kaspersky_ru';
 // $number_tweets			= 3; // How many tweets to display? max 20
 $ignore_replies 		= true; // Should we ignore replies?
 $twitter_caching		= true; // You can change to false for some reason
@@ -58,27 +56,14 @@ $gb_twitter['settings'] = $settings;
 
 // Flag for twitter error
 $tweet_flag = 1;
-// function a21_tw_get_tweets($twitter_username,$settings,$url,$getfield,$requestMethod,$twitter_debug = true){
 function a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twitter_debug = false,$number_tweets = 3){
-
-	// echo $twitter_username."<br>
-	// url= ".$url."<br>
-	// number_tweets=".$number_tweets."<br>
-	// requestMethod=".$requestMethod."<br>
-	// settings=";
-	// print_r($settings);
-	// echo "debug= "; var_dump($twitter_debug);
 
 	$getfield = '?screen_name='.$twitter_username.'&count='.$number_tweets;
 
 	// Let's run the API then JSON decode and store in variable
 	$twitter = new TwitterAPIExchange($settings);
-	// var_dump($twitter);
-	// echo "==========TwitterAPIExchange======";
 	$twitter_stream = json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
 
-	// Debug mode, just output twitter stream variable
-	// echo '<pre>';	print_r($twitter_stream);	echo '</pre>';
 
 	if($twitter_debug){
 		foreach ($twitter_stream as $k => $v) {
@@ -88,9 +73,6 @@ function a21_tw_get_tweets($twitter_username,$settings,$url,$requestMethod,$twit
 			// short link on tweet
 			if(!empty($v->entities->urls[0]->url)) $output .= $k."- ".$v->entities->urls[0]->url;
 			$output .= "<hr>";
-			// echo "<pre>";  print_r($v); echo "</pre>"; 
-			// short link on tweet
-			// echo "<pre>";  print_r($v->entities->urls[0]->url); echo "</pre>";
 		}
 		return $output;
 	}else{ return $twitter_stream; }

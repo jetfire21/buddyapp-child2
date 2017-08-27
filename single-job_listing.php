@@ -2,25 +2,18 @@
 /**
  * Template Name: Volunteers
  *
- * Description: Template withour sidebar for volunteers
+ * Description: Template withour sidebar for jobs
  *
  * @package WordPress
  * @subpackage BuddyApp
  * @author SeventhQueen <themesupport@seventhqueen.com>
  * @since BuddyApp 1.0
  */
-
 get_header(); ?>
 
 <?php
-
-if(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI'])){
-	//create right sidebar template
-	kleo_switch_layout( 'right' );
-}else{
 	//create full width template
 	kleo_switch_layout('full');
-}
 ?>
 
 <?php get_template_part('page-parts/general-before-wrap'); ?>
@@ -58,22 +51,12 @@ function a21_kleo_show_page_title(){
 
 }
 
-// <div class="item-list-tabs no-ajax" id="subnav" role="navigation">
 ?>
 
 <?php get_template_part( 'page-parts/page-title' ); ?>
  <?php if( is_page('gigs') ) do_action( 'jobify_output_map' ); ?>
 
-<!-- <div class="container content-area"> -->
-<!-- <div class="main-content <?php echo Kleo::get_config('container_class'); ?>"> -->
-<?php
-if(preg_match("#^\/job\/#i", $_SERVER['REQUEST_URI'])):?>
-	<div class="main-content <?php echo Kleo::get_config('container_class'); ?>">
-<?php else:?>
-	<div class="container content-area">
-<?php endif;?>
-
-<!-- <h1>Under development</h1> -->
+<div class="container content-area">
 
 	<?php
 	if ( have_posts() ) :

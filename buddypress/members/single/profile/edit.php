@@ -7,7 +7,6 @@
  */
 $user = wp_get_current_user();
 $user_link = bp_core_get_user_domain( $user->ID );
-// alex_debug(0,1,"user",$user);
 
 do_action( 'bp_before_profile_edit_content' );
 
@@ -52,21 +51,12 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					intval( $quest_id ),
 					"alex_timeline"
 				) );
-				// print_r($fields);
-				// foreach ($fields as $field) {
-				// 	echo $field->post_title;
-				// }
 
 				echo '<a id="link_edit_timeline" href="'.$user_link.'" class="button">To click for editing</a>'; 
-				// echo "<h3>This section is under development</h3>";
 				echo '<table id="a21_timeleline_quick_edit">
 					<tr><th class="timel_title">Title</th><th>Date</th><th>Description</th><th class="qe_color">Color</th></tr>';
 				$i=1; $dp=1;
 				foreach ($fields as $field):
-					// if($i%6==0) $dp++;
-					// if($dp>1) $datepicker_id = "a21_wrap_datepicker".$dp ;
-					// else $datepicker_id = "a21_wrap_datepicker";
-					// echo $field->ID."==".$field->post_name."--";
 					if( !empty($field->post_title) ):
 					?>
 					<tr class="<?php if( !empty($field->post_name)) echo $field->post_name; else echo "teal";?>">
@@ -84,13 +74,11 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					</td>
 					<td class="qe_color">
 					    <select class="form-control" name="data[<?php echo $i;?>][timel_class]">
-					        <!-- <option value="">None</option> -->
 					        <option value="none" <?php if($field->post_name=="none") echo 'selected="selected"';?>>None</option>
 					        <option value="bricky" <?php if($field->post_name=="bricky") echo 'selected="selected"';?>>Red</option>
 					        <option value="green" <?php if($field->post_name=="green") echo 'selected="selected"';?>>Green</option>
 					        <option value="purple" <?php if($field->post_name=="purple") echo 'selected="selected"';?>>Purple</option>
 					        <option value="teal" <?php if($field->post_name=="teal" || empty($field->post_name)) echo 'selected="selected"';?>>Teal</option>
-					        <!--<option value="teal"><?php echo $field->post_name;?></option>-->
 					    </select>
 					</td>	
 					</tr>
@@ -98,11 +86,6 @@ if ( bp_has_profile( 'profile_group_id=' . bp_get_current_profile_group_id() ) )
 					$i++;
 					endif;
 				endforeach;
-				// echo '<tr>
-				// <td class="timel_title"><input type="text" placeholder="" class="form-control" value=""></td>
-				// <td id="a21_wrap_datepicker2"> <input data-date-container="#a21_wrap_datepicker2"  data-provide="datepicker" type="text" placeholder="" class="form-control" data-date-format="dd M yyyy" value=""></td>
-				// <td><textarea placeholder="" class="form-control"></textarea></td>
-				// </tr>';
 				echo '</table>';
 				echo '<div id="a21_add_new_row_qedit_timel">Add more fields</div>';
 

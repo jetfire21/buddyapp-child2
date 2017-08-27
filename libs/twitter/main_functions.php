@@ -191,9 +191,9 @@ function alex_tweet(){
 				};
 
 				jQuery.ajax({
-					url:KLEO.ajaxurl, // обработчик
-					data:data, // данные
-					type:'POST', // тип запроса
+					url:KLEO.ajaxurl, 
+					data:data, 
+					type:'POST', 
 					success:function(data){
 					},
 					beforeSend: function(){
@@ -205,7 +205,6 @@ function alex_tweet(){
 
 		  setInterval(function() {
 		  		get_tweets();
-		  // },60000); // 1 min
 		  },10000); // 1 min
 
 		});
@@ -272,7 +271,6 @@ class Group_Extension_Example_2 extends BP_Group_Extension {
 
 			var sel = jQuery('#al21_automate_enable');
 			sel.on('click', function(){     
-				// if(sel.attr("checked") == 'checked') {  
 				if(sel.val() == "yes") {  
 					sel.val("no");
 				} else {
@@ -293,7 +291,6 @@ class Group_Extension_Example_2 extends BP_Group_Extension {
         groups_update_groupmeta( $group_id, 'al21_automate_enable', $setting_2 );
 
 			global $wpdb,$bp;
-			// print_r($bp);
 			$table_activity = $wpdb->prefix."bp_activity";
  			$gr_id = $bp->groups->current_group->id;
 			if($setting_2 == 'yes') $hide = 0;

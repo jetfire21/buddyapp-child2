@@ -58,14 +58,6 @@
 			<?php
 			/* **** as21  score for profile items complete **** */
 
-			// global $profile_template;
-			// alex_debug(0,1,'xprofiles',$profile_template->groups);
-			// echo "\r\n group field ids - ".bp_get_the_profile_group_field_ids()."\r\n\r\n";
-			// echo "\r\n  field ids - ".bp_get_the_profile_field_ids()."\r\n\r\n";
-			// $linkedin_val = xprofile_get_field_data(7, $user_id);
-			// $twitter_val = xprofile_get_field(56, $user_id); // old nouse fields 56,57,18
-			// alex_debug(0,1,'',$twitter_val);
-			// bp_xprofile_data
 		if ( is_user_logged_in() ) {
 			global $bp,$wpdb;
 			$quest_id = $bp->displayed_user->id;
@@ -79,39 +71,22 @@
 				ORDER BY id",
 				intval( $quest_id )
 			) );
-			// alex_debug(0,1,'',$all_profile_fields);
 			if( !empty($all_profile_fields) ){
 				foreach ($all_profile_fields as $field) {
-					// if( strpos(strtolower($field),'no') === false) continue;
-					// if( !empty($field) ) $score++;
 					if( !empty($field) && strpos(strtolower($field),'"no"') === false) $score++;
 				}
 			}
 
-			// echo "\r\n----Total score xprofile fields-".$score."<br>\r\n";
-
-			// $score = 0;
 			?>
-			<?php  /* while( bp_profile_groups() ) : bp_the_profile_group(); ?>
-				<?php if ( bp_profile_group_has_fields() ) : ?>
-					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
-						<?php 
-							echo bp_get_the_profile_field_name()." = ".bp_get_the_profile_field_value()."<br> || \r\n"; 
-							$score++;
-						?>
-					<?php endwhile;?>
-				<?php endif; ?>
-			<?php endwhile; */ ?>
+
 
 			<?php 
 			$count_all_timelines = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent='{$quest_id}' AND post_type='alex_timeline'");
-			// var_dump($count_all_timelines);
 			if((int)$count_all_timelines > 0) $score++;
 
 			 $all_exper = as21_get_all_experience_from_page_edit_profile();
 			 if( !empty($all_exper) ){
 				 foreach ($all_exper as $exper) {
-				 	// echo 'experience item = '.$exper->post_title.' || ';
 				 	if( !empty($exper->post_title) ) { $score++; break; }
 				 }
 			  }
@@ -123,7 +98,6 @@
 			Mobile Number,linkdin,twitter,google+,instagram - visibility: my frends
 			*/
 			$member_gr_ids =  groups_get_user_groups( $quest_id ); 
-			// alex_debug(0,1,'',$member_gr_ids);
 			if($member_gr_ids['total'] > 0) $score++;
 			$user_events_ids = $wpdb->get_col( $wpdb->prepare(
 				"SELECT guid
@@ -132,9 +106,7 @@
 				$quest_id,
 				"alex_timeline"
 			) );
-			// alex_debug(0,1,'events_ids ',$user_events_ids);
 			if(count($user_events_ids)>0) $score++;
-			// echo "\r\n----Total score xprofile fields-".$score."<br>\r\n";
 			?>
 			<!-- <p class="a21-system-box">This block is in development !</p> -->
 			<h5 class="profile-strength-head">Profile strength</h5>
@@ -159,8 +131,6 @@
 					<div id="circle" class="c-all-star"></div>
 					<div class="left-status all-star">All-Star</div>
 				<?php endif;?>
-				<!-- <div class="circle"><div class="fill_beginner"></div></div> -->
-				<!-- <pie class="fifty"></pie> -->
 			</div>
 
     <?php } /* **** as21  score for profile items complete **** */ ?>

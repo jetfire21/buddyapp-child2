@@ -36,39 +36,6 @@
 		console.log($(".profile-edit .datepicker.datepicker-dropdown").html());
 	// ///////////// for quick editing timeline
 
-		/* **** as21 ajax load part timeline data **** *
-		$("#a21_load_part_timeline_data").on("click",function(e){
-
-			e.preventDefault();
-			console.log("====a21_load_part_timeline_data=====");
-			var user_id = $(this).attr("data-user-id");
-			console.log(user_id);
-			var data = {
-				'action': 'a21_load_part_timeline_data',
-				'user_id':user_id
-			};
-
-			$.ajax({
-				url:KLEO.ajaxurl,
-				data:data, 
-				type:'POST', 
-				success:function(data){
-					console.log("----from WP AJAX data---");
-					console.log("data="+data);
-					console.log(typeof data);
-					// data = JSON.parse(data); 
-
-					if( data ) { 
-						$("#timeliner .timeliner").append(data);
-						 $('#timeliner').timeliner();
-					} else { console.log("data send with errors!");}
-				}
-
-			 });
-
-		});
-		* **** as21 ajax load part timeline data **** */
-
 
 	// ///////////// add new row for bp group calendar
 	// $("#a21_bgc_tasks_shifts").on("click",function(){
@@ -76,27 +43,10 @@
 
 		console.log("click add row");
 		$("#a21_bgc_del_row").css({"display":"block"});
-		// var row_i = $(".a21_number_row").length, el=1;
-		// console.log( row_i );
-		// if(row_i > 0) el = row_i+el;
-		// console.log("el "+el);
-		// var html = '<tr class="a21_event_row"> \
-		// <td class="a21_number_row">\
-		// 	 <input type="text" required="required" placeholder="" name="new_event_tasks['+el+'][task]" class="form-control" value="">\
-		// </td>\
-		// <td id="">\
-		// 	 <input type="text" required="required" placeholder="" name="new_event_tasks['+el+'][shift_1]" class="form-control" value="">\
-		// </td>\
-		// <td>\
-		// 	 <input type="text" required="required" placeholder="" name="new_event_tasks['+el+'][shift_2]" class="form-control" value="">\
-		// </td>\
-		// </tr>';
-		// $("#a21_bgc_tasks_shifts").append(html);
+
 		var rows = $("#a21_bgc_tasks_shifts .a21_dinam_row");
 		var colls = $("#a21_bgc_tasks_shifts .a21_dinam_row:first .a21_dinam_coll");
 		var html='';
-		console.log("------count rows-----"+rows.length);
-		console.log("=====count colls===== "+colls.length);
 
 		if(colls.length <= 1){
 			html = '<tr class="a21_dinam_row"> \
@@ -105,10 +55,6 @@
 							</td>\
 						</tr>';
 		}else{
-			// html = '<tr class="a21_dinam_row">\
-			// 			<td class="a21_dinam_coll">\
-			// 					 <input type="text" name="new_event_tasks[1][task]" class="form-control">\
-			// 			</td>';
 			html = '<tr class="a21_dinam_row">';
 			for(var i=0; i<colls.length; i++){
 				if(i == 0){
@@ -123,7 +69,6 @@
 			}
 		}
 		html = html+"</tr>";
-		// console.log("html"+html);
 		$("#a21_bgc_tasks_shifts").append(html);
 
 	});
@@ -133,9 +78,6 @@
 		var rows = $("#a21_bgc_tasks_shifts .a21_dinam_row");
 		console.log(rows.length);
 		if(rows.length > 1){
-			// $(".a21_dinam_row").each(function(i){
-			// 	console.log("i="+i+" "+$(this).html());
-			// })
 			$("#a21_bgc_tasks_shifts .a21_dinam_row:last-child").remove();
 		}
 	});
@@ -145,9 +87,6 @@
 		// return false;
 		console.log("COLLS "+colls.length);	
 		if(colls.length > 1){
-			// $(".a21_dinam_row").each(function(i){
-			// 	console.log("i="+i+" "+$(this).html());
-			// })
 			$("#a21_bgc_tasks_shifts tr td:last-child, #a21_bgc_tasks_shifts tr th:last-child").remove();
 		}
 		if( colls.length <= 2) $("#a21_bgc_del_column").css({"display":"none"});
@@ -158,7 +97,6 @@
 	$("#a21_bgc_add_new_column").on("click",function(){
 
 		$("#a21_bgc_del_column").css({"display":"block"});
-		// $(".wrap_btns_for_event_tasks").append('<div id="a21_bgc_add_new_column">- Delete Column</div>');
 		var html = '';
 		console.log("new column");
 		var rows = $("#a21_bgc_tasks_shifts .a21_dinam_row");
@@ -166,17 +104,12 @@
 		var colls = $("#a21_bgc_tasks_shifts .a21_dinam_row:first .a21_dinam_coll");
 		var th_colls = $("#a21_bgc_tasks_shifts .a21_dinam_th_coll");
 		var num_coll = colls.length + 1;
-		// var title_columns = $("#a21_bgc_tasks_shifts .title_columns th:nth-child("+num_coll+")");
 		var title_columns = $("#a21_bgc_tasks_shifts .title_columns");
 		console.log(typeof colls.length);
 		console.log("------NEW COLUMN count rows-----"+rows.length);
 		console.log("------NEW COLUMN count colls-----"+colls.length);
 		console.log("------NEW COLUMN count th_colls-----"+th_colls.length);
 		rows.each(function( i ) {
-			console.log("NEW COLUMN ряд "+i);
-			// console.log("counter colls "+j);
-  			// console.log( i + ": " + $( this ).html() );
-  			// console.log(title_columns.html());
   			if(i <= 0){			
   				html = '<td class="a21_dinam_coll vol_cnt"> <input type="text" name="new_event_tasks['+i+'][time_'+colls.length+']" placeholder="2" /></td>';
   				title_columns.append('<th class="a21_dinam_th_coll"> time '+colls.length+'<input type="text" name="new_event_tasks[time]['+th_colls.length+']" placeholder="11:00am-12:00am" /></th>');
@@ -203,21 +136,7 @@
 		var event_id = Number( $("#a21_bgc_tasks_shifts").attr("data-event-id") );
 		var i = $(this).attr("data-i");
 		var s_need_cnt = Number($(this).parent().find(".vol_cnt").text());
-		// if(s_need_cnt > 0) s_need_cnt = s_need_cnt-1;
-		// $(this).parent().find(".vol_cnt").html(s_need_cnt);
 		var task_id = $(this).parent().parent().attr("data-task_id");
-
-		console.log("== CLICK add new volunteer ===\r\n"+"task_id="+task_id+" user_id="+user_id+" i="+i+"\r\n");
-
-		console.log();
-		console.log(nick);
-		console.log("s_need_cnt="+s_need_cnt);
-		console.log("event_id="+event_id);
-		console.log("type user_id="+typeof user_id);
-		console.log("task_id="+task_id);
-		console.log("i"+i);
-		// $(this).parent().append("<p>"+nick+"</p>");
-		// if(user_id > 0) $(this).remove();
 
 		var data = {
 			'action': 'a21_bgc_add_new_volunteer',
@@ -232,13 +151,7 @@
 			data:data, 
 			type:'POST', 
 			success:function(data){
-				console.log("----from WP AJAX data---");
-				console.log("data="+data);
-				console.log(typeof data);
 				data = JSON.parse(data); 
-				console.log(data.html);
-				console.log(data.cnt_vols_signup_now);
-				console.log("cnt_vols_signup_now "+ typeof data.cnt_vols_signup_now);
 
 				if( data ) { 
 					self_parent.html(data.html);
@@ -283,13 +196,7 @@
 		var task_id = self.attr("data-task-id");
 		var user_id = self.attr("data-user-id");
 		var i = Number(self.attr("data-i"));
-		console.log("==CLICK #a21_cancel_my_attandance===\r\n"+"task_id="+task_id+" user_id="+user_id+" i="+i+"\r\n");
-		// var s_need_cnt = Number( self.attr("data-s-need-cnt") );
 		var s_need_cnt = Number( self.parent().find(".vol_cnt").text() );
-		console.log("s_need_cnt="+s_need_cnt);
-		// console.log( "self="+self.html() );
-		// console.log( self.parent().find(".link-user-id-"+user_id ).html() );
-		// console.log( self.parent().html() );
 		var link_cur_user = self.parent().find(".link-user-id-"+user_id );
 
 		var data = {
@@ -306,21 +213,11 @@
 			success:function(data){
 				console.log(data);
 				data = JSON.parse(data); 
-				console.log(data.html);
-				console.log(data.cnt_vols_signup_now);
-				console.log("cnt_vols_signup_now "+ typeof data.cnt_vols_signup_now);
 				if( data.html ) { 
 					console.log("data after ajax="+data);
 					s_need_cnt = s_need_cnt+1;
-					// console.log( $(this).html() );
-					// console.log( "self="+self.html() );
-					// console.log("parent self="+self.parent().html() );
 					self_parent.find(".vol_cnt").html(s_need_cnt);
 					self_parent.find(".a21_cancel_my_attandance").remove();
-					// console.log( self.parent().find(".link-user-id-"+user_id ).html() );
-					// console.log( self.parent().find(".link-user-id-1" ).html() );
-					// console.log("s_need_cnt="+s_need_cnt);
-					// console.log( self_sparent.html() );
 					link_cur_user.remove();
 					self_parent.removeClass("red-cell");
 					if(data.cnt_vols_signup_now > 0) self_parent.addClass("yellow-cell");
@@ -349,9 +246,6 @@
 
 		// console.log("click experience add row");
 		var rows = $("#as21_experience_volunteer .a21_dinam_row").length;
-		// rows = rows.length+1;
-		// console.log("------count rows-----"+rows);
-
 		var html ='<tr class="a21_dinam_row">\
 						<td><input type="text" name="as21_new_experiences['+rows+'][title]" placeholder="Eg. This is an example item to add"></td>\
 						<td><input type="text" name="as21_new_experiences['+rows+'][hours]">\
@@ -413,15 +307,7 @@
         modal: true,
         callbacks: {
 	    open: function() {
-	    	console.log("open---");
-	    	// jQuery("#show-signup-report-modal").show();
-	    	// var orig = jQuery("body").html();
-	    	// console.log("open===="+orig);
-	    	console.log(this);
-	    	console.log(this.currItem);
-	    	console.log(this.content);
 	    	$('#ve_loading').remove();
-	    	// console.log(this.currItem.attr('data-id'));
 	    }}
     });
 
@@ -433,12 +319,6 @@
     	console.log('---work action #ve_send_notif---');
     	var f_data = $(this).closest('#ve_form_notif').serialize();
     	console.log( f_data );
-    	// return false;
-
-		// var data = {
-		// 	'action': 'as21_ve_send_via_email',
-		// 	data:f_data
-		// };
 		f_data = f_data+'&action=as21_ve_send_notif';
 
 		$.ajax({
@@ -446,27 +326,16 @@
 			data:f_data, 
 			type:'POST', 
 			success:function(data){
-				// console.log(path.url);
-				// console.log("----from WP AJAX data---");
 				console.log(data);
 				data = $.parseJSON(data);
-				// if( data.error ) { 
-				// 	$('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.error+"</div>");
-			 //    	$('#ve_loading').remove();
-				// } 
 				if( data.success == 'ok' ) { 
 					console.log("---step ok---");
 					$.magnificPopup.close();
-					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
-					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>Notifications successfully sent</p></div>');
 			    	$('#ve_loading').remove();
 				} 				
 				if( data.success == 'exist' ) { 
-					console.log("---step exist---");
 					$.magnificPopup.close();
-					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
-					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice error"><p>You have already requested verification for this experience</p></div>');
 			    	$('#ve_loading').remove();
 				} 		
@@ -474,10 +343,6 @@
 					$('#ve_form_notif').prepend("<div class='a21-system-box'>You did not select a user</div>");
 				} 
 			},
-			// beforeSend: function(){
-			// 	// $('#ve_form_via_email .submit').append("<div class='a21-system-box'>Loading...</div>");
-			// 	$('#ve_form_via_email .submit').append("<img id='ve_loading' src='"+path.url+"/images/loading.gif' />");
-			// },
 
 		 });
 
@@ -490,12 +355,6 @@
     	$('#ve_form_via_email .a21-system-box').remove();
     	console.log('---work action #ve_send_via_email---');
     	var f_data = $(this).closest('#ve_form_via_email').serialize();
-    	// console.log( f_data );
-
-		// var data = {
-		// 	'action': 'as21_ve_send_via_email',
-		// 	data:f_data
-		// };
 		f_data = f_data+'&action=as21_ve_send_via_email';
 
 		$.ajax({
@@ -503,9 +362,6 @@
 			data:f_data, 
 			type:'POST', 
 			success:function(data){
-				// console.log(path.url);
-				// console.log("----from WP AJAX data---");
-				// console.log(data);
 				data = $.parseJSON(data);
 				if( data.error ) { 
 					$('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.error+"</div>");
@@ -513,8 +369,6 @@
 				} 
 				if( data.success ) { 
 					$.magnificPopup.close();
-					// $('#ve_form_via_email').prepend("<div class='a21-system-box'>"+data.success+"</div>");
-					// $('#item-header').append("<div class='a21-system-box'>"+data.success+"</div>");
 					$('#item-header').append('<div id="message" class="bp-template-notice updated"><p>'+data.success+"</p></div>");
 			    	$('#ve_loading').remove();
 				}
@@ -527,7 +381,6 @@
 				if(data.tmp_info) console.log(data.tmp_info);
 			},
 			beforeSend: function(){
-				// $('#ve_form_via_email .submit').append("<div class='a21-system-box'>Loading...</div>");
 				$('#ve_form_via_email .submit').append("<img id='ve_loading' src='"+path.url+"/images/loading.gif' />");
 			},
 
@@ -541,14 +394,6 @@
     });
 
     if( $(".as21-right-group-admins").length == 0 )  $("#item-actions .group-admins").css({"display":"block"});
-     console.log('has as21-right-group-admins - '+$(".as21-right-group-admins").length);
-
-    //  $(".as21-send-verif-exper").click(function(e){
-    // 	e.preventDefault();
-    // 	console.log('send from magnificPopup');
-    // 	console.log( $(this).parent().html() );
-    // 	console.log( $(this).data('id') );
-    // });
 
   });
 })(jQuery);

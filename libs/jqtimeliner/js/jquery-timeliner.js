@@ -111,11 +111,7 @@
             // Adding add new form
             if(self.config.formTpl){
                 var frm = getHtml.call(self, 'formTpl');
-                // console.log("frm==\r\n\r\n"+frm);
                 frm = frm.replace(/display_only_on_edit_form/g,'hide_field_on_add_form');
-                // console.log("frm==\r\n"+formTpl);
-                // console.log("self=\r\n"+self.config.formTpl);
-                 // console.log("frm==\r\n\r\n"+frm);
                 frm = addAttr.call(self, frm, 'id', self.config.addFrmId);
                 frm = addCss.call(self, frm, 'display', 'none');
                 html += getHtml.call(self,'sectionTpl', frm);
@@ -159,7 +155,6 @@
                     e.preventDefault();
                     var item = fetchFormItem(e, this, self.config);
                     self.config.onAdd(item, function(_item){
-                        // console.log("onadd..submit event");
                         self.add(_item).render();
                     });
                 });
@@ -268,7 +263,6 @@
             var date  = fetchDefault(_obj, ".timeliner_date", _options);
             var title =  fetchDefault(_obj, ".timeliner_label", _options);
             var alex_item_id =  fetchDefault(_obj, ".alex_item_id", _options);
-            // var alex_show_group =  fetchDefault(_obj, ".alex_show_group", _options);
 
             return title.concat("-")
                         .concat(date)
@@ -291,10 +285,7 @@
 
         // Fetching Class function
         var fetchClass = function(_obj, _options){
-            // console.log("fetchClass="+$(_obj).attr("class"));
-            // console.log("fetchClass "+$(_obj).html() );
             var klass = $(_obj).attr("class").replace("timeliner_element", "");
-            // console.log("klass="+klass);
             return $.trim(klass);
         };
 
@@ -383,8 +374,6 @@
         delBtn = addAttr.call(this, delBtn, 'id', _obj.$delBtnId);
 
         var html = getHtml.call(this, 'itemTpl', _obj);
-        // console.log("html=====\r\n");
-        // console.log(html);
         html = html.replace('{{edit-button}}', edtBtn);
         html = html.replace('{{delete-button}}', delBtn);
         _obj.$html = html;
@@ -517,8 +506,6 @@
 
    if(grs){
         for (var key in grs) {
-            // value должен быть обязательно названием группы,иначе select не будет работать 
-             // grs_html = grs_html + '<option selected="selected" value="'+key+'">'+grs[key]+'</option>\
              grs_html = grs_html + '<option value="'+grs[key]+'">'+grs[key]+'</option>';
         }
     }

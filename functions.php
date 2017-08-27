@@ -606,7 +606,6 @@ function a21_my_class_names( $classes ) {
 if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-tags/wp-job-manager-tags.php' );
 
 // /themes/buddyapp-child/job_manager/wp-job-manager-map/class-wp-job-manager.php
-// if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager.php' );
 if($_GET['dev'] != 1) if(class_exists('WP_Job_Manager')) include_once( 'job_manager/wp-job-manager-map/class-wp-job-manager-map.php' );
 
 
@@ -1380,7 +1379,6 @@ add_action( 'kleo_header', 'a_redirect_if_changed_group_page', 999 );
 
 
 add_action("bp_after_directory_members","a_show_groups_search_result_on_members");
-// add_action("bp_after_members_loop","a_show_groups_search_result_on_members");
 function a_show_groups_search_result_on_members(){
 
 	global $groups_template;
@@ -1689,8 +1687,8 @@ function as21_delete_cookies_for_group_soclinks(){
 }
 
 // labels for top nav (groups,members) parts is buddyapp-child/page-parts/header-top.php override top nav
-add_filter( 'nav_menu_link_attributes', 'as21_1',1 );
-function as21_1($atts){
+add_filter( 'nav_menu_link_attributes', 'as21_label_for_top_nav',1 );
+function as21_label_for_top_nav($atts){
 
 if( strtolower( $atts['title']) != 'jobs') { 
 		$atts['data-title']=$atts['title']; 
@@ -1791,7 +1789,6 @@ function a21_include_wp_pointer_css(){
 }
 
 add_action('wp_ajax_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
-// add_action('wp_ajax_nopriv_as21_dismiss_tooltip', 'as21_dismiss_tooltip');
 function as21_dismiss_tooltip(){
 	$id_user = (int)$_POST['id_user'];
 	$id_target = $_POST['id_target'] ? sanitize_text_field($_POST['id_target']) : false;
@@ -1822,7 +1819,6 @@ function as21_dismiss_all_tooltips(){
 	}
 	exit;
 }
-// require_once 'libs/frontend-profile-tooltips.php';
 
 /* **** as21  tooltips for new user on profile page**** */
 remove_action('wp_head','_wp_render_title_tag',1);
